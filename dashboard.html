@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>SciMath TU — Dashboard</title>
+<link rel="stylesheet" href="css/base.css">
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/theme.js"></script>
+<style>
+/* ══ LAYOUT ═══════════════════════════════ */
+body { overflow-x: hidden; padding-bottom: 72px; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--bg-1);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; overflow-x: hidden;
+  z-index: 50;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.sidebar-logo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-logo img { width: 34px; height: 34px; border-radius: 9px; object-fit: cover; flex-shrink: 0; }
+.sidebar-logo-text { font-weight: 700; font-size: 0.95rem; color: var(--text); letter-spacing: -0.01em; }
+.sidebar-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-user-info { min-width: 0; flex: 1; }
+.sidebar-user-name { font-weight: 600; font-size: 0.875rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar-user-email { font-size: 0.72rem; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.sidebar-nav { flex: 1; padding: 8px 10px; }
+.side-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radius-sm);
+  font-size: 0.875rem; font-weight: 500; color: var(--text-2);
+  cursor: pointer; width: 100%; text-align: left;
+  transition: all 0.14s; min-height: 42px; position: relative;
+  border: none; background: none; font-family: var(--font);
+  margin-bottom: 2px;
+}
+.side-item:hover { background: var(--bg-2); color: var(--text); }
+.side-item.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 600;
+}
+.side-item.active::before {
+  content: '';
+  position: absolute; left: 0; top: 6px; bottom: 6px;
+  width: 3px; border-radius: 0 3px 3px 0;
+  background: var(--accent);
+}
+.side-divider { height: 1px; background: var(--border); margin: 6px 10px; }
+.side-section-label {
+  font-size: 0.68rem; font-weight: 600; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 10px 12px 4px;
+}
+.side-item.danger { color: var(--red); }
+.side-item.danger:hover { background: var(--red-dim); color: var(--red); }
+
+/* ── MAIN CONTENT ── */
+.main-content {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  padding: 20px 20px 24px;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(238,246,242,0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  height: var(--header-h);
+  display: flex; align-items: center;
+  padding: 0 20px;
+  justify-content: space-between;
+  margin: -20px -20px 20px;
+}
+:root[data-theme="dark"] .topbar { background: rgba(10,24,18,0.94); }
+.topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+
+/* ── TOP AVATAR ── */
+.top-av-wrap {
+  width: 34px; height: 34px; border-radius: 50%; overflow: hidden;
+  cursor: pointer; flex-shrink: 0;
+  border: 2px solid var(--border);
+  transition: border-color 0.15s;
+}
+.top-av-wrap:hover { border-color: var(--accent); }
+#top-avatar {
+  width: 100%; height: 100%;
+  background: var(--accent-dim); color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 600;
+}
+#top-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--bg-1);
+  border-top: 1px solid var(--border);
+  z-index: 60;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-shadow: 0 -2px 16px rgba(0,0,0,0.06);
+}
+.bottom-nav-inner {
+  display: flex; align-items: center;
+  max-width: 430px; margin: 0 auto;
+}
+.bn-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px; padding: 10px 4px 10px;
+  cursor: pointer; border: none; background: none;
+  color: var(--text-3); font-family: var(--font);
+  position: relative; min-height: 58px;
+  transition: color 0.14s;
+  -webkit-tap-highlight-color: transparent;
+}
+.bn-item:active { transform: scale(0.92); }
+.bn-item.active { color: var(--accent); }
+.bn-item.active svg,
+.bn-item.active [data-lucide] { stroke: var(--accent); }
+.bn-label { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.01em; }
+
+/* ── PAGE SECTION ── */
+.page-section { display: none; animation: fadeUp 280ms var(--ease-out) both; }
+.page-section.active { display: block; }
+
+/* ── SECTION HEADER ── */
+.section-header { margin-bottom: 18px; }
+.section-header h2 { font-size: 1.15rem; font-weight: 700; }
+.section-header p  { font-size: 0.82rem; color: var(--text-2); margin-top: 3px; }
+
+/* ══ HOME ═══════════════════════════════════ */
+.greeting { margin-bottom: 18px; }
+.greeting-name {
+  font-size: 1.4rem; font-weight: 700;
+  color: var(--text); letter-spacing: -0.02em;
+}
+.greeting-sub { font-size: 0.875rem; color: var(--text-2); margin-top: 2px; }
+
+/* Status row */
+.status-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 14px;
+}
+.status-mini {
+  background: var(--bg-1); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 14px 16px;
+}
+.status-mini-label {
+  font-size: 0.75rem; font-weight: 500; color: var(--text-3);
+  display: flex; align-items: center; gap: 5px; margin-bottom: 8px;
+}
+
+/* Countdown */
+.countdown-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 8px; }
+.cd-block {
+  background: var(--bg-2); border-radius: var(--radius-sm);
+  padding: 12px 4px; text-align: center;
+}
+.cd-num { font-size: 1.5rem; font-weight: 700; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.cd-unit { font-size: 0.65rem; color: var(--text-3); margin-top: 4px; font-weight: 500; }
+
+/* ══ GROUP SYSTEM ════════════════════════════ */
+.gs-section-title {
+  font-size: 0.72rem; font-weight: 600;
+  color: var(--text-3); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.gs-section-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.gs-member {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.gs-member:last-of-type { border-bottom: none; }
+
+/* ══ EVENT PASS ══════════════════════════════ */
+.qr-wrap { text-align: center; padding: 8px 0 16px; }
+.qr-box {
+  width: 200px; height: 200px;
+  background: #fff; border: 2px solid var(--border);
+  border-radius: var(--radius-lg); margin: 12px auto;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.qr-code-id {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 1.1rem; font-weight: 700;
+  letter-spacing: 0.12em; color: var(--accent);
+  margin-bottom: 8px;
+}
+
+/* ══ PROFILE ════════════════════════════════ */
+.profile-avatar-wrap {
+  position: relative; width: 84px; height: 84px;
+  border-radius: 50%; overflow: hidden;
+  border: 3px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.profile-avatar-wrap:hover { border-color: var(--accent); }
+.profile-avatar-wrap:hover .profile-avatar-edit { opacity: 1; }
+.profile-avatar {
+  width: 100%; height: 100%;
+  background: var(--accent-dim); color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; font-weight: 600;
+}
+.profile-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.profile-avatar-edit {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.15s;
+}
+.profile-rows .pr {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.875rem;
+}
+.profile-rows .pr:last-child { border-bottom: none; }
+.profile-rows .pr-label { color: var(--text-2); flex-shrink: 0; margin-right: 12px; min-width: 100px; }
+.profile-rows .pr-val { font-weight: 500; text-align: right; word-break: break-word; }
+
+/* ══ ANNOUNCEMENTS ══════════════════════════ */
+.ann-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 0; border-bottom: 1px solid var(--border); cursor: pointer;
+}
+.ann-item:last-child { border-bottom: none; }
+.ann-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.ann-text { flex: 1; font-size: 0.875rem; font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ann-date { font-size: 0.72rem; color: var(--text-3); flex-shrink: 0; }
+.ann-empty { text-align: center; color: var(--text-3); font-size: 0.875rem; padding: 20px 0; }
+
+/* ══ ACTIVITIES ══════════════════════════════ */
+.activity-list { display: flex; flex-direction: column; gap: 8px; }
+.act-item {
+  background: var(--bg-1); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer; transition: all 0.14s;
+}
+.act-item:hover { border-color: var(--border-2); transform: translateY(-1px); box-shadow: var(--shadow); }
+.act-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent-dim); color: var(--accent);
+  font-size: 0.78rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.act-info { flex: 1; min-width: 0; }
+.act-name { font-size: 0.9rem; font-weight: 600; }
+.act-sub  { font-size: 0.78rem; color: var(--text-2); margin-top: 1px; }
+
+/* ══ IMP MODE ════════════════════════════════ */
+body.imp-mode::before {
+  content: 'IMPERSONATE MODE';
+  position: fixed; top: 0; left: 0; right: 0;
+  background: var(--amber); color: #fff;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+  text-align: center; padding: 5px; z-index: 9999;
+}
+body.imp-mode { padding-top: 28px; }
+
+/* ══ CHECKLIST ════════════════════════════════ */
+.check-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 0; border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+.check-item:last-child { border-bottom: none; }
+.check-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.check-icon.done  { background: var(--green-dim); color: var(--green); }
+.check-icon.pend  { background: var(--amber-dim); color: var(--amber); }
+
+/* ══ RESPONSIVE ═══════════════════════════════ */
+@media (min-width: 768px) {
+  .bottom-nav { display: none; }
+  body { padding-bottom: 0; }
+}
+@media (max-width: 767px) {
+  .sidebar { display: none; }
+  .main-content { margin-left: 0; padding: 16px 16px 20px; }
+  .topbar { margin: -16px -16px 16px; padding: 0 16px; }
+  .status-row { grid-template-columns: 1fr 1fr; }
+  .form-grid  { grid-template-columns: 1fr; }
+  .form-grid .full { grid-column: span 1; }
+}
+
+/* ══ BACK TO ADMIN BTN ════════════════════════ */
+#back-to-admin-btn {
+  display: none; background: var(--amber-dim); color: var(--amber);
+  border: 1px solid var(--amber-dim); border-radius: var(--radius-sm);
+  font-size: 0.78rem; font-weight: 600; padding: 6px 12px;
+}
+</style>
+</head>
+<body>
+
+<!-- IMPERSONATE BANNER -->
+<div class="imp-banner" id="imp-banner">
+  <div class="flex items-center gap-2">
+    <i data-lucide="eye" style="width:14px;height:14px"></i>
+    <span id="imp-banner-name">มุมมองของ: -</span>
+  </div>
+  <button onclick="exitImpersonate()">ออก</button>
+</div>
+
+<!-- SIDEBAR (iPad/desktop) -->
+<nav class="sidebar" id="side-nav">
+  <div class="sidebar-logo">
+    <img src="logo.png" alt="logo" style="width:34px;height:34px;border-radius:9px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'">
+    <span class="sidebar-logo-text">SciMath TU</span>
+  </div>
+  <div class="sidebar-user">
+    <div class="avatar avatar-sm" id="side-avatar">?</div>
+    <div class="sidebar-user-info">
+      <div class="sidebar-user-name" id="side-name">โหลด...</div>
+      <div class="sidebar-user-email" id="side-email">...</div>
+    </div>
+  </div>
+  <div class="sidebar-nav">
+    <button class="side-item active" data-sec="home" onclick="goSection('home',this)">
+      <i data-lucide="home" style="width:15px;height:15px"></i> หน้าหลัก
+    </button>
+    <button class="side-item" data-sec="group" onclick="goSection('group',this)">
+      <i data-lucide="layers" style="width:15px;height:15px"></i> กลุ่มของฉัน
+    </button>
+    <button class="side-item" data-sec="duo" onclick="goSection('duo',this)">
+      <i data-lucide="users" style="width:15px;height:15px"></i> กลุ่ม Trio
+    </button>
+    <button class="side-item" data-sec="activity" onclick="goSection('activity',this)">
+      <i data-lucide="calendar" style="width:15px;height:15px"></i> กิจกรรม
+    </button>
+    <button class="side-item" data-sec="pass" onclick="goSection('pass',this)" id="side-pass" style="display:none">
+      <i data-lucide="qr-code" style="width:15px;height:15px"></i> บัตรเข้างาน
+    </button>
+    <button class="side-item" data-sec="profile" onclick="goSection('profile',this)">
+      <i data-lucide="user" style="width:15px;height:15px"></i> โปรไฟล์
+    </button>
+    <div class="side-divider"></div>
+    <button class="side-item danger" onclick="doLogout()">
+      <i data-lucide="log-out" style="width:15px;height:15px"></i> ออกจากระบบ
+    </button>
+  </div>
+</nav>
+
+<div class="main-content">
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-title" id="topbar-title">หน้าหลัก</div>
+  <div class="topbar-right">
+    <button id="back-to-admin-btn" class="btn btn-sm" onclick="window.location.href='admin.html'" style="display:none;background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-dim)">
+      <i data-lucide="shield" style="width:12px;height:12px"></i> Admin
+    </button>
+    <div class="top-av-wrap" id="top-avatar-wrap">
+      <div id="top-avatar">?</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ SECTION: HOME ═══════ -->
+<div class="page-section active" id="sec-home">
+  <div class="greeting">
+    <div class="greeting-name" id="greeting-name">สวัสดี!</div>
+    <div class="greeting-sub" id="greeting-sub">ยินดีต้อนรับสู่ระบบกิจกรรมรับน้อง</div>
+  </div>
+
+  <!-- Status badges -->
+  <div class="status-row">
+    <div class="status-mini">
+      <div class="status-mini-label"><i data-lucide="clipboard-check" style="width:11px;height:11px"></i> ลงทะเบียน</div>
+      <div id="reg-status-badge"><div class="badge badge-muted">ยังไม่ได้</div></div>
+    </div>
+    <div class="status-mini">
+      <div class="status-mini-label"><i data-lucide="users" style="width:11px;height:11px"></i> Trio</div>
+      <div id="duo-status-badge"><div class="badge badge-muted">ยังไม่มี</div></div>
+    </div>
+  </div>
+
+  <!-- Steps checklist -->
+  <div class="d-card" id="home-steps-card" style="margin-bottom:10px;display:none">
+    <div class="d-card-label"><i data-lucide="list-checks" style="width:12px;height:12px"></i> ขั้นตอนที่ต้องทำ</div>
+    <div id="home-steps"></div>
+  </div>
+
+  <!-- Group status card -->
+  <div class="d-card" id="group-status-card" style="margin-bottom:10px">
+    <div style="text-align:center;padding:12px 0">
+      <i data-lucide="lock" style="width:28px;height:28px;color:var(--text-3)"></i>
+      <div style="margin-top:8px;font-weight:600">รอประกาศกลุ่ม</div>
+      <div class="text-sm text-muted" style="margin-top:4px">พี่ๆ จะประกาศกลุ่มเร็วๆ นี้</div>
+    </div>
+  </div>
+
+  <!-- Line OpenChat -->
+  <div class="d-card" id="home-line-card" style="margin-bottom:10px;display:none">
+    <div class="d-card-label"><i data-lucide="message-circle" style="width:12px;height:12px"></i> Line OpenChat</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div class="font-medium text-sm">กลุ่ม Line รับน้อง 89</div>
+        <div class="text-xs text-muted">เข้าร่วมเพื่อรับข่าวสารและอัปเดต</div>
+      </div>
+      <button class="btn btn-primary btn-sm" id="line-join-btn" onclick="openLineChat()">
+        <i data-lucide="external-link" style="width:12px;height:12px"></i> เข้าร่วม
+      </button>
+    </div>
+    <div id="line-joined-row" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.875rem">
+        <input type="checkbox" id="line-joined-check" style="accent-color:var(--accent);width:16px;height:16px" onchange="onLineJoined(this.checked)">
+        <span>ฉันเข้าร่วม Line group แล้ว ✓</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Announcements -->
+  <div class="d-card">
+    <div class="d-card-label"><i data-lucide="bell" style="width:12px;height:12px"></i> ประกาศล่าสุด</div>
+    <div id="home-ann"><div class="text-sm text-muted">ยังไม่มีประกาศ</div></div>
+  </div>
+</div>
+
+<!-- ═══════ SECTION: GROUP ═══════ -->
+<div class="page-section" id="sec-group">
+  <div id="group-content">
+    <div class="text-center text-muted text-sm" style="padding:32px">กำลังโหลด...</div>
+  </div>
+</div>
+
+<!-- ═══════ SECTION: DUO ═══════ -->
+<div class="page-section" id="sec-duo">
+  <div id="group-system-wrap"></div>
+</div>
+
+<!-- ═══════ SECTION: ACTIVITY ═══════ -->
+<div class="page-section" id="sec-activity">
+  <div class="section-header">
+    <h2>รายละเอียดกิจกรรม</h2>
+  </div>
+  <!-- LOCKED -->
+  <div class="d-card" style="text-align:center;padding:36px 20px">
+    <div style="width:64px;height:64px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+      <i data-lucide="lock" style="width:28px;height:28px;color:var(--accent)"></i>
+    </div>
+    <div style="font-size:1.1rem;font-weight:700;margin-bottom:6px">Coming Soon</div>
+    <div class="text-sm text-muted" style="margin-bottom:20px;line-height:1.7">รายละเอียดกิจกรรมจะเปิดเผย<br>ก่อนวันงาน 27 มิ.ย. 2569</div>
+    <div style="display:flex;flex-direction:column;gap:10px;max-width:280px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-2);border-radius:var(--radius-sm)">
+        <i data-lucide="calendar" style="width:15px;height:15px;color:var(--accent);flex-shrink:0"></i>
+        <div><div class="text-xs text-muted">วันงาน</div><div class="font-medium text-sm" id="act-date">27 มิถุนายน 2569</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-2);border-radius:var(--radius-sm)">
+        <i data-lucide="clock" style="width:15px;height:15px;color:var(--accent);flex-shrink:0"></i>
+        <div><div class="text-xs text-muted">เวลา</div><div class="font-medium text-sm">08.00 – 17.00 น.</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-2);border-radius:var(--radius-sm)">
+        <i data-lucide="map-pin" style="width:15px;height:15px;color:var(--accent);flex-shrink:0"></i>
+        <div><div class="text-xs text-muted">สถานที่</div><div class="font-medium text-sm">โรงเรียนเตรียมอุดมศึกษา</div></div>
+      </div>
+    </div>
+  </div>
+  <a class="btn btn-secondary" href="event.html" style="width:100%;justify-content:center;margin-top:10px">
+    <i data-lucide="external-link" style="width:13px;height:13px"></i> ดูหน้ากิจกรรม
+  </a>
+</div>
+
+
+<!-- ═══════ SECTION: CHECKLIST ═══════ -->
+<div class="page-section" id="sec-home" style="display:none"><!-- replaced below --></div>
+
+<!-- ═══════ SECTION: EVENT PASS / QR ═══════ -->
+<div class="page-section" id="sec-pass">
+  <div class="section-header">
+    <h2>บัตรเข้างาน</h2>
+    <p>แสดง QR Code นี้เพื่อเช็คอินในวันงาน</p>
+  </div>
+  <div class="qr-wrap">
+    <div class="d-card-label" style="justify-content:center;margin-bottom:16px">
+      <i data-lucide="qr-code" style="width:12px;height:12px"></i> Event Pass
+    </div>
+    <div class="qr-box" id="qr-display">
+      <div style="text-align:center">
+        <i data-lucide="lock" style="width:32px;height:32px;color:var(--text-3)"></i>
+        <div style="font-size:0.75rem;color:var(--text-3);margin-top:6px">ยังไม่มีข้อมูล</div>
+      </div>
+    </div>
+    <div class="qr-code-id" id="qr-code-id">------</div>
+    <div id="qr-checkin-status">
+      <div class="badge badge-muted">ยังไม่เช็คอิน</div>
+    </div>
+    <div style="font-size:0.78rem;color:var(--text-3);margin-top:10px">
+      แสดงหน้าจอนี้ให้พี่ทะเบียน scan
+    </div>
+  </div>
+
+  <div class="d-card" style="margin-top:12px">
+    <div class="d-card-label"><i data-lucide="list-checks" style="width:12px;height:12px"></i> สถานะ</div>
+    <div class="stage-checklist" id="pass-checklist"></div>
+  </div>
+</div>
+
+<!-- ═══════ SECTION: HELP ═══════ -->
+<div class="page-section" id="sec-help">
+  <div class="section-header">
+    <h2>ขอความช่วยเหลือ</h2>
+    <p>ติดต่อคณะกรรมการฯได้ตลอดเวลา</p>
+  </div>
+  <a class="help-btn" id="help-welfare-call" href="tel:">
+    <div class="help-btn-left">
+      <div style="width:40px;height:40px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center">
+        <i data-lucide="phone" style="width:18px;height:18px;color:var(--green)"></i>
+      </div>
+      <div>
+        <div class="font-medium text-sm">โทรหาฝ่ายสวัสดิการ</div>
+        <div class="text-xs text-muted" id="help-welfare-num">กำลังโหลด...</div>
+      </div>
+    </div>
+    <i data-lucide="chevron-right" style="width:14px;height:14px;color:var(--text-3)"></i>
+  </a>
+  <a class="help-btn" id="help-reg-call" href="tel:">
+    <div class="help-btn-left">
+      <div style="width:40px;height:40px;border-radius:50%;background:var(--blue-dim);display:flex;align-items:center;justify-content:center">
+        <i data-lucide="clipboard-list" style="width:18px;height:18px;color:var(--blue)"></i>
+      </div>
+      <div>
+        <div class="font-medium text-sm">ฝ่ายทะเบียน</div>
+        <div class="text-xs text-muted" id="help-reg-num">กำลังโหลด...</div>
+      </div>
+    </div>
+    <i data-lucide="chevron-right" style="width:14px;height:14px;color:var(--text-3)"></i>
+  </a>
+  <a class="help-btn" id="help-line" href="#" target="_blank">
+    <div class="help-btn-left">
+      <div style="width:40px;height:40px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center">
+        <i data-lucide="message-circle" style="width:18px;height:18px;color:var(--green)"></i>
+      </div>
+      <div>
+        <div class="font-medium text-sm">Line OpenChat</div>
+        <div class="text-xs text-muted">ช่องทางติดต่อหลัก</div>
+      </div>
+    </div>
+    <i data-lucide="external-link" style="width:14px;height:14px;color:var(--text-3)"></i>
+  </a>
+  <div class="d-card" style="margin-top:4px">
+    <div class="d-card-label"><i data-lucide="map-pin" style="width:12px;height:12px"></i> จุดพยาบาล</div>
+    <p class="text-sm text-muted" id="help-medical-loc" style="line-height:1.65">กำลังโหลด...</p>
+  </div>
+</div>
+
+<!-- ═══════ SECTION: FEEDBACK ═══════ -->
+<div class="page-section" id="sec-feedback">
+  <div class="section-header">
+    <h2>แบบประเมินกิจกรรม</h2>
+    <p>ความคิดเห็นของคุณสำคัญมากสำหรับปีหน้า</p>
+  </div>
+  <div id="feedback-content">
+    <div class="d-card" style="margin-bottom:12px">
+      <div class="d-card-label"><i data-lucide="star" style="width:12px;height:12px"></i> ความพึงพอใจโดยรวม</div>
+      <div class="rating-row" id="rating-overall">
+        ${[1,2,3,4,5].map(n=>`<div class="rating-btn" data-val="${n}" onclick="setRating('overall',${n},this)">${['😞','😕','😐','😊','🤩'][n-1]}</div>`).join('')}
+      </div>
+    </div>
+    <div class="d-card" style="margin-bottom:12px">
+      <div class="d-card-label"><i data-lucide="users" style="width:12px;height:12px"></i> รู้จักเพื่อนใหม่ไหม?</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="knew-friends">
+        ${['รู้จักเยอะมาก','รู้จักบ้าง','ยังไม่ค่อยได้คุย'].map((l,i)=>`
+          <div class="quiz-opt" style="flex:1;min-width:80px" onclick="setFb('knew',${i},this)">
+            <div class="quiz-radio"></div><span style="font-size:0.82rem">${l}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="d-card" style="margin-bottom:12px">
+      <div class="d-card-label"><i data-lucide="shield" style="width:12px;height:12px"></i> รู้สึกปลอดภัยไหม?</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="felt-safe">
+        ${['ปลอดภัยมาก','พอดี','ไม่ค่อยปลอดภัย'].map((l,i)=>`
+          <div class="quiz-opt" style="flex:1;min-width:80px" onclick="setFb('safe',${i},this)">
+            <div class="quiz-radio"></div><span style="font-size:0.82rem">${l}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="d-card" style="margin-bottom:12px">
+      <div class="d-card-label"><i data-lucide="message-square" style="width:12px;height:12px"></i> ฝากถึงพี่ๆ</div>
+      <textarea class="form-input" id="fb-message" rows="3"
+        placeholder="อยากบอกอะไรถึงพี่ๆ คณะกรรมการฯ?" style="margin-top:8px"></textarea>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" id="fb-submit-btn" onclick="submitFeedback()">
+      <i data-lucide="send" style="width:14px;height:14px"></i> ส่งแบบประเมิน
+    </button>
+  </div>
+  <div class="d-card hidden" id="feedback-done" style="text-align:center;padding:28px">
+    <i data-lucide="check-circle" style="width:36px;height:36px;color:var(--green);margin-bottom:10px"></i>
+    <div class="font-semibold">ขอบคุณสำหรับความคิดเห็น!</div>
+    <div class="text-sm text-muted" style="margin-top:4px">ข้อมูลของคุณจะช่วยพัฒนากิจกรรมในปีหน้า</div>
+  </div>
+</div>
+
+
+<!-- ═══════ SECTION: PROFILE ═══════ -->
+<div class="page-section" id="sec-profile">
+  <div class="section-header">
+    <h2>โปรไฟล์ของฉัน</h2>
+  </div>
+
+  <!-- Avatar -->
+  <div style="display:flex;flex-direction:column;align-items:center;padding:8px 0 20px">
+    <div class="profile-avatar-wrap" id="profile-avatar-wrap" style="cursor:pointer;margin-bottom:10px" title="กดเพื่อเปลี่ยนรูป">
+      <div class="profile-avatar" id="profile-avatar">?</div>
+      <div class="profile-avatar-edit"><i data-lucide="camera" style="width:14px;height:14px;color:#fff"></i></div>
+    </div>
+    <div class="font-semibold" id="profile-fullname">-</div>
+    <div class="text-sm text-muted" id="profile-email">-</div>
+  </div>
+
+  <!-- Info ──────────────────────── -->
+  <div class="d-card" style="margin-bottom:10px">
+    <div class="d-card-label"><i data-lucide="user" style="width:12px;height:12px"></i> ข้อมูลส่วนตัว</div>
+    <div class="profile-rows" id="profile-info-rows"></div>
+  </div>
+
+  <!-- Edit form ─────────────────── -->
+  <div class="d-card" style="margin-bottom:10px;display:none" id="profile-edit-form">
+    <div class="d-card-label"><i data-lucide="edit-2" style="width:12px;height:12px"></i> แก้ไขข้อมูล</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+      <div class="form-group"><label class="form-label">ชื่อเล่น</label><input class="form-input" id="pe-nick"></div>
+      <div class="form-group"><label class="form-label">เบอร์โทร</label><input class="form-input" id="pe-phone" type="tel"></div>
+      <div class="form-group"><label class="form-label">Line ID</label><input class="form-input" id="pe-line"></div>
+      <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="pe-ig" placeholder="@username"></div>
+      <div class="form-group"><label class="form-label">โรคประจำตัว / อาการ</label><input class="form-input" id="pe-disease"></div>
+      <div class="form-group"><label class="form-label">ยาที่ใช้ประจำ</label><input class="form-input" id="pe-medicine"></div>
+      <div class="form-group"><label class="form-label">อาหารที่แพ้</label><input class="form-input" id="pe-allergy"></div>
+      <div class="form-group"><label class="form-label">เบอร์ฉุกเฉิน</label><input class="form-input" id="pe-emphone" type="tel"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="toggleProfileEdit(false)">ยกเลิก</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveProfile()">
+        <i data-lucide="save" style="width:13px;height:13px"></i> บันทึก
+      </button>
+    </div>
+  </div>
+
+  <button class="btn btn-secondary" style="width:100%;justify-content:center" id="profile-edit-btn" onclick="toggleProfileEdit(true)">
+    <i data-lucide="edit-2" style="width:13px;height:13px"></i> แก้ไขข้อมูล
+  </button>
+</div>
+
+</div><!-- /main-content -->
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button class="bn-item active" data-sec="home" onclick="goSection('home',this)">
+      <i data-lucide="home" style="width:20px;height:20px"></i>
+      <span class="bn-label">หน้าหลัก</span>
+    </button>
+    <button class="bn-item" data-sec="group" onclick="goSection('group',this)">
+      <i data-lucide="layers" style="width:20px;height:20px"></i>
+      <span class="bn-label">กลุ่ม</span>
+    </button>
+    <button class="bn-item" data-sec="duo" onclick="goSection('duo',this)">
+      <i data-lucide="users-2" style="width:20px;height:20px"></i>
+      <span class="bn-label">กลุ่ม Trio</span>
+      <div class="badge badge-accent hidden" id="duo-badge" style="font-size:0.6rem;padding:1px 5px;position:absolute;margin-top:-18px;margin-left:14px"></div>
+    </button>
+    <button class="bn-item" data-sec="activity" onclick="goSection('activity',this)">
+      <i data-lucide="calendar" style="width:20px;height:20px"></i>
+      <span class="bn-label">กิจกรรม</span>
+    </button>
+    <button class="bn-item" data-sec="pass" onclick="goSection('pass',this)" id="bn-pass" style="display:none">
+      <i data-lucide="qr-code" style="width:20px;height:20px"></i>
+      <span class="bn-label">บัตร</span>
+    </button>
+    <button class="bn-item" data-sec="profile" onclick="goSection('profile',this)">
+      <i data-lucide="user" style="width:20px;height:20px"></i>
+      <span class="bn-label">โปรไฟล์</span>
+    </button>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged, updateProfile }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
+  collection, query, where, orderBy, limit, serverTimestamp, onSnapshot }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDtuK_Rvq9Ki3QiytCTWON6S4J2iHKlTCU",
+  authDomain: "rubnong-official.firebaseapp.com",
+  projectId: "rubnong-official",
+  storageBucket: "rubnong-official.firebasestorage.app",
+  messagingSenderId: "982944596814",
+  appId: "1:982944596814:web:cf61c860632eb42b4a541f"
+});
+const auth    = getAuth(app);
+const db      = getFirestore(app);
+const storage = getStorage(app);
+const SUPER   = '8868278@student.triamudom.ac.th';
+
+// ── HELPERS ──────────────────────────────────────────
+function showToast(msg, type='success') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const color = type==='success' ? 'var(--green)' : 'var(--red)';
+  const icon  = type==='success' ? 'check-circle' : 'alert-circle';
+  t.innerHTML = `<i data-lucide="${icon}" style="width:16px;height:16px;color:${color};flex-shrink:0"></i><span>${msg}</span>`;
+  c.appendChild(t); if(typeof lucide!=="undefined")lucide.createIcons();
+  setTimeout(()=>t.remove(), 3000);
+}
+const setText = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val||'-'; };
+function getInitials(name='') {
+  const p = name.trim().split(' ');
+  return p.length>1 ? p[0][0]+p[1][0] : (name[0]||'?');
+}
+async function resizeBlob(file, max=300) {
+  return new Promise(res => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let w=img.width, h=img.height;
+        if(w>h){if(w>max){h=Math.round(h*max/w);w=max;}}
+        else   {if(h>max){w=Math.round(w*max/h);h=max;}}
+        const c=document.createElement('canvas');
+        c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        c.toBlob(b=>res(b),'image/jpeg',0.88);
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+async function logAudit(action, detail) {
+  try { await addDoc(collection(db,'auditLogs'),{action,detail,by:auth.currentUser?.email,at:serverTimestamp()}); } catch(_){}
+}
+
+// ── STATE ─────────────────────────────────────────────
+let currentUser = null;
+let studentData = null;
+
+// ── AUTH ──────────────────────────────────────────────
+// auth handled below
+
+// ── INIT UI ───────────────────────────────────────────
+function initUI(user, d) {
+  const initials = getInitials((d.firstName||'')+ ' '+(d.lastName||''));
+  const photoURL = d.photoURL || user.photoURL || '';
+
+  // Top avatar
+  const topAv = document.getElementById('top-avatar');
+  if(topAv) {
+    topAv.textContent = photoURL ? '' : initials;
+    if(photoURL) topAv.innerHTML=`<img src="${photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  }
+
+  // Profile avatar
+  const pfAv = document.getElementById('profile-avatar');
+  if(pfAv) {
+    pfAv.textContent = photoURL ? '' : initials;
+    if(photoURL) pfAv.innerHTML=`<img src="${photoURL}" style="width:100%;height:100%;object-fit:cover;">`;
+  }
+
+  // Greeting
+  setText('greeting-name', `สวัสดี, ${d.firstName||'น้อง'}!`);
+  // Sidebar
+  const sideAv = document.getElementById('side-avatar');
+  if(sideAv) {
+    sideAv.textContent = photoURL ? '' : initials;
+    if(photoURL) sideAv.innerHTML=`<img src="${photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  }
+  setText('side-name',  d.firstName ? `${d.firstName} ${d.lastName}` : user.email.split('@')[0]);
+  setText('side-email', user.email);
+
+  // Profile fields
+  // Profile header
+  // View mode fields (new section)
+
+  // Duo badge
+  updateDuoStatusBadge(d.trioStatus||d.duoStatus||'no_trio');
+}
+
+function updateDuoStatusBadge(status) {
+  const map = {
+    no_duo:   ['ยังไม่มี','muted'],
+    sent:     ['ส่งคำเชิญแล้ว','amber'],
+    received: ['รอตอบรับ','blue'],
+    accepted: ['มี Duo แล้ว','green'],
+  };
+  const [label,cls] = map[status]||['ยังไม่มี','muted'];
+  const el = document.getElementById('duo-status-badge');
+  if(el) el.innerHTML = `<div class="badge badge-${cls}">${label}</div>`;
+}
+
+// ── BOTTOM NAV ────────────────────────────────────────
+window.goSection = (sec, btn) => {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.bn-item, .side-item[data-sec]').forEach(b => b.classList.remove('active'));
+  document.getElementById(`sec-${sec}`)?.classList.add('active');
+  if(btn) btn.classList.add('active');
+  else document.querySelector(`[data-sec="${sec}"]`)?.classList.add('active');
+  window.scrollTo(0,0);
+  if(sec==='duo')      { const pm=document.getElementById('group-system-wrap'); if(pm) pm.innerHTML=''; setTimeout(loadDuoSection, 50); }
+  if(sec==='group')    loadGroupSection();
+  if(sec==='pass')     initEventPass(currentUser?.uid||'', studentData||{});
+  if(sec==='help')     loadHelpInfo();
+  if(sec==='feedback') {}
+  if(sec==='profile')  { renderProfileSection(); toggleProfileEdit(false); }
+};
+
+
+// ── HOME FUNCTIONS ────────────────────────────────────
+
+function renderHomeChecklist(d) {
+  // reg status badge
+  const regBadge = document.getElementById('reg-status-badge');
+  if(regBadge) {
+    if(d.status==='registered') {
+      regBadge.innerHTML = '<div class="badge badge-green"><i data-lucide="check" style="width:10px;height:10px"></i> เสร็จสิ้น</div>';
+    } else {
+      regBadge.innerHTML = '<div class="badge badge-amber">รอดำเนินการ</div>';
+    }
+  }
+
+  // steps
+  const steps = [];
+  if(d.status !== 'registered') steps.push({ label:'ลงทะเบียนข้อมูล', done:false, action:"window.location.href='register.html'", actionLabel:'ลงทะเบียน' });
+  if(!d.groupSystemId) steps.push({ label:'เลือกกลุ่ม Trio', done:false, action:"goSection('duo',document.querySelector('[data-sec=duo]'))", actionLabel:'เลือกกลุ่ม' });
+  if(!d.lineJoined) steps.push({ label:'เข้าร่วม Line OpenChat', done:false, action:'openLineChat()', actionLabel:'เข้าร่วม' });
+
+  const stepsCard = document.getElementById('home-steps-card');
+  const stepsEl   = document.getElementById('home-steps');
+  if(stepsCard && stepsEl) {
+    if(steps.length > 0) {
+      stepsCard.style.display = 'block';
+      stepsEl.innerHTML = steps.map(s => `
+        <div class="check-item">
+          <div class="check-icon ${s.done?'done':'pend'}">
+            <i data-lucide="${s.done?'check':'clock'}" style="width:12px;height:12px"></i>
+          </div>
+          <div style="flex:1">${s.label}</div>
+          ${!s.done ? `<button class="btn btn-primary btn-sm" onclick="${s.action}">${s.actionLabel}</button>` : ''}
+        </div>`).join('');
+    } else {
+      stepsCard.style.display = 'none';
+    }
+  }
+
+  // Line OpenChat card
+  loadLineCard(d);
+
+  if(typeof lucide!=="undefined")lucide.createIcons();
+}
+
+async function loadLineCard(d) {
+  try {
+    const snap = await getDoc(doc(db,'eventSettings','main'));
+    const lineUrl = snap.exists() ? snap.data().lineUrl : '';
+    const card = document.getElementById('home-line-card');
+    if(!lineUrl || !card) return;
+    card.style.display = 'block';
+    card.dataset.lineUrl = lineUrl;
+    // ถ้าเคย tick แล้ว
+    if(d.lineJoined) {
+      const check = document.getElementById('line-joined-check');
+      if(check) { check.checked = true; }
+      const row = document.getElementById('line-joined-row');
+      if(row) row.style.display = 'block';
+      const btn = document.getElementById('line-join-btn');
+      if(btn) { btn.innerHTML = '<i data-lucide="check-circle" style="width:12px;height:12px"></i> เข้าร่วมแล้ว'; btn.disabled = true; btn.style.opacity='0.6'; }
+    } else {
+      const row = document.getElementById('line-joined-row');
+      if(row) row.style.display = 'none';
+    }
+    if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(_) {}
+}
+
+window.openLineChat = () => {
+  const card = document.getElementById('home-line-card');
+  const url = card?.dataset.lineUrl;
+  if(url) window.open(url, '_blank');
+  // แสดง tick checkbox
+  const row = document.getElementById('line-joined-row');
+  if(row) row.style.display = 'block';
+};
+
+window.onLineJoined = async (checked) => {
+  if(!currentUser) return;
+  try {
+    await updateDoc(doc(db,'students',currentUser.uid), {lineJoined: checked});
+    studentData.lineJoined = checked;
+    if(checked) showToast('✓ บันทึกแล้ว ขอบคุณที่เข้าร่วม!');
+    renderHomeChecklist(studentData);
+  } catch(e) { console.warn('lineJoined:', e); }
+};
+
+// ── ANNOUNCEMENTS ─────────────────────────────────────
+
+async function loadAnnouncements() {
+  const el = document.getElementById('home-ann');
+  if(!el) return;
+  try {
+    const q    = query(collection(db,'announcements'),orderBy('pinned','desc'),orderBy('createdAt','desc'),limit(5));
+    const snap = await getDocs(q);
+    if(snap.empty) { el.innerHTML='<div class="text-sm text-muted">ยังไม่มีประกาศ</div>'; return; }
+    el.innerHTML = '';
+    snap.forEach(d => {
+      const a   = d.data();
+      const row = document.createElement('div');
+      row.className = 'ann-item';
+      row.style.cursor = 'pointer';
+      row.innerHTML = `
+        <div class="ann-dot" style="${a.pinned?'background:var(--gold)':''}"></div>
+        <div style="flex:1;min-width:0">
+          <div class="ann-text">${a.pinned?'📌 ':''}${a.title||'-'}</div>
+          ${a.body?`<div class="text-xs text-muted" style="margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px">${a.body}</div>`:''}
+        </div>
+        <div class="ann-date">${a.createdAt?.toDate?.()?.toLocaleDateString('th-TH',{day:'numeric',month:'short'})||''}</div>
+        <i data-lucide="chevron-right" style="width:13px;height:13px;color:var(--text-3);flex-shrink:0"></i>`;
+      row.onclick = () => openAnnDetail(d.id, a);
+      el.appendChild(row);
+    });
+    if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(e){ console.warn('loadAnnouncements:',e); }
+}
+
+function openAnnDetail(id, a) {
+  // สร้าง modal แสดงรายละเอียดประกาศ
+  const existing = document.getElementById('ann-detail-modal');
+  if(existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'ann-detail-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)';
+  modal.innerHTML = `
+    <div style="background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:fadeUp 250ms var(--ease-out)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:10px">
+        <div>
+          ${a.pinned?'<div class="badge badge-gold" style="margin-bottom:6px">📌 ปักหมุด</div>':''}
+          <h3 style="font-size:1.05rem;font-weight:700;line-height:1.4">${a.title||'-'}</h3>
+          <div class="text-xs text-muted" style="margin-top:4px">${a.createdAt?.toDate?.()?.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'})||''}</div>
+        </div>
+        <button onclick="document.getElementById('ann-detail-modal').remove()" style="width:32px;height:32px;border-radius:50%;background:var(--bg-2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
+      </div>
+      <div style="font-size:0.9rem;line-height:1.75;color:var(--text-2);white-space:pre-wrap">${a.body||'(ไม่มีเนื้อหา)'}</div>
+    </div>`;
+  modal.onclick = e => { if(e.target===modal) modal.remove(); };
+  document.body.appendChild(modal);
+}
+
+// ── GROUP + COUNTDOWN ────────────────────────────────
+let _countdownTimer = null;
+
+async function loadGroupSection() {
+  const el = document.getElementById('group-content');
+  if(!el) return;
+  el.innerHTML = '<div class="text-center text-muted text-sm" style="padding:28px">กำลังโหลด...</div>';
+  try {
+    const [revSnap, stuSnap] = await Promise.all([
+      getDoc(doc(db,'systemSettings','groupReveal')),
+      getDoc(doc(db,'students', currentUser.uid)),
+    ]);
+    const rev = revSnap.exists() ? revSnap.data() : {};
+    const stu = stuSnap.exists() ? stuSnap.data() : studentData;
+    const published = rev.published === true;
+    const revealAt  = rev.revealAt ? (rev.revealAt.toDate?.() || new Date(rev.revealAt)) : null;
+    const now       = new Date();
+
+    // ── ยังไม่ประกาศ ──
+    if(!published || (revealAt && revealAt > now)) {
+      const target = revealAt || null;
+      el.innerHTML = `
+        <div class="d-card" style="text-align:center;padding:28px 20px">
+          <div style="width:56px;height:56px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+            <i data-lucide="lock" style="width:24px;height:24px;color:var(--accent)"></i>
+          </div>
+          <div class="font-semibold" style="margin-bottom:4px">ผลยังไม่เปิดเผย</div>
+          <div class="text-sm text-muted" style="margin-bottom:${target?'20px':'0'}">
+            ${target ? 'ประกาศกลุ่มใน' : 'กรุณารอประกาศจากคณะกรรมการฯ'}
+          </div>
+          ${target ? `
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:280px;margin:0 auto">
+            ${['cd-d','cd-h','cd-m','cd-s'].map((id,i)=>`
+            <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 8px;text-align:center">
+              <div style="font-size:1.6rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1" id="${id}">--</div>
+              <div style="font-size:0.65rem;color:var(--text-3);margin-top:3px">${['วัน','ชั่วโมง','นาที','วินาที'][i]}</div>
+            </div>`).join('')}
+          </div>` : ''}
+        </div>`;
+      if(typeof lucide!=="undefined")lucide.createIcons();
+      if(target) requestAnimationFrame(() => startCountdown(target));
+      return;
+    }
+
+    // ── ประกาศแล้ว ──
+    const groupId = stu.groupId;
+    const teamId  = stu.teamId;
+    // โหลดชื่อกลุ่มจาก Firestore
+    let _groupNames = ['Vermelha','Dourada','Verde','Azul','Roxa','Rosa'];
+    try {
+      const _ns = await getDoc(doc(db,'systemSettings','groupNames'));
+      if(_ns.exists() && _ns.data().names) _groupNames = _ns.data().names;
+    } catch(_){}
+
+    if(!groupId) {
+      el.innerHTML = `
+        <div class="d-card" style="text-align:center;padding:28px 20px">
+          <i data-lucide="loader" style="width:32px;height:32px;color:var(--text-3);margin-bottom:10px"></i>
+          <div class="font-semibold">ยังไม่ได้รับการจัดกลุ่ม</div>
+          <div class="text-sm text-muted" style="margin-top:4px">ผลประกาศแล้ว แต่คุณยังไม่มีกลุ่ม กรุณาติดต่อคณะกรรมการฯ</div>
+        </div>`;
+      if(typeof lucide!=="undefined")lucide.createIcons();
+      return;
+    }
+
+    // ดึงรายชื่อเพื่อนในทีม
+    let teammates = [];
+    try {
+      const q = query(collection(db,'students'),
+        where('groupId','==',groupId), where('teamId','==',teamId));
+      const ts = await getDocs(q);
+      teammates = ts.docs.map(d=>({id:d.id,...d.data()})).filter(s=>s.id!==currentUser.uid);
+    } catch(_){}
+
+    const GROUP_COLORS = ['#3d7a6a','#5a8a7a','#e8a030','#4a9abf','#c04060','#8060c0'];
+    const gColor = GROUP_COLORS[(groupId-1)%GROUP_COLORS.length];
+    const gName  = stu.groupName || _groupNames[(groupId-1)%6] || `กลุ่ม ${groupId}`;
+
+    const teammateHtml = teammates.length
+      ? teammates.map(t=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">
+          ${t.photoURL
+            ? `<img src="${t.photoURL}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0">`
+            : `<div class="avatar" style="width:34px;height:34px;font-size:0.85rem;flex-shrink:0">${(t.firstName||'?')[0]}</div>`}
+          <div style="flex:1;min-width:0">
+            <div class="font-medium text-sm">${t.firstName||''} ${t.lastName||''} ${t.nickname?`<span class="text-muted text-xs">(${t.nickname})</span>`:''}</div>
+            <div class="text-xs text-muted">ห้อง ${t.room||'-'}</div>
+          </div>
+          ${t.instagram?`<div class="text-xs text-muted">📸 ${t.instagram}</div>`:''}
+        </div>`).join('')
+      : '<div class="text-sm text-muted" style="padding:8px 0">ยังไม่มีข้อมูลเพื่อนในทีม</div>';
+
+    el.innerHTML = `
+      <!-- กลุ่มใหญ่ -->
+      <div class="d-card" style="margin-bottom:10px;border-color:${gColor}33;background:${gColor}0d">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:52px;height:52px;border-radius:50%;background:${gColor};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="font-size:1.3rem;font-weight:700;color:#fff">${groupId}</span>
+          </div>
+          <div>
+            <div style="font-size:0.72rem;font-weight:600;color:var(--text-3);margin-bottom:2px">กลุ่มใหญ่ของคุณ</div>
+            <div style="font-size:1.25rem;font-weight:700;color:${gColor}">${gName}</div>
+            <div class="text-sm text-muted">ทีม ${teamId||'-'}</div>
+          </div>
+          <div class="badge badge-green" style="margin-left:auto">
+            <i data-lucide="check-circle" style="width:10px;height:10px"></i> จัดแล้ว
+          </div>
+        </div>
+      </div>
+
+      <!-- Trio -->
+      <div class="d-card" style="margin-bottom:10px">
+        <div class="d-card-label"><i data-lucide="users" style="width:12px;height:12px"></i> Trio ของฉัน</div>
+        ${studentData.trioStatus==='accepted' && studentData.trioMembers
+          ? `<div style="font-size:0.82rem;color:var(--green);display:flex;align-items:center;gap:5px;margin-bottom:8px"><i data-lucide="check-circle" style="width:13px;height:13px"></i>มี Trio แล้ว</div>`
+          : `<div class="text-sm text-muted" style="margin-bottom:8px">ยังไม่มี Trio</div>`}
+        <button class="btn btn-secondary btn-sm" onclick="goSection('duo',document.querySelector('[data-sec=duo]'))">
+          <i data-lucide="users-2" style="width:13px;height:13px"></i> จัดการ Trio
+        </button>
+      </div>
+
+      <!-- เพื่อนในทีม -->
+      <div class="d-card">
+        <div class="d-card-label"><i data-lucide="users" style="width:12px;height:12px"></i> เพื่อนในทีม (${teammates.length} คน)</div>
+        ${teammateHtml}
+      </div>`;
+
+    if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(e) {
+    el.innerHTML = '<div class="text-sm text-muted text-center" style="padding:24px">โหลดไม่ได้ กรุณาลองใหม่</div>';
+    console.error('loadGroupSection:', e);
+  }
+}
+
+function startCountdown(target) {
+  if(_countdownTimer) clearInterval(_countdownTimer);
+  const tick = () => {
+    const diff = target - new Date();
+    if(diff <= 0) {
+      clearInterval(_countdownTimer);
+      _countdownTimer = null;
+      setTimeout(() => loadGroupSection(), 800);
+      return;
+    }
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor((diff%86400000)/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
+    const pad = n => String(n).padStart(2,'0');
+    [['cd-d',d],['cd-h',h],['cd-m',m],['cd-s',s]].forEach(([id,v]) => {
+      const el = document.getElementById(id);
+      if(el) el.textContent = pad(v);
+    });
+  };
+  tick();
+  _countdownTimer = setInterval(tick, 1000);
+}
+
+async function loadCountdown() {
+  // countdown บน home page
+  try {
+    const snap = await getDoc(doc(db,'systemSettings','groupReveal'));
+    if(!snap.exists()||!snap.data().revealAt) return;
+    const target = snap.data().revealAt.toDate?.() || new Date(snap.data().revealAt);
+    if(target > new Date()) startCountdown(target);
+  } catch(e){}
+}
+
+
+async function checkGroupReveal() {
+  try {
+    const [revSnap, namesSnap] = await Promise.all([
+      getDoc(doc(db,'systemSettings','groupReveal')),
+      getDoc(doc(db,'systemSettings','groupNames')),
+    ]);
+    const rev   = revSnap.exists()   ? revSnap.data()   : {};
+    const names = namesSnap.exists() && namesSnap.data().names
+      ? namesSnap.data().names
+      : ['Vermelha','Dourada','Verde','Azul','Roxa','Rosa'];
+    const GROUP_COLORS = ['#2d6b5a','#1a7a4e','#9a7408','#1a5e8a','#b52525','#7c3aed'];
+
+    const homeCard = document.getElementById('group-status-card');
+    if(!homeCard) return;
+
+    if(rev.published && studentData?.groupId) {
+      // ── ประกาศกลุ่มแล้ว ──
+      if(_countdownTimer) { clearInterval(_countdownTimer); _countdownTimer=null; }
+      const gi    = (studentData.groupId-1) % 6;
+      const gName = names[gi] || `กลุ่ม ${studentData.groupId}`;
+      const gColor= GROUP_COLORS[gi];
+      homeCard.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span style="font-size:0.75rem;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em">กลุ่มของฉัน</span>
+          <span class="badge badge-green">ประกาศแล้ว</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div style="width:44px;height:44px;border-radius:12px;background:${gColor};display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:#fff;flex-shrink:0">${studentData.groupId}</div>
+          <div>
+            <div style="font-size:1.25rem;font-weight:700;color:${gColor};letter-spacing:-0.02em">${gName}</div>
+            <div class="text-sm text-muted">ทีม ${studentData.teamId||'-'}</div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center" onclick="goSection('group',document.querySelector('[data-sec=group]'))">
+          <i data-lucide="users" style="width:13px;height:13px"></i> ดูรายชื่อเพื่อนในกลุ่ม
+        </button>`;
+      if(typeof lucide!=="undefined")lucide.createIcons();
+
+    } else if(rev.revealAt) {
+      // ── มีเวลา countdown ──
+      const revealAt = rev.revealAt.toDate ? rev.revealAt.toDate() : new Date(rev.revealAt);
+      const renderCD = () => {
+        const diff = revealAt - Date.now();
+        if(diff <= 0) { clearInterval(_countdownTimer); checkGroupReveal(); return; }
+        const d = Math.floor(diff/86400000);
+        const h = Math.floor((diff%86400000)/3600000);
+        const m = Math.floor((diff%3600000)/60000);
+        const s = Math.floor((diff%60000)/1000);
+        homeCard.innerHTML = `
+          <div style="text-align:center;padding:8px 0 12px">
+            <div style="font-size:0.75rem;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">นับถอยหลังประกาศกลุ่ม</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:260px;margin:0 auto">
+              ${[['วัน',d],['ชั่วโมง',h],['นาที',m],['วินาที',s]].map(([u,v])=>`
+                <div style="background:var(--accent-dim);border-radius:10px;padding:10px 4px">
+                  <div style="font-size:1.5rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums">${String(v).padStart(2,'0')}</div>
+                  <div style="font-size:0.62rem;color:var(--text-3);margin-top:2px">${u}</div>
+                </div>`).join('')}
+            </div>
+          </div>`;
+      };
+      renderCD();
+      if(_countdownTimer) clearInterval(_countdownTimer);
+      _countdownTimer = setInterval(renderCD, 1000);
+
+    } else {
+      // ── ยังไม่ประกาศ ไม่มี countdown ──
+      homeCard.innerHTML = `
+        <div style="text-align:center;padding:12px 0">
+          <i data-lucide="lock" style="width:28px;height:28px;color:var(--text-3)"></i>
+          <div style="margin-top:8px;font-weight:600">รอประกาศกลุ่ม</div>
+          <div class="text-sm text-muted" style="margin-top:4px">พี่ๆ จะประกาศกลุ่มเร็วๆ นี้</div>
+        </div>`;
+      if(typeof lucide!=="undefined")lucide.createIcons();
+    }
+  } catch(e){ console.warn('checkGroupReveal:', e); }
+}
+
+// ── ACTIVITY INFO ─────────────────────────────────────
+async function loadEventInfo() {
+  try {
+    const snap = await getDoc(doc(db,'eventSettings','main'));
+    if(!snap.exists()) return;
+    const d = snap.data();
+    if(d.date) setText('act-date', new Date(d.date).toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}));
+    if(d.time) setText('act-time', d.time);
+    if(d.location) setText('act-loc', d.location);
+  } catch(e){}
+}
+
+// ── DUO SECTION ───────────────────────────────────────
+// ── DUO SYSTEM ──────────────────────────────────────
+// ── ระบบจับกลุ่ม ─────────────────────────────────────
+/*
+  Firestore: groupSystems/{id}
+    leaderId, leaderName, leaderPhoto, leaderRoom, leaderNickname
+    members: [{uid,name,photo,room,nickname,studentId}]
+    memberUids: [uid,...]
+    code: "6หลัก"
+    maxSize: 5
+    createdAt
+  Firestore: groupInvites/{id}
+    fromUid, fromName, toUid, toName, groupId, status, createdAt
+  students.groupSystemId: string|null
+*/
+
+const GS_MAX = 3;
+const GS_COL = 'groupSystems';
+const GI_COL = 'groupInvites';
+
+function gsAvatar(photo, name, size=40) {
+  const initials = getInitials(name||'?');
+  return photo
+    ? `<img src="${photo}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover">`
+    : `<div class="avatar" style="width:${size}px;height:${size}px;font-size:${size*0.4}px">${initials}</div>`;
+}
+
+function gsMemberRow(m, isLeader, canKick) {
+  return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">
+    <div style="position:relative;flex-shrink:0">
+      ${isLeader ? '<div style="position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:13px;z-index:1">👑</div>' : ''}
+      ${gsAvatar(m.photo, m.name, 38)}
+    </div>
+    <div style="flex:1;min-width:0">
+      <div class="font-medium text-sm">${m.name||'-'}${isLeader?' <span style="font-size:0.65rem;color:var(--gold)">(หัวหน้า)</span>':''}</div>
+      <div class="text-xs text-muted">ห้อง ${m.room||'-'}${m.nickname?` · (${m.nickname})`:''}</div>
+    </div>
+    ${canKick ? `<button class="btn btn-ghost btn-icon btn-sm" onclick="gsKick('${m.uid}')"><i data-lucide="x" style="width:13px;height:13px;color:var(--red)"></i></button>` : ''}
+  </div>`;
+}
+
+
+
+// ── สร้างกลุ่ม ──────────────────────────────────────
+window.gsCreate = async () => {
+  if(!currentUser || !studentData) return;
+  if(studentData.groupSystemId) { showToast('คุณมีกลุ่มอยู่แล้ว','error'); return; }
+  const wrap = document.getElementById('group-system-wrap');
+  try {
+    const ex = await getDocs(query(collection(db,GS_COL), where('leaderId','==',currentUser.uid)));
+    if(!ex.empty) { showToast('คุณมีกลุ่มอยู่แล้ว','error'); loadDuoSection(); return; }
+    let code, taken = true;
+    while(taken) {
+      code = String(Math.floor(100000 + Math.random()*900000));
+      const cs = await getDocs(query(collection(db,GS_COL), where('code','==',code)));
+      taken = !cs.empty;
+    }
+    const me = {
+      uid: currentUser.uid,
+      name: `${studentData.firstName||''} ${studentData.lastName||''}`.trim(),
+      photo: studentData.photoURL||'',
+      room: studentData.room||'',
+      nickname: studentData.nickname||'',
+      studentId: studentData.studentId||'',
+    };
+    const ref2 = await addDoc(collection(db,GS_COL), {
+      leaderId: currentUser.uid, leaderName: me.name,
+      leaderPhoto: me.photo, leaderRoom: me.room,
+      members: [me], memberUids: [currentUser.uid],
+      code, maxSize: GS_MAX, createdAt: serverTimestamp(),
+    });
+    await updateDoc(doc(db,'students',currentUser.uid), {groupSystemId: ref2.id}).catch(()=>{});
+    studentData.groupSystemId = ref2.id;
+    await logAudit('GS_CREATE', `สร้างกลุ่ม รหัส ${code}`);
+    showToast('สร้างกลุ่มแล้ว! 🎉');
+    loadDuoSection();
+  } catch(e) { showToast('เกิดข้อผิดพลาด: '+e.message,'error'); console.error('gsCreate:',e); }
+};
+
+// ── toggle join panel ────────────────────────────────
+window.gsToggleJoin = () => {
+  const p = document.getElementById('gs-join-panel');
+  if(p) p.style.display = p.style.display==='none' ? 'block' : 'none';
+};
+
+// ── เข้าร่วมด้วยรหัส ─────────────────────────────────
+window.gsJoinByCode = async () => {
+  if(studentData?.groupSystemId) { showToast('คุณมีกลุ่มแล้ว','error'); return; }
+  const code = document.getElementById('gs-code-inp')?.value.trim();
+  if(!code||code.length!==6) { showToast('กรอกรหัส 6 หลัก','error'); return; }
+  const res = document.getElementById('gs-join-result');
+  if(res) res.innerHTML = '<div class="text-sm text-muted">กำลังค้นหา...</div>';
+  try {
+    const snap = await getDocs(query(collection(db,GS_COL), where('code','==',code)));
+    if(snap.empty) { if(res) res.innerHTML='<div class="text-sm" style="color:var(--red)">ไม่พบรหัสนี้</div>'; return; }
+    const gDoc = snap.docs[0]; const g = gDoc.data();
+    if((g.members||[]).length >= GS_MAX) { if(res) res.innerHTML='<div class="text-sm" style="color:var(--red)">กลุ่มเต็มแล้ว</div>'; return; }
+    if((g.memberUids||[]).includes(currentUser.uid)) { if(res) res.innerHTML='<div class="text-sm" style="color:var(--amber)">คุณอยู่ในกลุ่มนี้แล้ว</div>'; return; }
+    const me = { uid:currentUser.uid, name:`${studentData.firstName||''} ${studentData.lastName||''}`.trim(), photo:studentData.photoURL||'', room:studentData.room||'', nickname:studentData.nickname||'', studentId:studentData.studentId||'' };
+    await setDoc(doc(db,GS_COL,gDoc.id,'joinRequests',currentUser.uid), {...me, status:'pending', createdAt:serverTimestamp()});
+    if(res) res.innerHTML = '<div class="text-sm" style="color:var(--green)">✓ ส่งคำขอแล้ว รอหัวหน้ากลุ่มตอบรับ</div>';
+    showToast('ส่งคำขอเข้าร่วมแล้ว');
+    await logAudit('GS_JOIN_REQUEST', `ขอเข้า รหัส ${code}`);
+  } catch(e) { if(res) res.innerHTML='<div class="text-sm" style="color:var(--red)">เกิดข้อผิดพลาด</div>'; console.error('gsJoinByCode:',e); }
+};
+
+// ── ค้นหาเพื่อน (ยังไม่มีกลุ่ม) ──────────────────────
+window.gsSearchFriend = async () => {
+  const val = document.getElementById('gs-search-inp')?.value.trim();
+  if(!val) return;
+  const res = document.getElementById('gs-search-result');
+  if(res) res.innerHTML = '<div class="text-sm text-muted">กำลังค้นหา...</div>';
+  try {
+    const snap = await getDocs(query(collection(db,'students'), where('studentId','==',val)));
+    if(snap.empty) { if(res) res.innerHTML='<div class="d-card" style="padding:10px;color:var(--red);font-size:0.875rem">ไม่พบนักเรียนเลขนี้ในระบบ</div>'; return; }
+    const f = snap.docs[0].data(); const fid = snap.docs[0].id;
+    if(fid===currentUser.uid) { if(res) res.innerHTML='<div class="d-card" style="padding:10px;color:var(--amber);font-size:0.875rem">ไม่สามารถเลือกตัวเองได้</div>'; return; }
+    const hasGroup = !!f.groupSystemId;
+    if(res) res.innerHTML = `<div class="d-card" style="padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <div style="display:flex;align-items:center;gap:8px">
+        ${gsAvatar(f.photoURL, `${f.firstName||''} ${f.lastName||''}`, 36)}
+        <div><div class="font-medium text-sm">${f.firstName||''} ${f.lastName||''}</div>
+        <div class="text-xs text-muted">ห้อง ${f.room||'-'}</div>
+        <div class="badge badge-${hasGroup?'amber':'green'} text-xs" style="margin-top:3px">${hasGroup?'มีกลุ่มแล้ว':'ว่าง'}</div></div>
+      </div>
+      ${!hasGroup ? `<button class="btn btn-secondary btn-sm" onclick="showToast('สร้างกลุ่มก่อน แล้วชวนจากในกลุ่ม','error')">ชวน</button>` : ''}
+    </div>`;
+    if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(e) { if(res) res.innerHTML='<div class="text-sm" style="color:var(--red)">เกิดข้อผิดพลาด</div>'; }
+};
+
+// ── ค้นหาเพื่อน (มีกลุ่มแล้ว หัวหน้า) ───────────────
+window.gsSearchInvite = async (groupId) => {
+  const val = document.getElementById('gs-invite-inp')?.value.trim();
+  if(!val) return;
+  const res = document.getElementById('gs-invite-result');
+  if(res) res.innerHTML = '<div class="text-sm text-muted">กำลังค้นหา...</div>';
+  try {
+    const snap = await getDocs(query(collection(db,'students'), where('studentId','==',val)));
+    if(snap.empty) { if(res) res.innerHTML='<div class="d-card" style="padding:10px;color:var(--red);font-size:0.875rem">ไม่พบนักเรียนเลขนี้</div>'; return; }
+    const f = snap.docs[0].data(); const fid = snap.docs[0].id;
+    if(fid===currentUser.uid) { if(res) res.innerHTML='<div class="d-card" style="padding:10px;color:var(--amber);font-size:0.875rem">ไม่สามารถเลือกตัวเองได้</div>'; return; }
+    const hasGroup = !!f.groupSystemId;
+    if(res) res.innerHTML = `<div class="d-card" style="padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <div style="display:flex;align-items:center;gap:8px">
+        ${gsAvatar(f.photoURL, `${f.firstName||''} ${f.lastName||''}`, 36)}
+        <div><div class="font-medium text-sm">${f.firstName||''} ${f.lastName||''}</div>
+        <div class="text-xs text-muted">ห้อง ${f.room||'-'}</div>
+        <div class="badge badge-${hasGroup?'amber':'green'} text-xs" style="margin-top:3px">${hasGroup?'มีกลุ่มแล้ว':'ว่าง'}</div></div>
+      </div>
+      ${!hasGroup ? `<button class="btn btn-primary btn-sm" onclick="gsSendInvite('${groupId}','${fid}','${encodeURIComponent((f.firstName||'')+' '+(f.lastName||''))}')">
+        <i data-lucide="send" style="width:12px;height:12px"></i> ชวน
+      </button>` : '<span class="text-xs text-muted">มีกลุ่มแล้ว</span>'}
+    </div>`;
+    if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(e) { if(res) res.innerHTML='<div class="text-sm" style="color:var(--red)">เกิดข้อผิดพลาด</div>'; }
+};
+
+// ── ส่งคำเชิญ ─────────────────────────────────────────
+window.gsSendInvite = async (groupId, toUid, toNameEnc) => {
+  let toName = toNameEnc;
+  try { toName = decodeURIComponent(toNameEnc); } catch(_) {}
+  try {
+    const gSnap = await getDoc(doc(db,GS_COL,groupId));
+    if(!gSnap.exists()) { showToast('ไม่พบกลุ่ม','error'); return; }
+    if((gSnap.data().members||[]).length >= GS_MAX) { showToast('กลุ่มเต็มแล้ว','error'); return; }
+    await addDoc(collection(db,GI_COL), {
+      groupId, fromUid:currentUser.uid,
+      fromName:`${studentData.firstName||''} ${studentData.lastName||''}`.trim(),
+      toUid, toName, status:'pending', createdAt:serverTimestamp(),
+    });
+    showToast(`ส่งคำเชิญถึง ${toName} แล้ว`);
+    const res = document.getElementById('gs-invite-result');
+    if(res) res.innerHTML = '<div class="text-sm" style="color:var(--green)">✓ ส่งคำเชิญแล้ว</div>';
+  } catch(e) { showToast('เกิดข้อผิดพลาด','error'); }
+};
+
+function gsRenderEmpty(wrap) {
+  wrap.innerHTML = `
+    <div class="d-card" style="margin-bottom:10px">
+      <div style="text-align:center;padding:12px 0 16px">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+          <i data-lucide="users" style="width:24px;height:24px;color:var(--accent)"></i>
+        </div>
+        <div class="font-semibold" style="margin-bottom:4px">คุณยังไม่มีกลุ่ม Trio</div>
+        <div class="text-sm text-muted">สร้างกลุ่มหรือเข้าร่วมกลุ่มที่มีอยู่</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        <button class="btn btn-primary" style="justify-content:center" onclick="gsCreate()">
+          <i data-lucide="plus-circle" style="width:14px;height:14px"></i> สร้างกลุ่ม
+        </button>
+        <button class="btn btn-secondary" style="justify-content:center" onclick="gsToggleJoin()">
+          <i data-lucide="log-in" style="width:14px;height:14px"></i> เข้าร่วม
+        </button>
+      </div>
+      <div id="gs-join-panel" style="display:none;margin-bottom:10px">
+        <div class="text-xs text-muted" style="margin-bottom:6px">กรอกรหัส 6 หลักจากหัวหน้ากลุ่ม</div>
+        <div style="display:flex;gap:6px">
+          <input id="gs-code-inp" class="form-input" placeholder="000000" maxlength="6" inputmode="numeric"
+            style="flex:1;font-size:1.1rem;font-weight:700;letter-spacing:0.12em;text-align:center"
+            oninput="this.value=this.value.replace(/\D/g,'')"
+            onkeydown="if(event.key==='Enter')gsJoinByCode()">
+          <button class="btn btn-primary" onclick="gsJoinByCode()">ขอเข้าร่วม</button>
+        </div>
+        <div id="gs-join-result" style="margin-top:8px"></div>
+      </div>
+    </div>
+    <div class="d-card" style="margin-bottom:10px">
+      <div class="d-card-label"><i data-lucide="search" style="width:12px;height:12px"></i> ค้นหาเพื่อนเพื่อชวน</div>
+      <div style="display:flex;gap:6px;margin-bottom:6px">
+        <input id="gs-search-inp" class="form-input" placeholder="เลขประจำตัว" inputmode="numeric" type="text" style="flex:1" oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter')gsSearchFriend()">
+        <button class="btn btn-primary btn-sm" onclick="gsSearchFriend()">ค้นหา</button>
+      </div>
+      <div id="gs-search-result"></div>
+    </div>
+    <div id="gs-invites-wrap"></div>
+    <div class="d-card" style="background:var(--bg-2);border-color:var(--border)">
+      <div class="flex items-center gap-8">
+        <i data-lucide="info" style="width:13px;height:13px;color:var(--text-3);flex-shrink:0"></i>
+        <p class="text-xs text-muted" style="line-height:1.7">กลุ่ม Trio มีได้สูงสุด 3 คน · เลือกได้ครั้งเดียว · ไม่มีกลุ่มก็ร่วมงานได้ตามปกติ</p>
+      </div>
+    </div>`;
+  if(typeof lucide!=="undefined")lucide.createIcons();
+}
+
+async function gsRenderGroup(wrap, groupId, g) {
+  const isLeader = g.leaderId === currentUser?.uid;
+  let members  = g.members || [];
+
+  // ถ้า members ว่างแต่ memberUids มีข้อมูล → fetch จาก students
+  if(members.length === 0 && (g.memberUids||[]).length > 0) {
+    try {
+      const fetched = await Promise.all(
+        (g.memberUids||[]).map(uid => getDoc(doc(db,'students',uid)))
+      );
+      members = fetched
+        .filter(s => s.exists())
+        .map(s => {
+          const d = s.data();
+          return {
+            uid:       s.id,
+            name:      `${d.firstName||''} ${d.lastName||''}`.trim(),
+            photo:     d.photoURL||'',
+            room:      d.room||'',
+            nickname:  d.nickname||'',
+            studentId: d.studentId||'',
+          };
+        });
+      // อัปเดต members ใน Firestore ให้ถูกต้อง
+      if(members.length > 0) {
+        await updateDoc(doc(db,GS_COL,groupId), {members}).catch(()=>{});
+      }
+    } catch(e) { console.warn('gsRenderGroup fetch members:', e?.code); }
+  }
+
+  const slots = GS_MAX - members.length;
+
+  wrap.innerHTML = `
+    <div class="d-card" style="margin-bottom:10px">
+      <div class="d-card-label" style="justify-content:space-between">
+        <span><i data-lucide="shield" style="width:12px;height:12px"></i> กลุ่ม Trio ของฉัน (${members.length}/${GS_MAX})</span>
+        <div class="badge badge-${isLeader?'accent':'green'}">${isLeader?'หัวหน้า':'สมาชิก'}</div>
+      </div>
+      ${members.map(m => gsMemberRow(m, m.uid===g.leaderId, isLeader && m.uid!==currentUser?.uid)).join('')}
+      ${Array.from({length:slots}, () => `
+        <div style="display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border)">
+          <div style="width:38px;height:38px;border-radius:50%;border:1.5px dashed var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--bg-2)">
+            <i data-lucide="user-plus" style="width:14px;height:14px;color:var(--text-3)"></i>
+          </div>
+          <div><div class="text-sm text-muted">ช่องว่าง</div><div class="text-xs" style="color:var(--text-3);margin-top:1px">รอสมาชิก</div></div>
+        </div>`).join('')}
+    </div>
+
+    ${isLeader ? `
+    <div class="d-card" style="margin-bottom:10px">
+      <div class="d-card-label"><i data-lucide="hash" style="width:12px;height:12px"></i> รหัสเข้าร่วมกลุ่ม</div>
+      <div style="background:var(--accent-dim);border-radius:var(--radius-lg);padding:14px;text-align:center;margin-bottom:10px">
+        <div style="font-size:2rem;font-weight:700;letter-spacing:0.18em;color:var(--accent);font-variant-numeric:tabular-nums">${g.code||'------'}</div>
+        <div class="text-xs text-muted" style="margin-top:4px">แชร์รหัสนี้ให้เพื่อน</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center" onclick="gsCopyCode('${g.code}')">
+          <i data-lucide="copy" style="width:12px;height:12px"></i> คัดลอก
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="gsRegenCode('${groupId}')">
+          <i data-lucide="refresh-cw" style="width:12px;height:12px"></i>
+        </button>
+      </div>
+    </div>
+    <div class="d-card" style="margin-bottom:10px">
+      <div class="d-card-label"><i data-lucide="user-plus" style="width:12px;height:12px"></i> ชวนเพื่อน</div>
+      <div style="display:flex;gap:6px">
+        <input id="gs-invite-inp" class="form-input" placeholder="เลขประจำตัว" inputmode="numeric" type="text" style="flex:1" oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter')gsSearchInvite('${groupId}')">
+        <button class="btn btn-primary btn-sm" onclick="gsSearchInvite('${groupId}')">ค้นหา</button>
+      </div>
+      <div id="gs-invite-result" style="margin-top:8px"></div>
+    </div>
+    <div id="gs-join-requests-wrap"></div>
+    <div class="d-card" style="background:var(--bg-2);border-color:var(--border);margin-bottom:8px">
+      <div class="flex items-center gap-8">
+        <i data-lucide="info" style="width:13px;height:13px;color:var(--text-3);flex-shrink:0"></i>
+        <p class="text-xs text-muted" style="line-height:1.7">กลุ่ม Trio เลือกได้ครั้งเดียว · เมื่อมีสมาชิกแล้วจะยุบไม่ได้</p>
+      </div>
+    </div>
+    ${members.length <= 1 ? `
+    <button class="btn btn-danger btn-sm" style="width:100%;justify-content:center" onclick="gsDisband('${groupId}')">
+      <i data-lucide="x-circle" style="width:13px;height:13px"></i> ยุบกลุ่ม (ยังไม่มีสมาชิก)
+    </button>` : ''}
+    ` : `
+    <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center" onclick="gsLeave('${groupId}')">
+      <i data-lucide="log-out" style="width:13px;height:13px"></i> ออกจากกลุ่ม
+    </button>`}`;
+
+  if(typeof lucide!=="undefined")lucide.createIcons();
+  if(isLeader) gsLoadJoinRequests(groupId);
+}
+
+async function loadDuoSection(forceEmpty=false) {
+  if(!currentUser || !studentData) return;
+  const wrap = document.getElementById('group-system-wrap');
+  if(!wrap) return;
+
+  wrap.innerHTML = '<div class="text-center text-muted text-sm" style="padding:32px">กำลังโหลด...</div>';
+
+  // ถ้า force empty (หลัง leave/disband) ไม่ต้อง fetch Firestore
+  if(forceEmpty) {
+    studentData.groupSystemId = null;
+    updateDuoStatusBadge();
+    gsRenderEmpty(wrap);
+    gsLoadInvites(wrap);
+    return;
+  }
+
+  try {
+    // ── fetch student จาก Firestore เสมอ ไม่พึ่ง memory ──
+    const freshSnap = await getDoc(doc(db,'students',currentUser.uid));
+    if(freshSnap.exists()) studentData = { ...studentData, ...freshSnap.data() };
+
+    // 1. groupSystemId จาก student doc
+    if(studentData.groupSystemId) {
+      const gSnap = await getDoc(doc(db,GS_COL,studentData.groupSystemId));
+      if(gSnap.exists()) {
+        gsRenderGroup(wrap, gSnap.id, gSnap.data());
+        updateDuoStatusBadge();
+        startGroupListener(gSnap.id);
+        return;
+      }
+      // group หายไป → ล้าง
+      studentData.groupSystemId = null;
+      await updateDoc(doc(db,'students',currentUser.uid),{groupSystemId:null}).catch(()=>{});
+    }
+
+    // 2. หาจาก leaderId
+    try {
+      const q = await getDocs(query(collection(db,GS_COL),where('leaderId','==',currentUser.uid)));
+      if(!q.empty) {
+        const d = q.docs[0];
+        studentData.groupSystemId = d.id;
+        await updateDoc(doc(db,'students',currentUser.uid),{groupSystemId:d.id}).catch(()=>{});
+        gsRenderGroup(wrap, d.id, d.data());
+        updateDuoStatusBadge();
+        startGroupListener(d.id);
+        return;
+      }
+    } catch(e2) { console.warn('leaderId query:', e2?.code, e2?.message); }
+
+    // 3. หาจาก memberUids (ต้อง index)
+    try {
+      const q = await getDocs(query(collection(db,GS_COL),where('memberUids','array-contains',currentUser.uid)));
+      if(!q.empty) {
+        const d = q.docs[0];
+        studentData.groupSystemId = d.id;
+        await updateDoc(doc(db,'students',currentUser.uid),{groupSystemId:d.id}).catch(()=>{});
+        gsRenderGroup(wrap, d.id, d.data());
+        updateDuoStatusBadge();
+        startGroupListener(d.id);
+        return;
+      }
+    } catch(e3) { console.warn('memberUids query:', e3?.code, e3?.message); }
+
+    // ไม่มีกลุ่ม
+    updateDuoStatusBadge();
+    gsRenderEmpty(wrap);
+    gsLoadInvites(wrap);
+
+  } catch(e) {
+    console.error('loadDuoSection:', e?.code, e?.message);
+    wrap.innerHTML = `<div class="d-card" style="text-align:center;padding:24px">
+      <div class="text-sm" style="color:var(--red);margin-bottom:10px">โหลดไม่ได้: ${e?.code||e?.message||'unknown'}</div>
+      <button class="btn btn-secondary btn-sm" onclick="loadDuoSection()">ลองใหม่</button>
+    </div>`;
+  }
+}
+
+
+async function gsLoadInvites(wrap) {
+  if(!wrap) return;
+  try {
+    const snap = await getDocs(query(collection(db,GI_COL), where('toUid','==',currentUser.uid), where('status','==','pending')));
+    if(snap.empty) { if(wrap.id==='gs-invites-wrap') wrap.innerHTML=''; return; }
+    let html2 = `<div class="d-card" style="margin-bottom:10px">
+      <div class="d-card-label" style="color:var(--amber)"><i data-lucide="mail" style="width:12px;height:12px"></i> คำเชิญเข้ากลุ่ม (${snap.size})</div>`;
+    snap.forEach(d => {
+      const inv = d.data();
+      html2 += `<div style="background:var(--amber-dim);border:1px solid rgba(232,162,58,0.3);border-radius:var(--radius-lg);padding:12px;margin-bottom:8px">
+        <div class="font-semibold text-sm" style="margin-bottom:4px">${inv.fromName||'-'} ชวนเข้ากลุ่ม</div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center" onclick="gsRespondInvite('${d.id}','${inv.groupId}',true)">
+            <i data-lucide="check" style="width:12px;height:12px"></i> ตอบรับ
+          </button>
+          <button class="btn btn-secondary btn-sm" style="flex:1;justify-content:center" onclick="gsRespondInvite('${d.id}','${inv.groupId}',false)">
+            <i data-lucide="x" style="width:12px;height:12px"></i> ปฏิเสธ
+          </button>
+        </div>
+      </div>`;
+    });
+    html2 += '</div>';
+    if(wrap.id==='gs-invites-wrap') wrap.innerHTML = html2;
+    else wrap.insertAdjacentHTML('beforeend', html2);
+    if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(e) { console.warn('gsLoadInvites:', e?.code); }
+}
+
+window.gsRespondInvite = async (invId, groupId, accept) => {
+  if(accept && studentData?.groupSystemId) { showToast('คุณมีกลุ่มแล้ว','error'); return; }
+  try {
+    await updateDoc(doc(db,GI_COL,invId), {status: accept?'accepted':'rejected'});
+    if(accept) {
+      const gSnap = await getDoc(doc(db,GS_COL,groupId));
+      if(!gSnap.exists()) { showToast('กลุ่มนี้ไม่มีแล้ว','error'); return; }
+      const g = gSnap.data();
+      if((g.members||[]).length >= GS_MAX) { showToast('กลุ่มเต็มแล้ว','error'); return; }
+      const me = {
+        uid:       currentUser.uid,
+        name:      `${studentData.firstName||''} ${studentData.lastName||''}`.trim(),
+        photo:     studentData.photoURL||'',
+        room:      studentData.room||'',
+        nickname:  studentData.nickname||'',
+        studentId: studentData.studentId||'',
+      };
+      // ป้องกัน duplicate
+      const alreadyIn = (g.memberUids||[]).includes(currentUser.uid);
+      if(!alreadyIn) {
+        await updateDoc(doc(db,GS_COL,groupId), {
+          members:    [...(g.members||[]), me],
+          memberUids: [...(g.memberUids||[]), currentUser.uid],
+        });
+      }
+      await updateDoc(doc(db,'students',currentUser.uid), {groupSystemId:groupId});
+      studentData.groupSystemId = groupId;
+      updateDuoStatusBadge('accepted');
+      showToast('เข้าร่วมกลุ่มแล้ว! 🎉');
+    } else {
+      showToast('ปฏิเสธแล้ว');
+    }
+    loadDuoSection();
+  } catch(e) { console.error('gsRespondInvite:', e); showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }
+};
+
+// ── โหลด join requests (หัวหน้า) ──
+async function gsLoadJoinRequests(groupId) {
+  const wrap = document.getElementById('gs-join-requests-wrap');
+  if(!wrap) return;
+  try {
+    const snap = await getDocs(query(collection(db,GS_COL,groupId,'joinRequests'), where('status','==','pending')));
+    if(snap.empty) { wrap.innerHTML=''; return; }
+    let html2 = `<div class="d-card" style="margin-bottom:10px">
+      <div class="d-card-label" style="color:var(--amber)"><i data-lucide="bell" style="width:12px;height:12px"></i> ขอเข้าร่วม (${snap.size})</div>`;
+    snap.forEach(d => {
+      const r = d.data();
+      html2 += `<div style="background:var(--amber-dim);border:1px solid rgba(232,162,58,0.3);border-radius:var(--radius-lg);padding:12px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          ${gsAvatar(r.photo, r.name, 34)}
+          <div><div class="font-semibold text-sm">${r.name||'-'}</div>
+          <div class="text-xs text-muted">ห้อง ${r.room||'-'}${r.studentId?` · เลข ${r.studentId}`:''}</div></div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center" onclick="gsHandleJoin('${groupId}','${d.id}','${r.uid}',true)">
+            <i data-lucide="check" style="width:12px;height:12px"></i> ตอบรับ
+          </button>
+          <button class="btn btn-secondary btn-sm" style="flex:1;justify-content:center" onclick="gsHandleJoin('${groupId}','${d.id}','${r.uid}',false)">
+            <i data-lucide="x" style="width:12px;height:12px"></i> ปฏิเสธ
+          </button>
+        </div>
+      </div>`;
+    });
+    html2 += '</div>';
+    wrap.innerHTML = html2;
+    if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(e) { console.warn('gsLoadJoinRequests:', e?.code); }
+}
+
+window.gsHandleJoin = async (groupId, reqId, reqUid, accept) => {
+  try {
+    // ดึง request data ก่อน update เพื่อให้แน่ใจว่าได้ข้อมูลครบ
+    const reqSnap = await getDoc(doc(db,GS_COL,groupId,'joinRequests',reqId));
+    const r = reqSnap.exists() ? reqSnap.data() : {};
+
+    await updateDoc(doc(db,GS_COL,groupId,'joinRequests',reqId), {status: accept?'accepted':'rejected'});
+
+    if(accept) {
+      const gSnap = await getDoc(doc(db,GS_COL,groupId));
+      if(!gSnap.exists()) { showToast('ไม่พบกลุ่ม','error'); return; }
+      const g = gSnap.data();
+      if((g.members||[]).length >= GS_MAX) { showToast('กลุ่มเต็มแล้ว','error'); return; }
+
+      // ใช้ reqUid จาก parameter เป็นหลัก ไม่พึ่ง r.uid
+      const uid  = reqUid || r.uid;
+      const newMember = {
+        uid:       uid,
+        name:      r.name      || '',
+        photo:     r.photo     || '',
+        room:      r.room      || '',
+        nickname:  r.nickname  || '',
+        studentId: r.studentId || '',
+      };
+
+      await updateDoc(doc(db,GS_COL,groupId), {
+        members:    [...(g.members||[]), newMember],
+        memberUids: [...(g.memberUids||[]), uid],
+      });
+
+      // อัปเดต groupSystemId ของสมาชิก
+      await updateDoc(doc(db,'students',uid), {groupSystemId:groupId}).catch(()=>{});
+
+      showToast('ตอบรับแล้ว 🎉');
+    } else {
+      showToast('ปฏิเสธแล้ว');
+    }
+    loadDuoSection();
+  } catch(e) { showToast('เกิดข้อผิดพลาด','error'); }
+};
+
+// ── kick ──
+window.gsKick = async (memberUid) => {
+  if(!confirm('นำสมาชิกคนนี้ออก?')) return;
+  try {
+    const snap = await getDocs(query(collection(db,GS_COL), where('leaderId','==',currentUser.uid)));
+    if(snap.empty) return;
+    const gDoc = snap.docs[0]; const g = gDoc.data();
+    await updateDoc(doc(db,GS_COL,gDoc.id), { members:(g.members||[]).filter(m=>m.uid!==memberUid), memberUids:(g.memberUids||[]).filter(u=>u!==memberUid) });
+    await updateDoc(doc(db,'students',memberUid), {groupSystemId:null}).catch(()=>{});
+    showToast('นำออกแล้ว'); loadDuoSection();
+  } catch(e) { showToast('เกิดข้อผิดพลาด','error'); }
+};
+
+// ── leave ──
+window.gsLeave = async (groupId) => {
+  if(!confirm('ออกจากกลุ่ม?')) return;
+  try {
+    const gSnap = await getDoc(doc(db,GS_COL,groupId));
+    if(!gSnap.exists()) return;
+    const g = gSnap.data();
+    await updateDoc(doc(db,GS_COL,groupId), {
+      members:    (g.members||[]).filter(m=>m.uid!==currentUser.uid),
+      memberUids: (g.memberUids||[]).filter(u=>u!==currentUser.uid),
+    });
+    await updateDoc(doc(db,'students',currentUser.uid), {groupSystemId:null});
+    // ล้าง memory + listener ก่อน reload
+    studentData.groupSystemId = null;
+    if(_groupUnsub) { _groupUnsub(); _groupUnsub = null; }
+    updateDuoStatusBadge();
+    showToast('ออกจากกลุ่มแล้ว');
+    loadDuoSection(true);
+  } catch(e) { showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }
+};
+// ── disband ──
+window.gsDisband = async (groupId) => {
+  try {
+    const gSnap = await getDoc(doc(db,GS_COL,groupId));
+    if(!gSnap.exists()) return;
+    const g = gSnap.data();
+    const memberCount = (g.memberUids||[]).length;
+    if(memberCount > 1) {
+      showToast('มีสมาชิกอยู่แล้ว ไม่สามารถยุบกลุ่มได้','error');
+      return;
+    }
+    if(!confirm('ยุบกลุ่มและเริ่มใหม่?')) return;
+    await deleteDoc(doc(db,GS_COL,groupId));
+    await updateDoc(doc(db,'students',currentUser.uid),{groupSystemId:null}).catch(()=>{});
+    // ล้าง memory ก่อน reload
+    studentData.groupSystemId = null;
+    if(_groupUnsub) { _groupUnsub(); _groupUnsub = null; }
+    await logAudit('GS_DISBAND_SOLO', groupId);
+    showToast('ยุบกลุ่มแล้ว');
+    // รอ Firestore อัปเดตก่อน reload
+    loadDuoSection(true);
+  } catch(e) { showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }
+};
+window._gsDisband_disabled = async (groupId) => {
+  if(!confirm('ยุบกลุ่ม? สมาชิกทุกคนจะถูกนำออก')) return;
+  try {
+    const gSnap = await getDoc(doc(db,GS_COL,groupId));
+    if(gSnap.exists()) {
+      const uids = gSnap.data().memberUids||[];
+      await Promise.all(uids.map(uid => updateDoc(doc(db,'students',uid),{groupSystemId:null}).catch(()=>{})));
+    }
+    await deleteDoc(doc(db,GS_COL,groupId));
+    studentData.groupSystemId = null;
+    await logAudit('GS_DISBAND', groupId);
+    showToast('ยุบกลุ่มแล้ว'); loadDuoSection();
+  } catch(e) { showToast('เกิดข้อผิดพลาด','error'); }
+};
+
+window.gsCopyCode = (code) => { navigator.clipboard?.writeText(code).then(()=>showToast(`คัดลอกรหัส ${code} แล้ว`)).catch(()=>showToast(`รหัส: ${code}`)); };
+
+window.gsRegenCode = async (groupId) => {
+  try {
+    let code, taken=true;
+    while(taken){ code=String(Math.floor(100000+Math.random()*900000)); const cs=await getDocs(query(collection(db,GS_COL),where('code','==',code))); taken=!cs.empty; }
+    await updateDoc(doc(db,GS_COL,groupId),{code});
+    showToast(`รหัสใหม่: ${code}`); loadDuoSection();
+  } catch(e){ showToast('เกิดข้อผิดพลาด','error'); }
+};
+
+// ── compat ──
+// updateDuoStatusBadge defined above
+
+
+
+// ── REALTIME LISTENERS ───────────────────────────────
+let _studentUnsub = null;
+let _groupUnsub   = null;
+
+function startStudentListener(uid) {
+  if(_studentUnsub) _studentUnsub();
+  _studentUnsub = onSnapshot(doc(db,'students',uid), snap => {
+    if(!snap.exists()) return;
+    const fresh = snap.data();
+    const prevGroup = studentData?.groupSystemId;
+    const newGroup  = fresh.groupSystemId;
+    studentData = { ...studentData, ...fresh };
+
+    // ถ้าเพิ่งได้รับกลุ่ม
+    if(!prevGroup && newGroup) {
+      showToast('🎉 ได้รับการตอบรับเข้ากลุ่มแล้ว!');
+      updateDuoStatusBadge('accepted');
+      checkGroupReveal();
+      startGroupListener(newGroup); // เริ่ม listen group ด้วย
+      _reloadDuoIfActive();
+    }
+
+    // อัปเดต badge หน้าหลัก
+    const badge = document.getElementById('duo-status-badge');
+    if(badge && newGroup) badge.innerHTML = '<div class="badge badge-green">มี Trio แล้ว</div>';
+
+  }, err => console.warn('studentListener:', err?.code));
+}
+
+function startGroupListener(groupId) {
+  if(_groupUnsub) _groupUnsub();
+  if(!groupId) return;
+  _groupUnsub = onSnapshot(doc(db, GS_COL, groupId), snap => {
+    if(!snap.exists()) return;
+    const g = snap.data();
+
+    // ถ้ากำลังอยู่หน้า duo → re-render group view ทันที ไม่ต้อง refresh
+    const duoSec = document.getElementById('sec-duo');
+    if(duoSec?.classList.contains('active')) {
+      const wrap = document.getElementById('group-system-wrap');
+      if(wrap) gsRenderGroup(wrap, groupId, g);
+    }
+
+    // อัปเดต joinRequests realtime (สำหรับหัวหน้า)
+    if(g.leaderId === currentUser?.uid) {
+      const reqWrap = document.getElementById('gs-join-requests-wrap');
+      if(reqWrap) gsLoadJoinRequests(groupId);
+    }
+
+  }, err => console.warn('groupListener:', err?.code));
+}
+
+function _reloadDuoIfActive() {
+  const duoSec = document.getElementById('sec-duo');
+  if(duoSec?.classList.contains('active')) {
+    const wrap = document.getElementById('group-system-wrap');
+    if(wrap) wrap.innerHTML = '';
+    setTimeout(loadDuoSection, 80);
+  }
+}
+
+// ── CHECKIN VISIBILITY ───────────────────────────────
+async function loadCheckinVisibility() {
+  try {
+    const snap = await getDoc(doc(db,'systemSettings','checkin'));
+    const enabled = snap.exists() ? snap.data().enabled : false;
+    const ids = ['bn-pass','side-pass'];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.style.display = enabled ? '' : 'none';
+    });
+  } catch(_) {}
+}
+
+// ── PROFILE ──────────────────────────────────────────
+function renderProfileSection() {
+  const d = studentData || {};
+  if(!d && !currentUser) return;
+
+  // avatar
+  const av = document.getElementById('profile-avatar');
+  if(av) {
+    av.innerHTML = d.photoURL
+      ? `<img src="${d.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+      : (d.firstName||'?')[0];
+  }
+  const fn = document.getElementById('profile-fullname');
+  if(fn) fn.textContent = `${d.firstName||''} ${d.lastName||''}`.trim() || '-';
+  const em = document.getElementById('profile-email');
+  if(em) em.textContent = d.email || '-';
+
+  // rows
+  const rows = document.getElementById('profile-info-rows');
+  if(rows) {
+    const items = [
+      ['ชื่อเล่น', d.nickname],
+      ['เลขประจำตัว', d.studentId],
+      ['ห้อง', d.room],
+      ['เบอร์โทร', d.phone],
+      ['Line ID', d.lineId],
+      ['Instagram', d.instagram],
+      ['โรคประจำตัว', d.disease||'ไม่มี'],
+      ['ยา', d.medicine||'ไม่มี'],
+      ['อาหารแพ้', d.allergy||'ไม่มี'],
+      ['เบอร์ฉุกเฉิน', d.emergencyPhone],
+    ];
+    rows.innerHTML = items.map(([l,v]) =>
+      `<div class="pr"><span class="pr-label">${l}</span><span class="pr-val">${v||'-'}</span></div>`
+    ).join('');
+  }
+
+  // fill edit form
+  const setV = (id,val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
+  setV('pe-nick',d.nickname); setV('pe-phone',d.phone); setV('pe-line',d.lineId);
+  setV('pe-ig',d.instagram); setV('pe-disease',d.disease); setV('pe-medicine',d.medicine);
+  setV('pe-allergy',d.allergy); setV('pe-emphone',d.emergencyPhone);
+
+  if(typeof lucide!=="undefined")lucide.createIcons();
+}
+
+window.toggleProfileEdit = (show) => {
+  const form = document.getElementById('profile-edit-form');
+  const btn  = document.getElementById('profile-edit-btn');
+  if(form) form.style.display = show ? 'block' : 'none';
+  if(btn)  btn.style.display  = show ? 'none'  : 'flex';
+};
+
+window.saveProfile = async () => {
+  if(!currentUser || !studentData) return;
+  const gv = id => document.getElementById(id)?.value?.trim()||'';
+  const btn = document.querySelector('#sec-profile .btn-primary');
+  if(btn) { btn.disabled=true; btn.textContent='กำลังบันทึก...'; }
+  try {
+    const u = {
+      nickname: gv('pe-nick'), phone: gv('pe-phone'), lineId: gv('pe-line'),
+      instagram: gv('pe-ig'), disease: gv('pe-disease'), medicine: gv('pe-medicine'),
+      allergy: gv('pe-allergy'), emergencyPhone: gv('pe-emphone'),
+      updatedAt: serverTimestamp(),
+    };
+    await updateDoc(doc(db,'students',currentUser.uid), u);
+    Object.assign(studentData, u);
+    showToast('บันทึกสำเร็จ!');
+    toggleProfileEdit(false);
+    renderProfileSection();
+  } catch(e) { showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }
+  if(btn) { btn.disabled=false; btn.innerHTML='<i data-lucide="save" style="width:13px;height:13px"></i> บันทึก'; if(typeof lucide!=="undefined")lucide.createIcons(); }
+};
+
+// ── PROFILE EDIT ─────────────────────────────────────
+let pfEditingInfo   = false;
+let pfEditingHealth = false;
+
+
+
+window.toggleHealthEdit = () => {
+  pfEditingHealth = !pfEditingHealth;
+  document.getElementById('pf-health-view').style.display  = pfEditingHealth ? 'none'  : 'block';
+  document.getElementById('pf-health-edit').style.display  = pfEditingHealth ? 'block' : 'none';
+  document.getElementById('pf-health-edit-btn').innerHTML = pfEditingHealth
+    ? '<i data-lucide="x" style="width:11px;height:11px"></i> ยกเลิก'
+    : '<i data-lucide="edit-2" style="width:11px;height:11px"></i> แก้ไข';
+  if(pfEditingHealth && studentData) {
+    const setv = (id,v) => { const el=document.getElementById(id); if(el) el.value=v||''; };
+    setv('pf-e-disease',  studentData.disease);
+    setv('pf-e-medicine', studentData.medicine);
+    setv('pf-e-allergy',  studentData.allergy);
+    setv('pf-e-emphone',  studentData.emergencyPhone);
+  }
+  updateSaveBar();
+  if(typeof lucide!=="undefined")lucide.createIcons();
+};
+
+function updateSaveBar() {
+  document.getElementById('pf-save-bar').style.display = (pfEditingInfo || pfEditingHealth) ? 'block' : 'none';
+}
+
+window.cancelProfileEdit = () => {
+  if(pfEditingInfo)   toggleProfileEdit();
+  if(pfEditingHealth) toggleHealthEdit();
+};
+
+window.saveProfileEdit = async () => {
+  if(!currentUser || !studentData) return;
+  const btn = document.getElementById('pf-save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i data-lucide="loader" style="width:14px;height:14px"></i> กำลังบันทึก...';
+  if(typeof lucide!=="undefined")lucide.createIcons();
+  try {
+    const gv = id => document.getElementById(id)?.value?.trim()||'';
+    const updates = {};
+    if(pfEditingInfo) {
+      updates.nickname  = gv('pf-e-nick');
+      updates.phone     = gv('pf-e-phone');
+      updates.lineId    = gv('pf-e-line');
+      const ig = gv('pf-e-ig').replace('@','');
+      updates.instagram = ig ? '@'+ig : '';
+    }
+    if(pfEditingHealth) {
+      updates.disease       = gv('pf-e-disease');
+      updates.medicine      = gv('pf-e-medicine');
+      updates.allergy       = gv('pf-e-allergy');
+      updates.emergencyPhone= gv('pf-e-emphone');
+    }
+    updates.updatedAt = serverTimestamp();
+    await updateDoc(doc(db,'students',currentUser.uid), updates);
+    // อัปเดต local studentData
+    Object.assign(studentData, updates);
+    // อัปเดต view
+    if(updates.nickname)  { setText('pf-v-nick',  updates.nickname);  setText('pf-nick', updates.nickname); }
+    if(updates.phone)     setText('pf-v-phone',   updates.phone);
+    if(updates.lineId)    setText('pf-v-line',    updates.lineId);
+    if(updates.instagram) setText('pf-v-ig',      updates.instagram);
+    if(updates.disease)   setText('pf-v-disease', updates.disease||'ไม่มี');
+    if(updates.medicine)  setText('pf-v-medicine',updates.medicine||'ไม่มี');
+    if(updates.allergy)   setText('pf-v-allergy', updates.allergy||'ไม่มี');
+    if(updates.emergencyPhone) setText('pf-v-emphone', updates.emergencyPhone);
+    // ปิด edit mode
+    if(pfEditingInfo)   toggleProfileEdit();
+    if(pfEditingHealth) toggleHealthEdit();
+    const now = new Date();
+    setText('pf-save-time', `บันทึกล่าสุด ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} น.`);
+    showToast('บันทึกข้อมูลแล้ว!');
+  } catch(e) {
+    showToast('เกิดข้อผิดพลาด: '+e.message,'error');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<i data-lucide="save" style="width:14px;height:14px"></i> บันทึก';
+  if(typeof lucide!=="undefined")lucide.createIcons();
+};
+
+// ── AVATAR UPLOAD ─────────────────────────────────────
+function initAvatarPicker(uid) {
+  // สร้าง input ใหม่ทุกครั้ง append ใน body — ไม่ขึ้นกับ DOM structure
+  const OLD_INPUT = document.getElementById('_av_inp');
+  if(OLD_INPUT) OLD_INPUT.remove();
+
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.id   = '_av_inp';
+  inp.accept = 'image/*';
+  inp.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:none';
+  document.body.appendChild(inp);
+
+  // wrap click → open file picker
+  const wrap = document.getElementById('profile-avatar-wrap');
+  if(wrap) {
+    wrap.style.cursor = 'pointer';
+    wrap.onclick = (e) => { e.stopPropagation(); inp.click(); };
+  }
+
+  inp.onchange = async (e) => {
+    const file = e.target.files[0];
+    inp.value = '';
+    if(!file) return;
+    if(!file.type.startsWith('image/')) { showToast('กรุณาเลือกไฟล์รูปภาพ','error'); return; }
+    if(file.size > 2*1024*1024) { showToast('ไฟล์ต้องไม่เกิน 2MB','error'); return; }
+
+    showToast('กำลังอัปโหลด...');
+    try {
+      const blob = await resizeBlob(file, 256);
+      if(!blob) throw new Error('resize ไม่สำเร็จ');
+
+      const storageRef = ref(storage, `avatars/${uid}`);
+      const snapshot   = await uploadBytes(storageRef, blob, { contentType: 'image/jpeg' });
+      const url        = await getDownloadURL(snapshot.ref);
+
+      await updateDoc(doc(db, 'students', uid), { photoURL: url });
+      try { if(auth.currentUser) await updateProfile(auth.currentUser, { photoURL: url }); } catch(_) {}
+
+      const imgHtml = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      ['profile-avatar','top-avatar','side-avatar'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.innerHTML = imgHtml;
+      });
+      if(studentData) studentData.photoURL = url;
+      showToast('เปลี่ยนรูปสำเร็จ!');
+    } catch(err) {
+      console.error('Avatar upload error:', err.code, err.message);
+      let msg = 'อัปโหลดไม่สำเร็จ';
+      if(err.code === 'storage/unauthorized')  msg = 'ไม่มีสิทธิ์ — ต้องอัปเดต Storage Rules ใน Firebase';
+      else if(err.code?.startsWith('storage')) msg = `Storage: ${err.code}`;
+      else if(err.message) msg = err.message.slice(0, 80);
+      showToast(msg, 'error');
+    }
+  };
+}
+
+// ── LOGOUT ────────────────────────────────────────────
+window.doLogout = async () => {
+  await signOut(auth);
+  window.location.href='index.html';
+};
+
+
+// ── IMPERSONATE MODE ──────────────────────────────────
+async function checkImpersonateMode() {
+  const params = new URLSearchParams(window.location.search);
+  const impUid = params.get('imp') || sessionStorage.getItem('imp_uid');
+  const impName = sessionStorage.getItem('imp_name');
+
+  if (!impUid) return false;
+
+  // แสดง banner
+  const banner = document.getElementById('imp-banner');
+  const bannerName = document.getElementById('imp-banner-name');
+  if(banner) banner.classList.add('show');
+  if(bannerName) bannerName.textContent = `มุมมองของ: ${impName||impUid}`;
+  document.body.classList.add('imp-mode');
+
+  // โหลดข้อมูลของนักเรียนคนนั้นแทน
+  try {
+    const snap = await getDoc(doc(db,'students',impUid));
+    if(!snap.exists()) {
+      showToast('ไม่พบข้อมูลนักเรียน','error'); return false;
+    }
+    // สร้าง fake user object
+    const d = snap.data();
+    const fakeUser = {
+      uid: impUid,
+      email: d.email||'',
+      displayName: `${d.firstName} ${d.lastName}`,
+      photoURL: d.photoURL||null,
+    };
+    currentUser  = fakeUser;
+    studentData  = d;
+    initUI(fakeUser, d);
+    initAvatarPicker(impUid);
+    loadAnnouncements();
+    loadCountdown();
+    loadEventInfo();
+    renderHomeChecklist(d);
+    checkGroupReveal();
+    return true;
+  } catch(e) {
+    showToast('เกิดข้อผิดพลาด: '+e.message,'error');
+    return false;
+  }
+}
+
+window.exitImpersonate = () => {
+  sessionStorage.removeItem('imp_uid');
+  sessionStorage.removeItem('imp_name');
+  sessionStorage.removeItem('imp_active');
+  window.close(); // ปิด tab นี้
+  // ถ้าปิดไม่ได้ให้ redirect กลับ admin
+  setTimeout(()=>{ window.location.href='admin.html'; }, 300);
+};
+
+// ── INIT ─────────────────────────────────────────────
+if(typeof lucide!=="undefined")lucide.createIcons();
+
+onAuthStateChanged(auth, async user => {
+  if (!user) { window.location.href='login.html'; return; }
+  currentUser = user;
+
+  // เช็ค impersonate mode หลัง auth พร้อม
+  const isImpMode = await checkImpersonateMode();
+  if(isImpMode) return;
+
+  // Normal flow
+  const snap = await getDoc(doc(db,'students',user.uid));
+    if (!snap.exists()) {
+      const isAnon  = user.isAnonymous || false;
+      const isSuper = user.email === SUPER;
+      if (isSuper || isAnon) {
+        // สร้าง student record อัตโนมัติ
+        const displayName = user.displayName || '';
+        const parts = displayName.trim().split(' ');
+        const newData = {
+          firstName:     parts[0]  || (isSuper ? 'ประธาน' : 'ทดสอบ'),
+          lastName:      parts.slice(1).join(' ') || (isSuper ? 'สาย' : 'ระบบ'),
+          nickname:      isSuper ? 'SuperAdmin' : 'เทส',
+          studentId:     isSuper ? '8868278' : `TEST${user.uid.slice(0,4).toUpperCase()}`,
+          room:          isSuper ? '000' : '999',
+          phone:         '-',
+          disease:       '', medicine:  '', allergy: '',
+          emergencyPhone:'',
+          trioStatus:    'no_trio',
+          status:        'registered',
+          email:         user.email || `anon-${user.uid.slice(0,6)}@test.local`,
+          uid:           user.uid,
+          registeredAt:  serverTimestamp(),
+          isTestAccount: !isSuper,
+        };
+        try {
+          await setDoc(doc(db,'students',user.uid), newData);
+          console.log('student record created');
+        } catch(e) {
+          console.warn('setDoc failed (permissions?), using in-memory:', e.code);
+        }
+        // ใช้ in-memory เสมอ ไม่ต้องรอ Firestore confirm
+        studentData = { ...newData, registeredAt: new Date() };
+      } else {
+        window.location.href = 'register.html'; return;
+      }
+    } else {
+      studentData = { trioStatus:'no_trio', ...snap.data() };
+    }
+
+    // ── sync Google profile photo เป็น default ──
+    // ถ้า studentData ยังไม่มี photoURL แต่ Google account มีรูป → save ลง Firestore
+    if(!studentData.photoURL && user.photoURL) {
+      try {
+        await updateDoc(doc(db,'students',user.uid), { photoURL: user.photoURL });
+        studentData.photoURL = user.photoURL;
+      } catch(_) {
+        // ถ้า update ไม่ได้ (anonymous ฯลฯ) ใช้แค่ใน memory
+        studentData.photoURL = user.photoURL;
+      }
+    }
+
+    initUI(user, studentData);
+    if (user.email === SUPER) {
+      const btn = document.getElementById('back-to-admin-btn');
+      if (btn) btn.style.display = 'block';
+    }
+    initAvatarPicker(user.uid);
+    loadAnnouncements();
+    loadCountdown();
+    loadEventInfo();
+    renderHomeChecklist(studentData);
+    checkGroupReveal();
+    loadCheckinVisibility();
+    startStudentListener(user.uid);
+});
+</script>
+</body>
+</html>

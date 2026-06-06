@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn()    { return request.auth != null; }
+    function isAnonymous()   { return request.auth != null && request.auth.token.firebase.sign_in_provider == 'anonymous'; }
+    function isSchoolEmail() {
+      return request.auth != null &&
+             request.auth.token.email != null &&
+             request.auth.token.email.matches('.*@student\\.triamudom\\.ac\\.th');
+    }
+    function isSuperAdmin() {
+      return request.auth != null &&
+             request.auth.token.email == '8868278@student.triamudom.ac.th';
+    }
+    function isOwner(uid) { return request.auth.uid == uid; }
+    function canAct()     { return isSchoolEmail() || isAnonymous() || isSuperAdmin(); }
+
+    match /students/{uid} {
+      allow read:   if isOwner(uid) || isSuperAdmin();
+      allow create: if isSignedIn() && canAct() && isOwner(uid);
+      allow update: if (isSignedIn() && canAct() && isOwner(uid)) || isSuperAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ── กลุ่ม Trio ──
+    match /groupSystems/{id} {
+      allow read, create, update, delete: if isSignedIn() && canAct();
+    }
+    match /groupSystems/{id}/joinRequests/{reqId} {
+      allow read, create, update, delete: if isSignedIn() && canAct();
+    }
+    match /groupInvites/{id} {
+      allow read, create, update, delete: if isSignedIn() && canAct();
+    }
+
+    // ── Legacy party ──
+    match /parties/{id} {
+      allow read, create, update, delete: if isSignedIn() && canAct();
+    }
+    match /parties/{id}/joinRequests/{reqId} {
+      allow read, create, update, delete: if isSignedIn() && canAct();
+    }
+    match /partyInvites/{id} {
+      allow read, create, update, delete: if isSignedIn() && canAct();
+    }
+    match /trioRequests/{id} {
+      allow read, create, update, delete: if isSignedIn() && canAct();
+    }
+
+    match /committees/{id} {
+      allow read:  if true;
+      allow write: if isSuperAdmin();
+    }
+    match /announcements/{id} {
+      allow read:  if true;
+      allow write: if isSuperAdmin();
+    }
+    match /eventSettings/{id} {
+      allow read:  if true;
+      allow write: if isSuperAdmin();
+    }
+    match /siteContent/{id} {
+      allow read:  if true;
+      allow write: if isSuperAdmin();
+    }
+    match /registrationSettings/{id} {
+      allow read:  if isSignedIn();
+      allow write: if isSuperAdmin();
+    }
+    match /systemSettings/{id} {
+      allow read:  if isSignedIn();
+      allow write: if isSuperAdmin();
+    }
+    match /staffAccounts/{id} {
+      allow read:  if true;
+      allow write: if isSuperAdmin();
+    }
+    match /auditLogs/{id} {
+      allow read:   if isSuperAdmin();
+      allow create: if isSignedIn();
+    }
+    match /adminRoles/{id} {
+      allow read:  if isSignedIn();
+      allow write: if isSuperAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

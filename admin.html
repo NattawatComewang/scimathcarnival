@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="logo.png">
+<title>SciMath TU — Admin</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/motion.css">
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/theme.js"></script>
+<style>
+body{display:flex;min-height:100vh;overflow-x:hidden}
+.sidebar{width:220px;background:var(--bg-1);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;z-index:50;display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+.sb-logo{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sb-logo img{width:34px;height:34px;border-radius:8px;object-fit:cover}
+.sb-logo-text{font-weight:700;font-size:0.88rem}
+.nav-grp{padding:10px 8px 2px}
+.nav-grp-lbl{font-size:0.65rem;font-weight:600;color:var(--text-3);padding:0 8px;margin-bottom:4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-2);cursor:pointer;transition:all 0.15s;margin-bottom:1px;border:none;background:none;font-family:var(--font);width:100%;text-align:left}
+.nav-item:hover{background:var(--bg-2);color:var(--text)}
+.nav-item.active{background:var(--accent-dim);color:var(--accent)}
+.nav-item.danger{color:var(--red)}
+.nav-item.danger:hover{background:var(--red-dim)}
+.nav-item .badge{margin-left:auto;font-size:0.6rem;padding:1px 6px}
+.sb-footer{padding:10px 8px;border-top:1px solid var(--border);margin-top:auto}
+.admin-main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:56px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;justify-content:space-between;background:var(--bg-1);position:sticky;top:0;z-index:40}
+.topbar-title{font-weight:600;font-size:0.95rem}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.view-sw{display:flex;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px;gap:2px}
+.vsw{padding:5px 12px;border-radius:4px;font-size:0.78rem;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text-2);font-family:var(--font);transition:all 0.15s}
+.vsw.active{background:var(--accent);color:#fff}
+.content{padding:24px;flex:1;max-width:1200px}
+.sec{display:none}.sec.active{display:block}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;transition:all 200ms var(--ease-out);cursor:pointer}
+.stat-card:hover{border-color:var(--border-2);transform:translateY(-2px);box-shadow:var(--shadow)}
+.stat-num{font-size:2rem;font-weight:700;letter-spacing:-0.02em;line-height:1;margin-bottom:4px}
+.stat-label{font-size:0.8rem;color:var(--text-2)}
+.stat-delta{font-size:0.72rem;margin-top:8px;display:flex;align-items:center;gap:3px;color:var(--text-3)}
+.tbl-wrap{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px}
+.tbl-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+table{width:100%;border-collapse:collapse}
+th{padding:9px 14px;text-align:left;font-size:0.74rem;font-weight:500;color:var(--text-3);border-bottom:1px solid var(--border);background:var(--bg-2);white-space:nowrap}
+td{padding:11px 14px;font-size:0.875rem;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg-2);cursor:pointer}
+.card2{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-info h5{font-size:0.9rem;font-weight:500}
+.setting-info p{font-size:0.8rem;color:var(--text-2);margin-top:2px}
+.sd-panel{position:fixed;top:0;right:0;bottom:0;width:480px;z-index:200;background:var(--bg-1);border-left:1px solid var(--border);box-shadow:-8px 0 40px rgba(0,0,0,0.12);transform:translateX(100%);transition:transform 400ms var(--ease-out);display:flex;flex-direction:column;overflow:hidden}
+.sd-panel.open{transform:translateX(0)}
+.sd-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sd-body{flex:1;overflow-y:auto;padding:20px}
+.sd-section{margin-bottom:20px}
+.sd-section-title{font-size:0.72rem;font-weight:600;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.sd-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:0.875rem}
+.sd-row:last-child{border-bottom:none}
+.sd-label{color:var(--text-2);flex-shrink:0;margin-right:12px}
+.sd-value{font-weight:500;text-align:right}
+.sd-editable{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;font-size:0.875rem;font-family:var(--font);color:var(--text);width:100%;outline:none}
+.sd-editable:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-dim)}
+.sd-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
+.groups-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.group-block{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.group-block-head{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.group-block-body{padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.team-chip{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 9px;font-size:0.76rem;display:flex;align-items:center;justify-content:space-between}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:300;padding:16px;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg-1);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:fadeUp 250ms var(--ease-out) both}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.sd-backdrop{position:fixed;inset:0;z-index:199;display:none}
+.sd-backdrop.open{display:block}
+.av-wrap{position:relative;cursor:pointer}
+.av-wrap .av-ov{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s}
+.av-wrap:hover .av-ov{opacity:1}
+@media(max-width:1024px){.stats-grid{grid-template-columns:1fr 1fr}.groups-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sb-logo">
+    <img src="logo.png" alt="logo" onerror="this.style.display='none'">
+    <div><div class="sb-logo-text">SciMath Admin</div><div class="badge badge-accent" style="font-size:0.6rem">SuperAdmin</div></div>
+  </div>
+  <div class="nav-grp">
+    <div class="nav-grp-lbl">ภาพรวม</div>
+    <button class="nav-item active" data-sec="overview" onclick="show('overview',this)"><i data-lucide="layout-dashboard" style="width:14px;height:14px"></i> Overview</button>
+  </div>
+  <div class="nav-grp">
+    <div class="nav-grp-lbl">เนื้อหา</div>
+    <button class="nav-item" data-sec="committee" onclick="show('committee',this)"><i data-lucide="users" style="width:14px;height:14px"></i> บุคลากร</button>
+    <button class="nav-item" data-sec="announcements" onclick="show('announcements',this)"><i data-lucide="bell" style="width:14px;height:14px"></i> ประกาศ</button>
+    <button class="nav-item" data-sec="event-settings" onclick="show('event-settings',this)"><i data-lucide="calendar" style="width:14px;height:14px"></i> ตั้งค่างาน</button>
+  </div>
+  <div class="nav-grp">
+    <div class="nav-grp-lbl">นักเรียน</div>
+    <button class="nav-item" data-sec="students" onclick="show('students',this)"><i data-lucide="user-check" style="width:14px;height:14px"></i> นักเรียน <span class="badge badge-accent" id="sb-count">0</span></button>
+    <button class="nav-item" data-sec="groups" onclick="show('groups',this)"><i data-lucide="layers" style="width:14px;height:14px"></i> กลุ่ม/ทีม</button>
+    <button class="nav-item" data-sec="checkin" onclick="show('checkin',this)"><i data-lucide="qr-code" style="width:14px;height:14px"></i> Check-in</button>
+  </div>
+  <div class="nav-grp">
+    <div class="nav-grp-lbl">ระบบ</div>
+    <button class="nav-item" data-sec="registration" onclick="show('registration',this)"><i data-lucide="toggle-left" style="width:14px;height:14px"></i> ลงทะเบียน</button>
+    <button class="nav-item" data-sec="staff-accounts" onclick="show('staff-accounts',this)"><i data-lucide="key-round" style="width:14px;height:14px"></i> บัญชีพี่</button>
+    <button class="nav-item" data-sec="impersonate" onclick="show('impersonate',this)"><i data-lucide="eye" style="width:14px;height:14px"></i> มุมมองนักเรียน</button>
+    <button class="nav-item" data-sec="export" onclick="show('export',this)"><i data-lucide="download" style="width:14px;height:14px"></i> Export</button>
+    <button class="nav-item" data-sec="logs" onclick="show('logs',this)"><i data-lucide="scroll-text" style="width:14px;height:14px"></i> Audit Logs</button>
+  </div>
+  <div class="sb-footer">
+    <a class="nav-item" href="index.html"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> กลับหน้าหลัก</a>
+    <button class="nav-item danger" onclick="doLogout()"><i data-lucide="log-out" style="width:14px;height:14px"></i> ออกจากระบบ</button>
+  </div>
+</aside>
+
+<div class="admin-main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Overview</div>
+    <div class="topbar-right">
+      <div class="av-wrap" id="admin-av-wrap" style="width:32px;height:32px">
+        <div class="avatar avatar-sm" id="admin-av">A</div>
+        <div class="av-ov"><i data-lucide="camera" style="width:11px;height:11px;color:#fff"></i></div>
+      </div>
+      <span class="text-sm text-muted" id="admin-email" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">...</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div class="sec active" id="s-overview">
+      <div class="page-title"><h2>Overview</h2><p>ภาพรวมระบบ · realtime</p></div>
+      <div class="stats-grid">
+        <div class="stat-card" onclick="show('students')">
+          <div class="stat-num text-accent" id="ov-students">—</div>
+          <div class="stat-label">นักเรียนลงทะเบียน</div>
+          <div class="stat-delta"><i data-lucide="users" style="width:11px;height:11px"></i> กดเพื่อดูรายชื่อ</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num text-green" id="ov-parties">—</div>
+          <div class="stat-label">กลุ่ม Trio (สร้างแล้ว)</div>
+          <div class="stat-delta"><i data-lucide="users" style="width:11px;height:11px"></i> ระบบ Trio</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num text-amber" id="ov-ungrouped">—</div>
+          <div class="stat-label">ยังไม่จัดกลุ่ม</div>
+          <div class="stat-delta"><i data-lucide="clock" style="width:11px;height:11px"></i> รอจัดกลุ่ม</div>
+        </div>
+        <div class="stat-card" onclick="show('checkin')">
+          <div class="stat-num text-blue" id="ov-checkin">—</div>
+          <div class="stat-label">เช็คอินแล้ว</div>
+          <div class="stat-delta"><i data-lucide="qr-code" style="width:11px;height:11px"></i> วันงาน</div>
+        </div>
+      </div>
+      <div class="card2">
+        <h4 style="margin-bottom:14px">การดำเนินการด่วน</h4>
+        <div class="flex gap-3 flex-wrap">
+          <button class="btn btn-secondary btn-sm" onclick="show('registration')"><i data-lucide="toggle-left" style="width:13px;height:13px"></i> เปิด/ปิดลงทะเบียน</button>
+          <button class="btn btn-secondary btn-sm" onclick="show('groups')"><i data-lucide="shuffle" style="width:13px;height:13px"></i> จัดกลุ่ม</button>
+          <button class="btn btn-secondary btn-sm" onclick="openAnnModal()"><i data-lucide="bell-plus" style="width:13px;height:13px"></i> สร้างประกาศ</button>
+          <button class="btn btn-secondary btn-sm" onclick="doExportCSV('students')"><i data-lucide="download" style="width:13px;height:13px"></i> Export CSV</button>
+          <button class="btn btn-secondary btn-sm" onclick="show('impersonate')"><i data-lucide="eye" style="width:13px;height:13px"></i> มุมมองนักเรียน</button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-head"><h4>ลงทะเบียนล่าสุด</h4><button class="btn btn-ghost btn-sm" onclick="show('students')">ดูทั้งหมด <i data-lucide="arrow-right" style="width:12px;height:12px"></i></button></div>
+        <table><thead><tr><th>ชื่อ-นามสกุล</th><th>ห้อง</th><th>Party</th><th>เวลา</th></tr></thead>
+        <tbody id="ov-recent"><tr><td colspan="4" class="text-center text-muted" style="padding:20px">กำลังโหลด...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- STUDENTS -->
+    <div class="sec" id="s-students">
+      <div class="flex justify-between items-center" style="margin-bottom:16px">
+        <div class="page-title" style="margin:0"><h2>ข้อมูลนักเรียน</h2><p id="students-count-label">—</p></div>
+        <button class="btn btn-secondary btn-sm" onclick="doExportCSV('students')"><i data-lucide="download" style="width:13px;height:13px"></i> Export CSV</button>
+      </div>
+      <div class="card2" style="padding:14px 16px;margin-bottom:12px">
+        <div class="flex gap-10 flex-wrap items-center">
+          <div class="flex items-center gap-2" style="flex:1;min-width:200px">
+            <i data-lucide="search" style="width:14px;height:14px;color:var(--text-3)"></i>
+            <input class="form-input" id="stu-search" placeholder="ค้นหาชื่อ เลขประจำตัว..." oninput="filterStudents()" style="border:none;background:none;padding:4px;box-shadow:none">
+          </div>
+          <input class="form-input" id="stu-room" placeholder="ห้อง" maxlength="4" oninput="filterStudents()" style="width:80px">
+          <select class="form-input" id="stu-status" onchange="filterStudents()" style="width:150px">
+            <option value="">ทุกสถานะ</option>
+            <option value="has_party">มี Trio แล้ว</option>
+            <option value="no_party">ยังไม่มี Trio</option>
+            <option value="has_group">มีกลุ่มแล้ว</option>
+            <option value="checked_in">เช็คอินแล้ว</option>
+          </select>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>ชื่อ-นามสกุล</th><th>ห้อง</th><th>เลขประจำตัว</th><th>Party</th><th>กลุ่ม</th><th>เช็คอิน</th><th>ลงทะเบียน</th></tr></thead>
+        <tbody id="stu-tbody"><tr><td colspan="7" class="text-center text-muted" style="padding:24px">กำลังโหลด...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- GROUPS -->
+    <div class="sec" id="s-groups">
+      <div class="page-title"><h2>กลุ่ม/ทีม</h2></div>
+
+      <!-- การแสดงผล -->
+      <div class="card2" style="margin-bottom:14px">
+        <h4 style="margin-bottom:14px">การแสดงผลกลุ่ม</h4>
+        <div class="setting-row">
+          <div class="setting-info">
+            <h5>แสดงกลุ่มให้น้องเห็น</h5>
+            <p>เปิดแล้วน้องจะเห็นกลุ่มตัวเองได้ทันที</p>
+          </div>
+          <div class="toggle" id="reveal-toggle" onclick="toggleReveal(this)"></div>
+        </div>
+        <div class="setting-row" style="border-top:none;padding-top:8px">
+          <div class="setting-info">
+            <h5>เปิดตามเวลา (Countdown)</h5>
+            <p>น้องจะเห็น countdown จนถึงเวลานี้</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="datetime-local" class="form-input" id="reveal-time" style="width:auto">
+            <button class="btn btn-primary btn-sm" onclick="saveRevealTime()"><i data-lucide="save" style="width:12px;height:12px"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ชื่อกลุ่ม -->
+      <div class="card2" style="margin-bottom:14px">
+        <h4 style="margin-bottom:12px">ชื่อกลุ่ม</h4>
+        <div id="group-names-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"></div>
+        <button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="saveGroupNames()">
+          <i data-lucide="save" style="width:12px;height:12px"></i> บันทึกชื่อกลุ่ม
+        </button>
+      </div>
+
+      <!-- actions -->
+      <div class="card2" style="margin-bottom:14px">
+        <h4 style="margin-bottom:12px">การดำเนินการ</h4>
+        <div class="flex gap-3 flex-wrap">
+          <button class="btn btn-primary btn-sm" onclick="doAssignGroups()"><i data-lucide="shuffle" style="width:13px;height:13px"></i> สุ่มจัดกลุ่ม</button>
+          <button class="btn btn-secondary btn-sm" onclick="doResetGroups()"><i data-lucide="trash-2" style="width:13px;height:13px"></i> ล้างข้อมูล</button>
+          <button class="btn btn-secondary btn-sm" onclick="doExportCSV('groups')"><i data-lucide="download" style="width:13px;height:13px"></i> Export รายชื่อตามกลุ่ม</button>
+        </div>
+      </div>
+
+      <div class="groups-grid" id="groups-grid"></div>
+    </div>
+
+    <!-- CHECK-IN -->
+    <div class="sec" id="s-checkin">
+      <div class="page-title"><h2>Check-in</h2><p>ค้นหาและเช็คอินด้วยตนเอง</p></div>
+      <div class="card2" style="margin-bottom:14px">
+        <div class="flex gap-3">
+          <input class="form-input" id="checkin-search" placeholder="เลขประจำตัว หรือ ชื่อ..." style="flex:1">
+          <button class="btn btn-primary" onclick="searchCheckin()"><i data-lucide="search" style="width:15px;height:15px"></i> ค้นหา</button>
+        </div>
+        <div id="checkin-result" style="margin-top:14px"></div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-head"><h4 id="checkin-count-label">รายการเช็คอิน</h4></div>
+        <table><thead><tr><th>ชื่อ-นามสกุล</th><th>ห้อง</th><th>กลุ่ม</th><th>เวลา</th></tr></thead>
+        <tbody id="checkin-tbody"><tr><td colspan="4" class="text-center text-muted" style="padding:24px">กำลังโหลด...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- REGISTRATION -->
+    <div class="sec" id="s-registration">
+      <div class="page-title"><h2>ตั้งค่าการลงทะเบียน</h2></div>
+      <div class="card2" style="margin-bottom:14px">
+        <div class="setting-row">
+          <div class="setting-info"><h5>เปิดรับลงทะเบียน</h5><p>นักเรียนสามารถลงทะเบียนได้</p></div>
+          <div class="toggle" id="reg-toggle" onclick="this.classList.toggle('on');saveRegSetting('open',this.classList.contains('on'))"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><h5>อนุญาตแก้ไขข้อมูลหลังส่ง</h5><p>น้องสามารถแก้ข้อมูลบางส่วนได้</p></div>
+          <div class="toggle" id="edit-toggle" onclick="this.classList.toggle('on');saveRegSetting('allowEdit',this.classList.contains('on'))"></div>
+        </div>
+      </div>
+      <div class="card2" style="margin-bottom:14px">
+        <h4 style="margin-bottom:14px">ช่วงเวลาเปิด/ปิด</h4>
+        <div class="form-grid" style="margin-bottom:14px">
+          <div class="form-group"><label class="form-label">เปิดรับ</label><input type="datetime-local" class="form-input" id="reg-open"></div>
+          <div class="form-group"><label class="form-label">ปิดรับ</label><input type="datetime-local" class="form-input" id="reg-close"></div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveRegSchedule()"><i data-lucide="save" style="width:13px;height:13px"></i> บันทึก</button>
+      </div>
+      <div class="card2">
+        <h4 style="margin-bottom:6px">ห้องที่มีสิทธิ์ลงทะเบียน</h4>
+        <p class="text-sm text-muted" style="margin-bottom:12px">คั่นด้วย comma เช่น <code style="background:var(--bg-2);padding:1px 6px;border-radius:4px">65,66,278</code> ถ้าว่าง = ทุกห้องผ่าน</p>
+        <textarea class="form-input" id="eligible-rooms" rows="3" placeholder="65,66,67,278..."></textarea>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="saveEligibleRooms()"><i data-lucide="save" style="width:13px;height:13px"></i> บันทึก</button>
+      </div>
+    </div>
+
+    <!-- COMMITTEE -->
+    <div class="sec" id="s-committee">
+      <div class="flex justify-between items-center" style="margin-bottom:16px">
+        <div class="page-title" style="margin:0"><h2>บุคลากร</h2></div>
+        <button class="btn btn-primary btn-sm" onclick="openCmModal()"><i data-lucide="user-plus" style="width:13px;height:13px"></i> เพิ่ม</button>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-head">
+          <div class="flex items-center gap-2">
+            <i data-lucide="search" style="width:14px;height:14px;color:var(--text-3)"></i>
+            <input class="form-input" id="cm-search" placeholder="ค้นหา..." oninput="filterCommittee()" style="border:none;background:none;padding:4px;box-shadow:none">
+          </div>
+        </div>
+        <table><thead><tr><th>บุคลากร</th><th>ตำแหน่ง</th><th>ห้อง</th><th>Instagram</th><th></th></tr></thead>
+        <tbody id="cm-tbody"><tr><td colspan="5" class="text-center text-muted" style="padding:24px">กำลังโหลด...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="sec" id="s-announcements">
+      <div class="flex justify-between items-center" style="margin-bottom:16px">
+        <div class="page-title" style="margin:0"><h2>ประกาศ</h2></div>
+        <button class="btn btn-primary btn-sm" onclick="openAnnModal()"><i data-lucide="plus" style="width:13px;height:13px"></i> สร้างประกาศ</button>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>ชื่อประกาศ</th><th>วันที่</th><th>Pin</th><th></th></tr></thead>
+        <tbody id="ann-tbody"><tr><td colspan="4" class="text-center text-muted" style="padding:24px">กำลังโหลด...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- EVENT SETTINGS -->
+    <div class="sec" id="s-event-settings">
+      <div class="page-title"><h2>ตั้งค่างานรับน้อง</h2></div>
+      <div class="card2">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="form-group"><label class="form-label">ชื่อกิจกรรม</label><input class="form-input" id="ev-name" placeholder="Sci-Math CARNIVAL"></div>
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label">วันที่</label><input type="date" class="form-input" id="ev-date"></div>
+            <div class="form-group"><label class="form-label">เวลา</label><input class="form-input" id="ev-time" placeholder="08.00 - 17.00 น."></div>
+          </div>
+          <div class="form-group"><label class="form-label">สถานที่</label><input class="form-input" id="ev-loc" placeholder="โรงเรียนเตรียมอุดมศึกษา"></div>
+          <div class="form-group"><label class="form-label">รายละเอียด</label><textarea class="form-input" rows="3" id="ev-desc"></textarea></div>
+          <div class="divider"></div>
+          <h4>ข้อมูลติดต่อ (แสดงในหน้าเด็ก)</h4>
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label">เบอร์สวัสดิการ</label><input class="form-input" id="ev-welfare" type="tel" placeholder="0xx-xxx-xxxx"></div>
+            <div class="form-group"><label class="form-label">เบอร์ทะเบียน</label><input class="form-input" id="ev-reg-phone" type="tel" placeholder="0xx-xxx-xxxx"></div>
+            <div class="form-group full"><label class="form-label">Line OpenChat</label><input class="form-input" id="ev-line" placeholder="https://line.me/..."></div>
+            <div class="form-group full"><label class="form-label">จุดพยาบาล</label><input class="form-input" id="ev-medical" placeholder="เช่น หน้าโรงอาหาร"></div>
+          </div>
+          <button class="btn btn-primary" style="align-self:flex-start" onclick="saveEventSettings()"><i data-lucide="save" style="width:14px;height:14px"></i> บันทึกทั้งหมด</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF ACCOUNTS -->
+    <div class="sec" id="s-staff-accounts">
+      <div class="flex justify-between items-center" style="margin-bottom:16px">
+        <div class="page-title" style="margin:0"><h2>บัญชีพี่คณะกรรมการฯ</h2></div>
+        <button class="btn btn-primary btn-sm" onclick="openSaModal()"><i data-lucide="plus" style="width:13px;height:13px"></i> เพิ่ม</button>
+      </div>
+      <div style="background:var(--accent-dim);border:1px solid var(--accent-dim-2);border-radius:var(--radius);padding:10px 14px;margin-bottom:14px;font-size:0.82rem;color:var(--text-2)">
+        <i data-lucide="info" style="width:13px;height:13px;vertical-align:middle;margin-right:4px"></i>
+        เพิ่มอีเมล Google ของพี่คณะกรรมการฯ ระบบตรวจอีเมลอัตโนมัติเมื่อ login
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>ชื่อ</th><th>อีเมล</th><th>Role</th><th>สถานะ</th><th></th></tr></thead>
+        <tbody id="sa-tbody"><tr><td colspan="5" class="text-center text-muted" style="padding:24px">กำลังโหลด...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- IMPERSONATE -->
+    <div class="sec" id="s-impersonate">
+      <div class="page-title"><h2>มุมมองนักเรียน</h2><p>เปิด dashboard ในมุมมองของนักเรียนคนใดก็ได้</p></div>
+      <div class="card2" style="padding:14px">
+        <div class="flex items-center gap-2" style="margin-bottom:12px">
+          <i data-lucide="search" style="width:14px;height:14px;color:var(--text-3)"></i>
+          <input class="form-input" id="imp-search" placeholder="ค้นหาชื่อ เลขประจำตัว ห้อง..." oninput="filterImpersonate()" style="flex:1;border:none;background:none;padding:4px;box-shadow:none">
+        </div>
+        <div id="imp-preview" style="display:none;background:var(--accent-dim);border:1px solid var(--accent-dim-2);border-radius:var(--radius-lg);padding:12px 14px;margin-bottom:12px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div id="imp-prev-av" class="avatar avatar-sm">?</div>
+            <div style="flex:1"><div class="font-semibold text-sm" id="imp-prev-name">-</div><div class="text-xs text-muted" id="imp-prev-sub">-</div></div>
+            <button class="btn btn-primary btn-sm" onclick="doImpersonate()"><i data-lucide="external-link" style="width:12px;height:12px"></i> เปิด</button>
+          </div>
+        </div>
+        <div id="imp-list" style="max-height:400px;overflow-y:auto">
+          <div class="text-center text-muted text-sm" style="padding:24px">กำลังโหลด...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPORT -->
+    <div class="sec" id="s-export">
+      <div class="page-title"><h2>Export ข้อมูล</h2></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
+        <div class="card2"><h4 style="margin-bottom:6px">นักเรียนทั้งหมด</h4><p class="text-sm text-muted" style="margin-bottom:12px">ข้อมูลครบ รวมสุขภาพ</p><button class="btn btn-primary btn-sm w-full" onclick="doExportCSV('students')"><i data-lucide="download" style="width:13px;height:13px"></i> Export CSV</button></div>
+        <div class="card2"><h4 style="margin-bottom:6px">กลุ่ม Trio</h4><p class="text-sm text-muted" style="margin-bottom:12px">รายการกลุ่ม Trio ทั้งหมด</p><button class="btn btn-secondary btn-sm w-full" onclick="doExportCSV('parties')"><i data-lucide="download" style="width:13px;height:13px"></i> Export CSV</button></div>
+        <div class="card2"><h4 style="margin-bottom:6px">กลุ่ม/ทีม</h4><p class="text-sm text-muted" style="margin-bottom:12px">กลุ่มและรายชื่อสมาชิก</p><button class="btn btn-secondary btn-sm w-full" onclick="doExportCSV('groups')"><i data-lucide="download" style="width:13px;height:13px"></i> Export CSV</button></div>
+        <div class="card2" style="border-color:rgba(66,133,244,0.3)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#34a853" d="M11 17H7V7h4v10zm6 0h-4V7h4v10zM3 3v18h18V3H3z"/></svg>
+            <h4>Sync → Google Sheet</h4>
+          </div>
+          <p class="text-sm text-muted" style="margin-bottom:10px">Backup อัตโนมัติทุกชั่วโมง หรือกด sync ทันที</p>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <input class="form-input" id="sheets-url" placeholder="Apps Script Web App URL..." style="font-size:0.8rem">
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center" onclick="syncToSheets('all')">
+                <i data-lucide="refresh-cw" style="width:12px;height:12px"></i> Sync ทั้งหมด
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="syncToSheets('students')">นักเรียน</button>
+              <button class="btn btn-secondary btn-sm" onclick="syncToSheets('trio')">Trio</button>
+            </div>
+            <div id="sync-status" class="text-xs text-muted"></div>
+          </div>
+        </div>
+        <div class="card2"><h4 style="margin-bottom:6px">ใบรายชื่อลงทะเบียน</h4><p class="text-sm text-muted" style="margin-bottom:12px">แยกตามกลุ่มใหญ่ พร้อมลายเซ็น</p><div style="display:flex;gap:6px">
+            <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center" onclick="doExportRosterPDF()">
+              <i data-lucide="file-type" style="width:13px;height:13px"></i> PDF (Print)
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="doExportRoster()">
+              <i data-lucide="file-spreadsheet" style="width:13px;height:13px"></i> CSV
+            </button>
+          </div></div>
+      </div>
+    </div>
+
+    <!-- LOGS -->
+    <div class="sec" id="s-logs">
+      <div class="page-title"><h2>Audit Logs</h2><p>ประวัติการดำเนินการ 50 รายการล่าสุด</p></div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>เวลา</th><th>ผู้ดำเนินการ</th><th>Action</th><th>รายละเอียด</th></tr></thead>
+        <tbody id="logs-tbody"><tr><td colspan="4" class="text-center text-muted" style="padding:24px">กำลังโหลด...</td></tr></tbody></table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Student Detail Panel -->
+<div class="sd-backdrop" id="sd-backdrop" onclick="closeSd()"></div>
+<div class="sd-panel" id="sd-panel">
+  <div class="sd-head">
+    <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+      <div id="sd-photo" style="flex-shrink:0"><div class="avatar" style="width:40px;height:40px">?</div></div>
+      <div style="min-width:0"><div class="font-semibold" id="sd-name">-</div><div class="text-sm text-muted" id="sd-sub">-</div></div>
+    </div>
+    <button class="btn btn-ghost btn-icon" onclick="closeSd()"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+  </div>
+  <div class="sd-body" id="sd-body"></div>
+  <div class="sd-footer">
+    <button class="btn btn-danger btn-sm" onclick="deleteStudent()"><i data-lucide="trash-2" style="width:13px;height:13px"></i></button>
+    <button class="btn btn-secondary btn-sm" onclick="impersonateFromPanel()"><i data-lucide="eye" style="width:13px;height:13px"></i> มุมมอง</button>
+    <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center" id="sd-save-btn" onclick="saveSd()"><i data-lucide="save" style="width:13px;height:13px"></i> บันทึก</button>
+  </div>
+</div>
+
+<!-- MODAL: Committee -->
+<div class="modal-overlay" id="cm-modal">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header"><h3 id="cm-modal-title">เพิ่มบุคลากร</h3><button class="btn btn-ghost btn-icon" onclick="closeMod('cm-modal')"><i data-lucide="x" style="width:16px;height:16px"></i></button></div>
+    <div style="text-align:center;margin-bottom:14px">
+      <div id="cm-photos-preview" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:6px"></div>
+      <label style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px dashed var(--border-2);border-radius:var(--radius-sm);cursor:pointer;font-size:0.82rem;color:var(--accent)">
+        <i data-lucide="image-plus" style="width:14px;height:14px"></i> เพิ่มรูป
+        <input type="file" id="cm-photo-multi" accept="image/*" multiple style="display:none" onchange="onCmPhotoChange(event)">
+      </label>
+      <div class="text-xs text-muted" style="margin-top:4px">รูปแรก = หน้าการ์ด · รูปสอง = hover</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">ชื่อ *</label><input class="form-input" id="cm-fn"></div>
+        <div class="form-group"><label class="form-label">นามสกุล</label><input class="form-input" id="cm-ln"></div>
+        <div class="form-group"><label class="form-label">ชื่อเล่น <span style="color:var(--text-3);font-size:0.75rem">(ไม่บังคับ)</span></label><input class="form-input" id="cm-nick"></div>
+        <div class="form-group"><label class="form-label">ห้อง <span style="color:var(--text-3);font-size:0.75rem">(ไม่บังคับ)</span></label><input class="form-input" id="cm-room" maxlength="4" inputmode="numeric"></div>
+        <div class="form-group full"><label class="form-label">ตำแหน่ง</label><input class="form-input" id="cm-pos"></div>
+        <div class="form-group"><label class="form-label">อีเมล <span style="color:var(--text-3);font-size:0.75rem">(ไม่บังคับ)</span></label><input class="form-input" id="cm-email" type="email"></div>
+        <div class="form-group"><label class="form-label">Instagram <span style="color:var(--text-3);font-size:0.75rem">(ไม่บังคับ)</span></label>
+          <div style="position:relative"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-3)">@</span><input class="form-input" id="cm-ig" style="padding-left:26px"></div>
+        </div>
+        <div class="form-group full"><label class="form-label">Bio <span style="color:var(--text-3);font-size:0.75rem">(ไม่บังคับ)</span></label><textarea class="form-input" id="cm-bio" rows="2"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="cm-del-btn" onclick="deleteCmMember()" style="display:none;margin-right:auto"><i data-lucide="trash-2" style="width:13px;height:13px"></i> ลบ</button>
+      <button class="btn btn-ghost" onclick="closeMod('cm-modal')">ยกเลิก</button>
+      <button class="btn btn-primary" id="cm-save-btn" onclick="saveCmMember()"><i data-lucide="save" style="width:14px;height:14px"></i> บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Announcement -->
+<div class="modal-overlay" id="ann-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>สร้างประกาศ</h3><button class="btn btn-ghost btn-icon" onclick="closeMod('ann-modal')"><i data-lucide="x" style="width:16px;height:16px"></i></button></div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="form-group"><label class="form-label">ชื่อประกาศ *</label><input class="form-input" id="ann-title"></div>
+      <div class="form-group"><label class="form-label">เนื้อหา</label><textarea class="form-input" rows="4" id="ann-body"></textarea></div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:0.875rem;cursor:pointer"><input type="checkbox" id="ann-pin" style="accent-color:var(--accent)"> Pin ไว้ด้านบน</label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeMod('ann-modal')">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="saveAnn()"><i data-lucide="send" style="width:14px;height:14px"></i> เผยแพร่</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Staff Account -->
+<div class="modal-overlay" id="sa-modal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header"><h3 id="sa-modal-title">เพิ่มบัญชีพี่คณะกรรมการฯ</h3><button class="btn btn-ghost btn-icon" onclick="closeMod('sa-modal')"><i data-lucide="x" style="width:16px;height:16px"></i></button></div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="form-group"><label class="form-label">ชื่อ-นามสกุล *</label><input class="form-input" id="sa-name"></div>
+      <div class="form-group"><label class="form-label">อีเมล Google *</label><input class="form-input" id="sa-email" type="email" placeholder="xxxxxx@student.triamudom.ac.th"><div class="form-hint">อีเมลที่ใช้ login ด้วย Google</div></div>
+      <div class="form-group"><label class="form-label">Role</label>
+        <select class="form-input" id="sa-role">
+          <option value="staff">พี่คณะกรรมการฯทั่วไป</option>
+          <option value="group_lead">พี่กลุ่ม</option>
+          <option value="base_lead">พี่ฐาน</option>
+          <option value="welfare">พี่สวัสดิการ</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="flex items-center justify-between" style="padding:8px 0">
+        <div><div style="font-size:0.9rem;font-weight:500">เปิดใช้งาน</div></div>
+        <div class="toggle on" id="sa-toggle" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="sa-del-btn" onclick="deleteSaAccount()" style="display:none;margin-right:auto"><i data-lucide="trash-2" style="width:13px;height:13px"></i> ลบ</button>
+      <button class="btn btn-ghost" onclick="closeMod('sa-modal')">ยกเลิก</button>
+      <button class="btn btn-primary" id="sa-save-btn" onclick="saveSaAccount()"><i data-lucide="save" style="width:14px;height:14px"></i> บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc,
+  doc, getDoc, setDoc, query, where, orderBy, limit, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const app  = initializeApp({ apiKey:"AIzaSyDtuK_Rvq9Ki3QiytCTWON6S4J2iHKlTCU", authDomain:"rubnong-official.firebaseapp.com", projectId:"rubnong-official", storageBucket:"rubnong-official.firebasestorage.app", messagingSenderId:"982944596814", appId:"1:982944596814:web:cf61c860632eb42b4a541f" });
+const auth    = getAuth(app);
+const db      = getFirestore(app);
+const storage = getStorage(app);
+const SUPER   = '8868278@student.triamudom.ac.th';
+
+// ── helpers ──
+function showToast(msg, type='success') {
+  const c=document.getElementById('toast-container');
+  const t=document.createElement('div'); t.className=`toast ${type}`;
+  const color=type==='success'?'var(--green)':'var(--red)';
+  t.innerHTML=`<i data-lucide="${type==='success'?'check-circle':'alert-circle'}" style="width:16px;height:16px;color:${color};flex-shrink:0"></i><span>${msg}</span>`;
+  c.appendChild(t); if(typeof lucide!=="undefined")lucide.createIcons();
+ setTimeout(()=>t.remove(),3000);
+}
+async function logAudit(action,detail,extra={}) {
+  try { await addDoc(collection(db,'auditLogs'),{action,detail,...extra,by:auth.currentUser?.email,at:serverTimestamp()}); } catch(_){}
+}
+const v = id => document.getElementById(id)?.value?.trim()||'';
+const setText = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val??''; };
+async function resizeBlob(file,max=400) {
+  return new Promise(res=>{
+    const r=new FileReader(); r.onload=e=>{
+      const img=new Image(); img.onload=()=>{
+        let w=img.width,h=img.height;
+        if(w>h){if(w>max){h=Math.round(h*max/w);w=max;}}else{if(h>max){w=Math.round(w*max/h);h=max;}}
+        const c=document.createElement('canvas'); c.width=w;c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h); c.toBlob(b=>res(b),'image/jpeg',0.88);
+      }; img.src=e.target.result;
+    }; r.readAsDataURL(file);
+  });
+}
+const TITLES = {overview:'Overview',students:'ข้อมูลนักเรียน',groups:'กลุ่ม/ทีม',checkin:'Check-in',registration:'ตั้งค่าการลงทะเบียน',committee:'บุคลากร',announcements:'ประกาศ','event-settings':'ตั้งค่างาน','staff-accounts':'บัญชีพี่','impersonate':'มุมมองนักเรียน',export:'Export',logs:'Audit Logs'};
+const LOADERS = { indicator: loadQuizAdmin,students:loadStudents,groups:()=>{ loadGroups(); loadGroupRevealState(); loadGroupNames(); },checkin:loadCheckin,committee:loadCommittee,announcements:loadAnnouncements,'staff-accounts':loadStaffAccounts,impersonate:loadImpersonate,registration:loadRegSettings,'event-settings':loadEventSettings,logs:loadLogs};
+
+// ── auth ──
+// ── TYPE INDICATOR ADMIN ──────────────────────────────
+const DEFAULT_QUIZ = [
+  { id:'q1', text:'ถ้าต้องเข้ากลุ่มกับเพื่อนใหม่ คุณมักจะ…', opts:['เริ่มชวนคุยก่อน','รอดูจังหวะก่อน','ชวนคนที่ดูเงียบๆ คุย','สังเกตภาพรวมก่อนว่าควรทำอะไร'] },
+  { id:'q2', text:'เวลาเล่นเกมกลุ่ม คุณเป็นสายไหน', opts:['สายลุย','สายคิดแผน','สายเชียร์','สายงง แต่ร่วมเต็มที่'] },
+  { id:'q3', text:'ถ้าพี่บอกว่า "ขอตัวแทน 1 คน" คุณจะ…', opts:['ยกมือเลย','มองหน้าเพื่อนก่อน','ดันเพื่อนข้างๆ ไปก่อน','ถามก่อนว่าต้องทำอะไร'] },
+  { id:'q4', text:'คุณถนัดบทบาทไหนในทีมที่สุด', opts:['คนนำ','คนวางแผน','คนทำงาน','คนดูแลบรรยากาศ'] },
+  { id:'q5', text:'อยากให้ทีมของคุณเป็นแบบไหน', opts:['คึกคัก ชวนคุยง่าย','เป็นระบบ แบ่งงานชัดเจน','อบอุ่น ไม่กดดัน','สร้างสรรค์ มีอะไรแปลกๆ'] },
+];
+
+async function loadQuizAdmin() {
+  const el = document.getElementById('admin-quiz-list');
+  if(!el) return;
+  let questions = [...DEFAULT_QUIZ];
+  try {
+    const snap = await getDoc(doc(db,'systemSettings','typeIndicator'));
+    if(snap.exists() && snap.data().questions) questions = snap.data().questions;
+  } catch(_){}
+  el.innerHTML = questions.map((q,i) => `
+    <div style="background:var(--bg-3);border-radius:var(--radius-lg);padding:14px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="background:var(--accent);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0">${i+1}</span>
+        <input class="form-input" id="quiz-q-${i}" value="${q.text}" placeholder="คำถาม..." style="flex:1;font-weight:500">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        ${q.opts.map((o,j) => `
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:0.7rem;color:var(--text-3);flex-shrink:0">${['A','B','C','D'][j]}.</span>
+            <input class="form-input" id="quiz-opt-${i}-${j}" value="${o}" placeholder="ตัวเลือก..." style="font-size:0.82rem">
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+window.saveQuizQuestions = async () => {
+  const questions = Array.from({length:5},(_,i) => {
+    const text = document.getElementById(`quiz-q-${i}`)?.value.trim() || DEFAULT_QUIZ[i].text;
+    const opts = Array.from({length:4},(_,j) => document.getElementById(`quiz-opt-${i}-${j}`)?.value.trim() || DEFAULT_QUIZ[i].opts[j]);
+    return { id:`q${i+1}`, text, opts };
+  });
+  try {
+    await setDoc(doc(db,'systemSettings','typeIndicator'),{questions},{merge:true});
+    await logAudit('UPDATE_QUIZ','');
+    showToast('บันทึกคำถามแล้ว');
+  } catch(e){ showToast('เกิดข้อผิดพลาด','error'); }
+};
+
+
+onAuthStateChanged(auth, async user => {
+  if(!user) { window.location.href='login.html'; return; }
+  if(user.email!==SUPER) {
+    const snap=await getDoc(doc(db,'adminRoles',user.uid));
+    if(!snap.exists()) { window.location.href='dashboard.html'; return; }
+  }
+  setText('admin-email',user.email);
+  const av=document.getElementById('admin-av');
+  if(user.photoURL&&av) av.innerHTML=`<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  else if(av) av.textContent=user.email[0].toUpperCase();
+  initAdminAvatar(user.uid);
+  loadOverview(); loadSidebarCount();
+});
+window.doLogout=async()=>{ await signOut(auth); window.location.href='index.html'; };
+
+function initAdminAvatar(uid) {
+  const wrap=document.getElementById('admin-av-wrap');
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.style.display='none';
+  document.body.appendChild(inp); wrap.onclick=()=>inp.click();
+  inp.onchange=async e=>{
+    const file=e.target.files[0]; if(!file||file.size>2*1024*1024) return;
+    showToast('กำลังอัปโหลด...');
+    try {
+      const blob=await resizeBlob(file,256);
+      const r=ref(storage,`avatars/${uid}`);
+      await uploadBytes(r,blob,{contentType:'image/jpeg'});
+      const url=await getDownloadURL(r);
+      if(auth.currentUser) await updateProfile(auth.currentUser,{photoURL:url});
+      const av=document.getElementById('admin-av');
+      if(av) av.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      showToast('เปลี่ยนรูปสำเร็จ!');
+    } catch(e){ showToast('อัปโหลดไม่สำเร็จ: '+e.code,'error'); }
+    inp.value='';
+  };
+}
+
+// ── nav ──
+window.show=(sec,btn)=>{
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item[data-sec]').forEach(n=>n.classList.remove('active'));
+  document.getElementById(`s-${sec}`)?.classList.add('active');
+  if(btn) btn.classList.add('active');
+  else document.querySelector(`.nav-item[data-sec="${sec}"]`)?.classList.add('active');
+  setText('topbar-title',TITLES[sec]||sec);
+  LOADERS[sec]?.();
+};
+window.closeMod=id=>{ document.getElementById(id).classList.remove('open'); if(id==='cm-modal') resetCmPhotos(); };
+const openMod=id=>{ document.getElementById(id).classList.add('open'); if(typeof lucide!=="undefined")lucide.createIcons(); };
+
+// ── sidebar count ──
+async function loadSidebarCount() {
+  try { const s=await getDocs(collection(db,'students')); setText('sb-count',s.size); } catch(_){}
+}
+
+// ── overview ──
+async function loadOverview() {
+  try {
+    const [stuSnap,partySnap]=await Promise.all([getDocs(collection(db,'students')),getDocs(collection(db,'groupSystems'))]);
+    setText('ov-students',stuSnap.size);
+    setText('ov-parties',partySnap.size);
+    let ungrouped=0,checkin=0;
+    const tbody=document.getElementById('ov-recent'); tbody.innerHTML='';
+    stuSnap.docs.slice(0,6).forEach(d=>{
+      const s=d.data();
+      if(!s.groupId) ungrouped++;
+      if(s.checkinStatus==='checked_in') checkin++;
+      const tr=document.createElement('tr'); tr.onclick=()=>openSd(d.id,s);
+      const av=s.photoURL?`<img src="${s.photoURL}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0">`:`<div class="avatar avatar-sm">${(s.firstName||'?')[0]}</div>`;
+      tr.innerHTML=`<td><div class="flex items-center gap-2">${av}<div><div class="font-medium">${s.firstName||''} ${s.lastName||''}</div><div class="text-xs text-muted">${s.email||''}</div></div></div></td>
+        <td>${s.room||'-'}</td><td><div class="badge badge-${s.partyId?'green':'muted'}">${s.partyId?'มี Party':'ยังไม่มี'}</div></td>
+        <td class="text-xs text-muted">${s.registeredAt?.toDate?.()?.toLocaleDateString('th-TH',{day:'numeric',month:'short'})||'-'}</td>`;
+      tbody.appendChild(tr);
+    });
+    setText('ov-ungrouped',ungrouped);
+    setText('ov-checkin',checkin);
+    if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(e){ console.error(e); }
+}
+
+// ── students ──
+let allStudents=[],selStuId=null,selStuData=null;
+async function loadStudents() {
+  const tbody=document.getElementById('stu-tbody');
+  tbody.innerHTML='<tr><td colspan="7" class="text-center text-muted" style="padding:20px">กำลังโหลด...</td></tr>';
+  try {
+    const snap=await getDocs(collection(db,'students'));
+    allStudents=snap.docs.map(d=>({id:d.id,...d.data()}));
+    setText('students-count-label',`${allStudents.length} คน`);
+    setText('sb-count',allStudents.length);
+    renderStudents(allStudents);
+  } catch(e){ console.error(e); }
+}
+function renderStudents(list) {
+  const tbody=document.getElementById('stu-tbody');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="7" class="text-center text-muted" style="padding:20px">ไม่พบ</td></tr>'; return; }
+  tbody.innerHTML='';
+  list.forEach(s=>{
+    const tr=document.createElement('tr'); tr.onclick=()=>openSd(s.id,s);
+    const av=s.photoURL?`<img src="${s.photoURL}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0">`:`<div class="avatar avatar-sm">${(s.firstName||'?')[0]}</div>`;
+    const ci=s.checkinStatus==='checked_in';
+    tr.innerHTML=`<td><div class="flex items-center gap-2">${av}<div><div class="font-medium text-sm">${s.firstName||''} ${s.lastName||''}</div><div class="text-xs text-muted">${s.nickname||''}</div></div></div></td>
+      <td>${s.room||'-'}</td><td class="text-sm">${s.studentId||'-'}</td>
+      <td><div class="badge badge-${s.groupSystemId?'green':'muted'}">${s.groupSystemId?'มี Trio':'-'}</div></td>
+      <td>${s.groupId?`กลุ่ม ${s.groupId}`:'<span class="text-muted">-</span>'}</td>
+      <td>${ci?'<div class="badge badge-green">✓</div>':'<div class="badge badge-muted">-</div>'}</td>
+      <td class="text-xs text-muted">${s.registeredAt?.toDate?.()?.toLocaleDateString('th-TH',{day:'numeric',month:'short'})||'-'}</td>`;
+    tbody.appendChild(tr);
+  }); if(typeof lucide!=="undefined")lucide.createIcons();
+}
+window.filterStudents=()=>{
+  const q=(document.getElementById('stu-search')?.value||'').toLowerCase();
+  const room=document.getElementById('stu-room')?.value.trim()||'';
+  const status=document.getElementById('stu-status')?.value||'';
+  let f=allStudents;
+  if(q) f=f.filter(s=>(`${s.firstName} ${s.lastName} ${s.studentId} ${s.email}`).toLowerCase().includes(q));
+  if(room) f=f.filter(s=>(s.room||'').includes(room));
+  if(status==='has_party')  f=f.filter(s=>s.groupSystemId);
+  if(status==='no_party')   f=f.filter(s=>!s.groupSystemId);
+  if(status==='has_group')  f=f.filter(s=>s.groupId);
+  if(status==='checked_in') f=f.filter(s=>s.checkinStatus==='checked_in');
+  renderStudents(f);
+};
+
+// ── student detail panel ──
+window.openSd=async(id,data)=>{
+  selStuId=id; selStuData=data||allStudents.find(s=>s.id===id)||{};
+  const d=selStuData;
+  const photoEl=document.getElementById('sd-photo');
+  if(photoEl) photoEl.innerHTML=d.photoURL?`<img src="${d.photoURL}" style="width:40px;height:40px;border-radius:50%;object-fit:cover">`:`<div class="avatar" style="width:40px;height:40px">${(d.firstName||'?')[0]}</div>`;
+  setText('sd-name',`${d.firstName||''} ${d.lastName||''}`);
+  setText('sd-sub',`ห้อง ${d.room||'-'} · เลข ${d.studentId||'-'}`);
+  const body=document.getElementById('sd-body');
+  body.innerHTML=`
+    <div class="sd-section">
+      <div class="sd-section-title"><i data-lucide="user" style="width:11px;height:11px"></i> ข้อมูลส่วนตัว</div>
+      ${sdRow('ชื่อ-นามสกุล',`${d.firstName||''} ${d.lastName||''}`)}
+      ${sdRow('ชื่อเล่น',d.nickname,true,'sde-nick')}
+      ${sdRow('เลขประจำตัว',d.studentId)}
+      ${sdRow('ห้อง',d.room)}
+      ${sdRow('อีเมล',d.email)}
+      ${sdRow('เบอร์โทร',d.phone,true,'sde-phone','tel')}
+      ${sdRow('Line ID',d.lineId||'-',true,'sde-line')}
+      ${sdRow('กลุ่ม Trio',d.groupSystemId?'มีกลุ่มแล้ว':'ยังไม่มี')}
+      ${sdRow('Instagram',d.instagram||'-',true,'sde-ig')}
+    </div>
+    <div class="sd-section">
+      <div class="sd-section-title"><i data-lucide="heart-pulse" style="width:11px;height:11px"></i> ข้อมูลสุขภาพ</div>
+      ${sdRow('โรคประจำตัว',d.disease||'ไม่มี',true,'sde-disease')}
+      ${sdRow('ยา',d.medicine||'ไม่มี',true,'sde-medicine')}
+      ${sdRow('อาหารแพ้',d.allergy||'ไม่มี',true,'sde-allergy')}
+      ${sdRow('เบอร์ฉุกเฉิน',d.emergencyPhone||'-',true,'sde-emphone','tel')}
+    </div>
+    <div class="sd-section">
+      <div class="sd-section-title"><i data-lucide="shield" style="width:11px;height:11px"></i> Admin Override</div>
+      <div class="flex gap-2 flex-wrap">
+        <div class="form-group" style="flex:1;min-width:80px"><label class="form-label">กลุ่ม</label><input class="form-input sde" id="sde-group" value="${d.groupId||''}" placeholder="1-6"></div>
+        <div class="form-group" style="flex:1;min-width:80px"><label class="form-label">ทีม</label><input class="form-input sde" id="sde-team" value="${d.teamId||''}" placeholder="1-10"></div>
+      </div>
+      <div class="flex gap-2 flex-wrap" style="margin-top:8px">
+        <button class="btn btn-secondary btn-sm" onclick="forceCheckin('${id}')"><i data-lucide="check-circle" style="width:12px;height:12px"></i> Force Check-in</button>
+        <button class="btn btn-secondary btn-sm" onclick="resetParty('${id}')"><i data-lucide="x-circle" style="width:12px;height:12px"></i> ออกจาก Party</button>
+      </div>
+    </div>
+    <div class="sd-section">
+      <div class="sd-section-title"><i data-lucide="users" style="width:11px;height:11px"></i> กลุ่ม Trio</div>
+      <div id="sd-trio-wrap">
+        ${d.groupSystemId
+          ? `<div class="badge badge-green" style="margin-bottom:8px">มีกลุ่มแล้ว</div>
+             <button class="btn btn-secondary btn-sm" onclick="loadSdTrio('${id}','${d.groupSystemId}')">
+               <i data-lucide="eye" style="width:12px;height:12px"></i> ดูสมาชิก
+             </button>`
+          : '<div class="badge badge-muted">ยังไม่มีกลุ่ม</div>'}
+      </div>
+    </div>
+    <div class="sd-section">
+      <div class="sd-section-title"><i data-lucide="message-circle" style="width:11px;height:11px"></i> ฝากถึงสวัสดิการ</div>
+      <p class="text-sm text-muted">${d.welfareNote||'(ไม่มี)'}</p>
+    </div>`;
+  document.getElementById('sd-panel').classList.add('open');
+  // set real student toggle
+  const rst = document.getElementById('real-student-toggle');
+  if(rst) { if(d.isRealStudent) rst.classList.add('on'); else rst.classList.remove('on'); }
+  document.getElementById('sd-backdrop').classList.add('open');
+  if(typeof lucide!=="undefined")lucide.createIcons();
+};
+function sdRow(label,value,editable=false,editId='',type='text') {
+  const v=(value&&value!=='-')?value:'';
+  if(editable&&editId) return `<div class="sd-row"><span class="sd-label" style="min-width:96px;flex-shrink:0">${label}</span><input class="sd-editable" id="${editId}" value="${v}" type="${type}" style="flex:1;text-align:right;min-width:0"></div>`;
+  return `<div class="sd-row"><span class="sd-label">${label}</span><span class="sd-value">${value||'-'}</span></div>`;
+}
+window.closeSd=()=>{ document.getElementById('sd-panel').classList.remove('open'); document.getElementById('sd-backdrop').classList.remove('open'); };
+window.saveSd=async()=>{
+  if(!selStuId) return;
+  const btn=document.getElementById('sd-save-btn'); btn.disabled=true; btn.textContent='กำลังบันทึก...';
+  try {
+    const gv=id=>document.getElementById(id)?.value?.trim()||'';
+    const u={nickname:gv('sde-nick'),phone:gv('sde-phone'),lineId:gv('sde-line'),instagram:gv('sde-ig'),disease:gv('sde-disease'),medicine:gv('sde-medicine'),allergy:gv('sde-allergy'),emergencyPhone:gv('sde-emphone'),updatedAt:serverTimestamp(),updatedBy:auth.currentUser?.email};
+    const grp=gv('sde-group'),tm=gv('sde-team');
+    if(grp) u.groupId=parseInt(grp)||grp;
+    if(tm)  u.teamId=parseInt(tm)||tm;
+    await updateDoc(doc(db,'students',selStuId),u);
+    await logAudit('ADMIN_EDIT',`แก้ไข ${selStuData.firstName} ${selStuData.lastName}`,{targetUid:selStuId});
+    showToast('บันทึกสำเร็จ!'); loadStudents(); loadOverview();
+  } catch(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }
+  btn.disabled=false; btn.innerHTML='<i data-lucide="save" style="width:13px;height:13px"></i> บันทึก'; if(typeof lucide!=="undefined")lucide.createIcons();
+};
+window.deleteStudent=async()=>{
+  if(!selStuId||!confirm(`ลบข้อมูลของ "${selStuData.firstName} ${selStuData.lastName}"?\nไม่สามารถย้อนกลับได้`)) return;
+  try {
+    await deleteDoc(doc(db,'students',selStuId));
+    const [tq1,tq2]=await Promise.all([getDocs(query(collection(db,'trioRequests'),where('fromUid','==',selStuId))),getDocs(query(collection(db,'trioRequests'),where('toUids','array-contains',selStuId)))]).catch(()=>[{docs:[]},{docs:[]}]);
+    await Promise.all([...(tq1.docs||[]),...(tq2.docs||[])].map(d=>deleteDoc(doc(db,'trioRequests',d.id)).catch(()=>{})));
+    const [pi1,pi2]=await Promise.all([getDocs(query(collection(db,'partyInvites'),where('fromUid','==',selStuId))),getDocs(query(collection(db,'partyInvites'),where('toUid','==',selStuId)))]).catch(()=>[{docs:[]},{docs:[]}]);
+    await Promise.all([...(pi1.docs||[]),...(pi2.docs||[])].map(d=>deleteDoc(doc(db,'partyInvites',d.id)).catch(()=>{})));
+    if(selStuData.groupSystemId){
+      const ps=await getDoc(doc(db,'groupSystems',selStuData.groupSystemId)).catch(()=>null);
+      if(ps?.exists()){const p=ps.data();await updateDoc(doc(db,'groupSystems',selStuData.groupSystemId),{members:(p.members||[]).filter(m=>m.uid!==selStuId),memberUids:(p.memberUids||[]).filter(u=>u!==selStuId)}).catch(()=>{});}
+    }
+    await logAudit('DELETE_STUDENT',`ลบ ${selStuData.firstName} ${selStuData.lastName}`,{targetUid:selStuId});
+    showToast(`ลบข้อมูลแล้ว`); closeSd();
+    allStudents=allStudents.filter(s=>s.id!==selStuId); renderStudents(allStudents); loadOverview(); loadSidebarCount();
+  } catch(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }
+};
+window.forceCheckin=async(uid)=>{
+  try { await updateDoc(doc(db,'students',uid),{checkinStatus:'checked_in',checkinAt:serverTimestamp()}); await logAudit('ADMIN_CHECKIN',uid); showToast('เช็คอินสำเร็จ!'); loadStudents(); } catch(e){ showToast('เกิดข้อผิดพลาด','error'); }
+};
+window.resetParty=async(uid)=>{
+  if(!confirm('นำนักเรียนออกจากกลุ่ม Trio?')) return;
+  try {
+    const stu=await getDoc(doc(db,'students',uid));
+    const gsId=stu.data()?.groupSystemId;
+    if(gsId){
+      const ps=await getDoc(doc(db,'groupSystems',gsId));
+      if(ps.exists()){const p=ps.data();await updateDoc(doc(db,'groupSystems',gsId),{members:(p.members||[]).filter(m=>m.uid!==uid),memberUids:(p.memberUids||[]).filter(u=>u!==uid)});}
+    }
+    await updateDoc(doc(db,'students',uid),{groupSystemId:null});
+    showToast('นำออกจากกลุ่ม Trio แล้ว'); loadStudents();
+  } catch(e){ showToast('เกิดข้อผิดพลาด','error'); }
+};
+window.toggleRealStudent = async (el) => {
+  if(!selStuId) return;
+  el.classList.toggle('on');
+  const isReal = el.classList.contains('on');
+  try {
+    await updateDoc(doc(db,'students',selStuId),{isRealStudent:isReal});
+    showToast(isReal ? '✓ ยืนยันเป็นน้องจริงแล้ว' : 'ยกเลิกการยืนยัน');
+  } catch(e){ showToast('เกิดข้อผิดพลาด','error'); el.classList.toggle('on'); }
+};
+
+window.loadSdTrio = async (uid, gsId) => {
+  const wrap = document.getElementById('sd-trio-wrap');
+  if(!wrap) return;
+  wrap.innerHTML = '<div class="text-sm text-muted">กำลังโหลด...</div>';
+  try {
+    const snap = await getDoc(doc(db,'groupSystems',gsId));
+    if(!snap.exists()) { wrap.innerHTML='<div class="badge badge-muted">กลุ่มถูกยุบแล้ว</div>'; return; }
+    const g = snap.data();
+    const members = g.members || [];
+    wrap.innerHTML = `
+      <div style="background:var(--accent-dim);border-radius:var(--radius-lg);padding:12px;margin-bottom:8px">
+        <div style="font-size:0.72rem;color:var(--text-3);margin-bottom:6px">รหัสกลุ่ม: <strong style="letter-spacing:0.1em">${g.code||'-'}</strong></div>
+        ${members.map(m=>`
+          <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
+            ${m.photo?`<img src="${m.photo}" style="width:28px;height:28px;border-radius:50%;object-fit:cover">`:`<div class="avatar avatar-sm">${(m.name||'?')[0]}</div>`}
+            <div>
+              <div class="text-sm font-medium">${m.name||'-'}${m.uid===g.leaderId?' 👑':''}</div>
+              <div class="text-xs text-muted">ห้อง ${m.room||'-'} · เลข ${m.studentId||'-'}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="adminRemoveTrio('${uid}','${gsId}')">
+        <i data-lucide="x-circle" style="width:12px;height:12px"></i> นำออกจากกลุ่ม Trio
+      </button>`;
+    if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(e){ wrap.innerHTML='<div class="text-sm" style="color:var(--red)">โหลดไม่ได้</div>'; }
+};
+
+window.adminRemoveTrio = async (uid, gsId) => {
+  if(!confirm('นำนักเรียนคนนี้ออกจากกลุ่ม Trio?')) return;
+  try {
+    const ps = await getDoc(doc(db,'groupSystems',gsId));
+    if(ps.exists()) {
+      const p = ps.data();
+      await updateDoc(doc(db,'groupSystems',gsId), {
+        members:    (p.members||[]).filter(m=>m.uid!==uid),
+        memberUids: (p.memberUids||[]).filter(u=>u!==uid),
+      });
+    }
+    await updateDoc(doc(db,'students',uid),{groupSystemId:null});
+    showToast('นำออกจากกลุ่ม Trio แล้ว');
+    const wrap = document.getElementById('sd-trio-wrap');
+    if(wrap) wrap.innerHTML='<div class="badge badge-muted">ยังไม่มีกลุ่ม</div>';
+    loadStudents();
+  } catch(e){ showToast('เกิดข้อผิดพลาด','error'); }
+};
+
+window.impersonateFromPanel=()=>{ if(!selStuId) return; sessionStorage.setItem('imp_uid',selStuId); sessionStorage.setItem('imp_name',`${selStuData.firstName} ${selStuData.lastName}`); window.open(`dashboard.html?imp=${selStuId}`,'_blank'); };
+
+// ── groups ──
+async function loadGroups() {
+  const el=document.getElementById('groups-grid'); el.innerHTML='';
+  const colors=['var(--accent)','var(--green)','var(--amber)','var(--blue)','var(--red)','#a78bfa'];
+  try {
+    const stuSnap=await getDocs(collection(db,'students'));
+    const gc={},tc={},members={};
+    stuSnap.forEach(d=>{const s=d.data();if(s.groupId){gc[s.groupId]=(gc[s.groupId]||0)+1;if(!members[s.groupId])members[s.groupId]=[];members[s.groupId].push(s);if(s.teamId){const k=`${s.groupId}-${s.teamId}`;tc[k]=(tc[k]||0)+1;}}});
+    el.innerHTML=Array.from({length:6},(_,i)=>{
+      const g=i+1;
+      const avatars=(members[g]||[]).slice(0,5).map(m=>m.photoURL?`<img src="${m.photoURL}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;border:2px solid var(--bg-1);margin-right:-6px">`:`<div style="width:22px;height:22px;border-radius:50%;background:${colors[i]};display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:#fff;font-weight:700;border:2px solid var(--bg-1);margin-right:-6px">${(m.firstName||'?')[0]}</div>`).join('');
+      return `<div class="group-block">
+        <div class="group-block-head">
+          <div class="flex items-center gap-2"><div style="width:8px;height:8px;border-radius:50%;background:${colors[i]}"></div><span class="font-medium text-sm">กลุ่ม ${g}</span></div>
+          <div class="badge badge-muted text-xs">${gc[g]||0} คน</div>
+        </div>
+        ${avatars?`<div style="display:flex;align-items:center;padding:8px 14px 2px">${avatars}${(gc[g]||0)>5?`<div style="width:22px;height:22px;border-radius:50%;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--text-3);border:2px solid var(--bg-1);margin-right:-6px">+${gc[g]-5}</div>`:''}
+        </div>`:''}
+        <div class="group-block-body">${Array.from({length:10},(_,j)=>`<div class="team-chip"><span class="text-xs">ทีม ${j+1}</span><span class="text-xs text-muted">${tc[`${g}-${j+1}`]||0}</span></div>`).join('')}</div>
+      </div>`;
+    }).join('');
+  } catch(e){ el.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--red)">โหลดไม่ได้</div>'; }
+}
+const DEFAULT_GROUP_NAMES = ['Vermelha','Dourada','Verde','Azul','Roxa','Rosa'];
+const GROUP_COLORS = ['var(--accent)','var(--green)','var(--amber)','var(--blue)','var(--red)','#a78bfa'];
+
+async function loadGroupRevealState() {
+  try {
+    const snap = await getDoc(doc(db,'systemSettings','groupReveal'));
+    const d = snap.exists() ? snap.data() : {};
+    const toggle = document.getElementById('reveal-toggle');
+    if(toggle) { if(d.published) toggle.classList.add('on'); else toggle.classList.remove('on'); }
+    if(d.revealAt) {
+      const dt = d.revealAt.toDate ? d.revealAt.toDate() : new Date(d.revealAt);
+      const el = document.getElementById('reveal-time');
+      if(el) el.value = dt.toISOString().slice(0,16);
+    }
+  } catch(_){}
+}
+
+window.toggleReveal = async (el) => {
+  el.classList.toggle('on');
+  const on = el.classList.contains('on');
+  try {
+    await setDoc(doc(db,'systemSettings','groupReveal'),{published:on,publishedAt:on?serverTimestamp():null},{merge:true});
+    showToast(on ? '✓ เปิดแสดงกลุ่มแล้ว' : 'ซ่อนกลุ่มแล้ว');
+  } catch(e){ showToast('เกิดข้อผิดพลาด','error'); }
+};
+
+async function loadGroupNames() {
+  const grid = document.getElementById('group-names-grid');
+  if(!grid) return;
+  let names = [...DEFAULT_GROUP_NAMES];
+  try {
+    const snap = await getDoc(doc(db,'systemSettings','groupNames'));
+    if(snap.exists() && snap.data().names) names = snap.data().names;
+  } catch(_){}
+  grid.innerHTML = names.map((n,i) => `
+    <div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+        <div style="width:10px;height:10px;border-radius:50%;background:${GROUP_COLORS[i]};flex-shrink:0"></div>
+        <span style="font-size:0.72rem;color:var(--text-3)">กลุ่ม ${i+1}</span>
+      </div>
+      <input class="form-input" id="gname-${i}" value="${n}" style="font-size:0.875rem">
+    </div>`).join('');
+}
+
+window.saveGroupNames = async () => {
+  const names = Array.from({length:6},(_,i) => document.getElementById('gname-'+i)?.value.trim() || DEFAULT_GROUP_NAMES[i]);
+  try {
+    await setDoc(doc(db,'systemSettings','groupNames'),{names},{merge:true});
+    await logAudit('UPDATE_GROUP_NAMES', names.join(', '));
+    showToast('บันทึกชื่อกลุ่มแล้ว');
+  } catch(e){ showToast('เกิดข้อผิดพลาด','error'); }
+};
+
+window.doAssignGroups=async()=>{
+  if(!confirm('สุ่มจัดกลุ่มใหม่ทั้งหมด?')) return;
+  showToast('กำลังสุ่มจัดกลุ่ม...');
+  try {
+    const snap=await getDocs(collection(db,'students'));
+    const students=snap.docs.map(d=>({id:d.id,...d.data()})).sort(()=>Math.random()-0.5);
+    await Promise.all(students.map((s,i)=>updateDoc(doc(db,'students',s.id),{groupId:Math.floor(i/100)+1,teamId:Math.floor((i%100)/10)+1})));
+    await logAudit('ASSIGN_GROUPS',`${students.length} คน`);
+    showToast('สุ่มจัดกลุ่มสำเร็จ!'); loadGroups();
+  } catch(e){ showToast('เกิดข้อผิดพลาด','error'); }
+};
+window.doResetGroups=async()=>{
+  if(!confirm('ล้างข้อมูลกลุ่มทั้งหมด?')) return;
+  const snap=await getDocs(collection(db,'students'));
+  await Promise.all(snap.docs.map(d=>updateDoc(doc(db,'students',d.id),{groupId:null,teamId:null})));
+  await logAudit('RESET_GROUPS',''); showToast('ล้างข้อมูลสำเร็จ'); loadGroups();
+};
+window.doPublishGroups=async()=>{
+  if(!confirm('เปิดเผยผลกลุ่มให้นักเรียนเห็น?')) return;
+  const revealTime=document.getElementById('reveal-time')?.value;
+  await setDoc(doc(db,'systemSettings','groupReveal'),{published:true,publishedAt:serverTimestamp(),revealAt:revealTime?new Date(revealTime):serverTimestamp()},{merge:true});
+  await logAudit('PUBLISH_GROUPS',''); showToast('เปิดเผยผลแล้ว!');
+};
+window.saveRevealTime=async()=>{
+  const t=document.getElementById('reveal-time')?.value;
+  if(!t){ showToast('กรุณาเลือกเวลา','error'); return; }
+  await setDoc(doc(db,'systemSettings','groupReveal'),{revealAt:new Date(t)},{merge:true});
+  await logAudit('SET_REVEAL_TIME',t); showToast('บันทึกเวลาแล้ว');
+};
+
+// ── check-in ──
+async function loadCheckin() {
+  const tbody=document.getElementById('checkin-tbody');
+  try {
+    const q=query(collection(db,'students'),where('checkinStatus','==','checked_in'));
+    const snap=await getDocs(q);
+    setText('checkin-count-label',`เช็คอินแล้ว ${snap.size} / ${allStudents.length||'?'} คน`);
+    if(snap.empty){ tbody.innerHTML='<tr><td colspan="4" class="text-center text-muted" style="padding:20px">ยังไม่มี</td></tr>'; return; }
+    tbody.innerHTML='';
+    snap.forEach(d=>{const s=d.data();const tr=document.createElement('tr');
+      tr.innerHTML=`<td class="font-medium">${s.firstName||''} ${s.lastName||''}</td><td>${s.room||'-'}</td><td>${s.groupId?`กลุ่ม ${s.groupId}`:'-'}</td><td class="text-xs text-muted">${s.checkinAt?.toDate?.()?.toLocaleTimeString('th-TH')||'-'}</td>`;
+      tbody.appendChild(tr);});
+  } catch(e){}
+}
+window.searchCheckin=async()=>{
+  const val=document.getElementById('checkin-search')?.value.trim(); if(!val) return;
+  const res=document.getElementById('checkin-result'); res.innerHTML='<div class="text-sm text-muted">กำลังค้นหา...</div>';
+  try {
+    const q=query(collection(db,'students'),where('studentId','==',val));
+    const snap=await getDocs(q);
+    if(snap.empty){ res.innerHTML='<div class="text-sm" style="color:var(--red)">ไม่พบนักเรียน</div>'; return; }
+    const s=snap.docs[0].data(); const id=snap.docs[0].id;
+    const ci=s.checkinStatus==='checked_in';
+    res.innerHTML=`<div class="card2" style="padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div><div class="font-medium">${s.firstName||''} ${s.lastName||''}</div><div class="text-sm text-muted">ห้อง ${s.room||'-'} · กลุ่ม ${s.groupId||'-'}</div></div>
+      <div class="flex items-center gap-8">
+        <div class="badge badge-${ci?'green':'muted'}">${ci?'✓ เช็คอินแล้ว':'ยังไม่ได้'}</div>
+        ${!ci?`<button class="btn btn-primary btn-sm" onclick="forceCheckin('${id}')"><i data-lucide="check" style="width:13px;height:13px"></i> เช็คอิน</button>`:''}
+      </div></div>`;
+    if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(e){ res.innerHTML='<div class="text-sm" style="color:var(--red)">เกิดข้อผิดพลาด</div>'; }
+};
+
+// ── registration ──
+async function loadRegSettings() {
+  try {
+    const snap=await getDoc(doc(db,'registrationSettings','main'));
+    if(!snap.exists()) return;
+    const d=snap.data();
+    const rt=document.getElementById('reg-toggle'); if(rt){ if(d.open) rt.classList.add('on'); else rt.classList.remove('on'); }
+    const et=document.getElementById('edit-toggle'); if(et){ if(d.allowEdit) et.classList.add('on'); else et.classList.remove('on'); }
+    if(d.openAt){const el=document.getElementById('reg-open'); if(el) el.value=d.openAt.slice(0,16);}
+    if(d.closeAt){const el=document.getElementById('reg-close'); if(el) el.value=d.closeAt.slice(0,16);}
+    if(d.eligibleRooms){const el=document.getElementById('eligible-rooms'); if(el) el.value=d.eligibleRooms.join(',');}
+  } catch(e){}
+  // โหลด checkin toggle
+  try {
+    const cs = await getDoc(doc(db,'systemSettings','checkin'));
+    const ct = document.getElementById('checkin-toggle');
+    if(ct) { if(cs.exists()&&cs.data().enabled) ct.classList.add('on'); else ct.classList.remove('on'); }
+  } catch(_){}
+}
+window.saveRegSetting=async(key,val)=>{ try{ await setDoc(doc(db,'registrationSettings','main'),{[key]:val,updatedAt:serverTimestamp()},{merge:true}); showToast(val?'เปิดแล้ว':'ปิดแล้ว'); } catch(_){} };
+window.saveRegSchedule=async()=>{
+  try { await setDoc(doc(db,'registrationSettings','main'),{openAt:v('reg-open'),closeAt:v('reg-close'),updatedAt:serverTimestamp()},{merge:true}); showToast('บันทึกแล้ว'); } catch(e){ showToast('เกิดข้อผิดพลาด','error'); }
+};
+window.saveEligibleRooms=async()=>{
+  const raw=v('eligible-rooms'); const rooms=raw?raw.split(',').map(r=>r.trim()).filter(Boolean):[];
+  try { await setDoc(doc(db,'registrationSettings','main'),{eligibleRooms:rooms,updatedAt:serverTimestamp()},{merge:true}); await logAudit('UPDATE_ELIGIBLE_ROOMS',rooms.length?`${rooms.length} ห้อง`:'ทุกห้อง'); showToast(rooms.length?`บันทึก ${rooms.length} ห้อง`:'เปิดทุกห้อง'); } catch(e){ showToast('เกิดข้อผิดพลาด','error'); }
+};
+
+// ── event settings ──
+async function loadEventSettings() {
+  try {
+    const snap=await getDoc(doc(db,'eventSettings','main')); if(!snap.exists()) return;
+    const d=snap.data();
+    const set=(id,val)=>{ const el=document.getElementById(id); if(el) el.value=val||''; };
+    set('ev-name',d.name);set('ev-date',d.date);set('ev-time',d.time);set('ev-loc',d.location);set('ev-desc',d.desc);set('ev-welfare',d.welfarePhone);set('ev-reg-phone',d.regPhone);set('ev-line',d.lineUrl);set('ev-medical',d.medicalLoc);
+  } catch(e){}
+}
+window.saveEventSettings=async()=>{
+  const btn=document.querySelector('#s-event-settings .btn-primary');
+  if(btn){btn.disabled=true;btn.textContent='กำลังบันทึก...';}
+  try {
+    await setDoc(doc(db,'eventSettings','main'),{name:v('ev-name'),date:v('ev-date'),time:v('ev-time'),location:v('ev-loc'),desc:v('ev-desc'),welfarePhone:v('ev-welfare'),regPhone:v('ev-reg-phone'),lineUrl:v('ev-line'),medicalLoc:v('ev-medical'),updatedAt:serverTimestamp()},{merge:true});
+    await logAudit('UPDATE_EVENT',''); showToast('บันทึกสำเร็จ!');
+  } catch(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }
+  if(btn){btn.disabled=false;btn.innerHTML='<i data-lucide="save" style="width:14px;height:14px"></i> บันทึกทั้งหมด';if(typeof lucide!=="undefined")lucide.createIcons();}
+};
+
+// ── committee ──
+let allCommittee=[],editingCmId=null,cmPendingPhotos=[],cmExistingPhotos=[];
+async function loadCommittee() {
+  const tbody=document.getElementById('cm-tbody');
+  tbody.innerHTML='<tr><td colspan="5" class="text-center text-muted" style="padding:20px">กำลังโหลด...</td></tr>';
+  try {
+    const snap=await getDocs(collection(db,'committees'));
+    allCommittee=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderCommittee(allCommittee);
+  } catch(e){ console.error(e); }
+}
+function renderCommittee(list) {
+  const tbody=document.getElementById('cm-tbody');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="5" class="text-center text-muted" style="padding:20px">ยังไม่มี</td></tr>'; return; }
+  tbody.innerHTML='';
+  list.forEach(m=>{
+    const mainPhoto=(m.photos&&m.photos[0])||m.photoURL||'';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><div class="flex items-center gap-2">
+      ${mainPhoto?`<img src="${mainPhoto}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0">`:`<div class="avatar avatar-sm">${(m.firstName||'?')[0]}</div>`}
+      <div><div class="font-medium text-sm">${m.firstName||''} ${m.lastName||''}</div><div class="text-xs text-muted">${m.nickname||''}</div></div></div></td>
+      <td class="text-sm">${m.position||'-'}</td><td class="text-sm">${m.room||'-'}</td><td class="text-sm">${m.instagram||'-'}</td>
+      <td><div class="flex gap-2">
+        <button class="btn btn-secondary btn-sm" onclick="openEditCm('${m.id}')"><i data-lucide="edit-2" style="width:12px;height:12px"></i></button>
+        <button class="btn btn-danger btn-icon btn-sm" onclick="deleteCmMember('${m.id}')"><i data-lucide="trash-2" style="width:12px;height:12px"></i></button>
+      </div></td>`;
+    tbody.appendChild(tr);
+  }); if(typeof lucide!=="undefined")lucide.createIcons();
+}
+window.filterCommittee=()=>{ const q=(document.getElementById('cm-search')?.value||'').toLowerCase(); renderCommittee(q?allCommittee.filter(m=>(`${m.firstName} ${m.lastName} ${m.position}`).toLowerCase().includes(q)):allCommittee); };
+window.onCmPhotoChange=e=>{
+  Array.from(e.target.files).forEach(file=>{ if(file.size>3*1024*1024){ showToast('ไฟล์ใหญ่เกิน 3MB','error'); return; } const r=new FileReader(); r.onload=ev=>{ cmPendingPhotos.push({file,preview:ev.target.result}); renderCmPhotos(); }; r.readAsDataURL(file); }); e.target.value='';
+};
+function renderCmPhotos() {
+  const wrap=document.getElementById('cm-photos-preview'); if(!wrap) return;
+  const all=[...cmExistingPhotos.map((url,i)=>({url,ex:true,idx:i})),...cmPendingPhotos.map((p,i)=>({url:p.preview,ex:false,idx:i}))];
+  if(!all.length){ wrap.innerHTML=''; return; }
+  wrap.innerHTML=all.map((item,i)=>`<div style="position:relative;width:52px;height:52px;border-radius:8px;overflow:hidden;border:2px solid ${i===0?'var(--accent)':'var(--border)'}">
+    <img src="${item.url}" style="width:100%;height:100%;object-fit:cover">
+    ${i===0?`<div style="position:absolute;bottom:0;left:0;right:0;background:var(--accent);color:#fff;font-size:0.45rem;text-align:center">หลัก</div>`:''}
+    <button onclick="removeCmPhoto(${item.ex},${item.idx})" style="position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:rgba(0,0,0,0.6);border:none;color:#fff;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center">×</button></div>`).join('');
+}
+window.removeCmPhoto=(ex,idx)=>{ if(ex===true||ex==='true') cmExistingPhotos.splice(idx,1); else cmPendingPhotos.splice(idx,1); renderCmPhotos(); };
+function resetCmPhotos(){ cmPendingPhotos=[]; cmExistingPhotos=[]; renderCmPhotos(); }
+window.openCmModal=()=>{ editingCmId=null; resetCmPhotos(); setText('cm-modal-title','เพิ่มบุคลากร'); document.getElementById('cm-del-btn').style.display='none'; ['cm-fn','cm-ln','cm-nick','cm-room','cm-pos','cm-email','cm-ig','cm-bio'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}); openMod('cm-modal'); };
+window.openEditCm=async id=>{ const m=allCommittee.find(x=>x.id===id); if(!m) return; editingCmId=id; setText('cm-modal-title','แก้ไขบุคลากร'); document.getElementById('cm-del-btn').style.display='flex';
+  const setV=(eid,val)=>{ const el=document.getElementById(eid); if(el) el.value=val||''; };
+  setV('cm-fn',m.firstName);setV('cm-ln',m.lastName);setV('cm-nick',m.nickname);setV('cm-room',m.room);setV('cm-pos',m.position);setV('cm-bio',m.bio||'');setV('cm-email',m.email||'');setV('cm-ig',(m.instagram||'').replace('@',''));
+  cmPendingPhotos=[]; cmExistingPhotos=m.photos||(m.photoURL?[m.photoURL]:[]);
+  renderCmPhotos(); openMod('cm-modal');
+};
+window.saveCmMember=async()=>{
+  const igRaw=v('cm-ig').replace('@','');
+  const data={firstName:v('cm-fn'),lastName:v('cm-ln'),nickname:v('cm-nick'),room:v('cm-room'),position:v('cm-pos'),bio:v('cm-bio'),email:v('cm-email'),instagram:igRaw?'@'+igRaw:''};
+  if(!data.firstName){ showToast('กรุณากรอกชื่อ','error'); return; }
+  const btn=document.getElementById('cm-save-btn'); btn.disabled=true; btn.textContent='กำลังบันทึก...';
+  try {
+    let docId=editingCmId;
+    if(docId){ await updateDoc(doc(db,'committees',docId),data); await logAudit('EDIT_COMMITTEE',`${data.firstName} ${data.lastName}`); }
+    else { const r=await addDoc(collection(db,'committees'),data); docId=r.id; await logAudit('ADD_COMMITTEE',`${data.firstName} ${data.lastName}`); }
+    if(cmPendingPhotos.length>0||cmExistingPhotos.length>0) {
+      showToast('กำลังอัปโหลดรูป...');
+      const urls=[...cmExistingPhotos];
+      for(let i=0;i<cmPendingPhotos.length;i++){
+        const blob=await resizeBlob(cmPendingPhotos[i].file,600);
+        const r=ref(storage,`committees/${docId}_${Date.now()}_${i}`);
+        await uploadBytes(r,blob,{contentType:'image/jpeg'});
+        urls.push(await getDownloadURL(r));
+      }
+      await updateDoc(doc(db,'committees',docId),{photos:urls,photoURL:urls[0]||''});
+    }
+    showToast(editingCmId?'แก้ไขสำเร็จ!':'เพิ่มบุคลากรสำเร็จ!'); closeMod('cm-modal'); loadCommittee();
+  } catch(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }
+  btn.disabled=false; btn.innerHTML='<i data-lucide="save" style="width:14px;height:14px"></i> บันทึก'; if(typeof lucide!=="undefined")lucide.createIcons();
+};
+window.deleteCmMember=async(id)=>{ const tid=id||editingCmId; if(!tid||!confirm('ลบบุคลากรนี้?')) return; try{ await deleteDoc(doc(db,'committees',tid)); await logAudit('DELETE_COMMITTEE',tid); showToast('ลบสำเร็จ'); closeMod('cm-modal'); loadCommittee(); } catch(e){ showToast('เกิดข้อผิดพลาด','error'); } };
+
+// ── announcements ──
+async function loadAnnouncements() {
+  const tbody=document.getElementById('ann-tbody');
+  try {
+    const snap=await getDocs(query(collection(db,'announcements'),orderBy('createdAt','desc')));
+    tbody.innerHTML='';
+    if(snap.empty){ tbody.innerHTML='<tr><td colspan="4" class="text-center text-muted" style="padding:20px">ยังไม่มี</td></tr>'; return; }
+    snap.forEach(d=>{ const a=d.data(); const tr=document.createElement('tr');
+      tr.innerHTML=`<td class="font-medium">${a.title||'-'}</td><td class="text-sm text-muted">${a.createdAt?.toDate?.()?.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'})||'-'}</td><td>${a.pinned?'<div class="badge badge-accent">Pin</div>':'-'}</td><td><button class="btn btn-danger btn-icon btn-sm" onclick="deleteAnn('${d.id}')"><i data-lucide="trash-2" style="width:12px;height:12px"></i></button></td>`;
+      tbody.appendChild(tr);
+    }); if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(e){}
+}
+window.openAnnModal=()=>{ ['ann-title','ann-body'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}); document.getElementById('ann-pin').checked=false; openMod('ann-modal'); };
+window.saveAnn=async()=>{
+  const title=v('ann-title'); if(!title){ showToast('กรุณากรอกชื่อ','error'); return; }
+  const btn=document.querySelector('#ann-modal .btn-primary'); if(btn){btn.disabled=true;btn.textContent='กำลังเผยแพร่...';}
+  try {
+    await addDoc(collection(db,'announcements'),{title,body:v('ann-body'),pinned:document.getElementById('ann-pin')?.checked||false,createdAt:serverTimestamp(),createdBy:auth.currentUser?.email||''});
+    await logAudit('CREATE_ANN',title); showToast('เผยแพร่แล้ว!'); closeMod('ann-modal'); loadAnnouncements();
+  } catch(e){ showToast('เกิดข้อผิดพลาด','error'); }
+  if(btn){btn.disabled=false;btn.innerHTML='<i data-lucide="send" style="width:14px;height:14px"></i> เผยแพร่';if(typeof lucide!=="undefined")lucide.createIcons();}
+};
+window.deleteAnn=async id=>{ if(!confirm('ลบประกาศนี้?')) return; await deleteDoc(doc(db,'announcements',id)).catch(()=>{}); showToast('ลบสำเร็จ'); loadAnnouncements(); };
+
+// ── staff accounts ──
+let editingSaId=null;
+async function loadStaffAccounts() {
+  const tbody=document.getElementById('sa-tbody');
+  tbody.innerHTML='<tr><td colspan="5" class="text-center text-muted" style="padding:20px">กำลังโหลด...</td></tr>';
+  try {
+    const snap=await getDocs(collection(db,'staffAccounts'));
+    tbody.innerHTML='';
+    if(snap.empty){ tbody.innerHTML='<tr><td colspan="5" class="text-center text-muted" style="padding:20px">ยังไม่มี</td></tr>'; return; }
+    const rl={staff:'พี่คณะกรรมการฯ',group_lead:'พี่กลุ่ม',base_lead:'พี่ฐาน',welfare:'พี่สวัสดิการ',admin:'Admin'};
+    snap.forEach(d=>{ const a=d.data(); const tr=document.createElement('tr');
+      tr.innerHTML=`<td class="font-medium">${a.name||'-'}</td><td class="text-sm text-muted">${a.email||'-'}</td><td><div class="badge badge-accent">${rl[a.role]||a.role}</div></td>
+        <td><div class="badge badge-${a.active?'green':'muted'}" style="cursor:pointer" onclick="toggleStaff('${d.id}',${!a.active})">${a.active?'เปิด':'ปิด'}</div></td>
+        <td><div class="flex gap-2">
+          <button class="btn btn-secondary btn-sm" onclick="openEditSa('${d.id}')"><i data-lucide="edit-2" style="width:12px;height:12px"></i></button>
+          <button class="btn btn-danger btn-icon btn-sm" onclick="quickDeleteSa('${d.id}')"><i data-lucide="trash-2" style="width:12px;height:12px"></i></button>
+        </div></td>`;
+      tbody.appendChild(tr);
+    }); if(typeof lucide!=="undefined")lucide.createIcons();
+  } catch(e){}
+}
+window.openSaModal=()=>{ editingSaId=null; setText('sa-modal-title','เพิ่มบัญชี'); document.getElementById('sa-del-btn').style.display='none'; ['sa-name','sa-email'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';}); document.getElementById('sa-role').value='staff'; document.getElementById('sa-toggle').className='toggle on'; openMod('sa-modal'); };
+window.openEditSa=async id=>{ try{ const snap=await getDoc(doc(db,'staffAccounts',id)); if(!snap.exists()) return; const a=snap.data(); editingSaId=id; setText('sa-modal-title','แก้ไขบัญชี'); document.getElementById('sa-del-btn').style.display='flex'; const setV=(eid,val)=>{const el=document.getElementById(eid);if(el)el.value=val||'';}; setV('sa-name',a.name);setV('sa-email',a.email); document.getElementById('sa-role').value=a.role||'staff'; document.getElementById('sa-toggle').className='toggle'+(a.active?' on':''); openMod('sa-modal'); } catch(e){ showToast('เกิดข้อผิดพลาด','error'); } };
+window.saveSaAccount=async()=>{
+  const name=v('sa-name'),email=v('sa-email').toLowerCase().trim(),role=document.getElementById('sa-role')?.value||'staff',active=document.getElementById('sa-toggle')?.classList.contains('on')??true;
+  if(!name){ showToast('กรุณากรอกชื่อ','error'); return; }
+  if(!email||!email.endsWith('@student.triamudom.ac.th')){ showToast('ต้องเป็น @student.triamudom.ac.th','error'); return; }
+  const btn=document.getElementById('sa-save-btn'); btn.disabled=true; btn.textContent='กำลังบันทึก...';
+  try {
+    const data={name,email,role,active,updatedAt:serverTimestamp()};
+    if(editingSaId){ await updateDoc(doc(db,'staffAccounts',editingSaId),data); await logAudit('EDIT_STAFF',`${name}`); showToast('แก้ไขสำเร็จ!'); }
+    else { data.createdAt=serverTimestamp(); await addDoc(collection(db,'staffAccounts'),data); await logAudit('ADD_STAFF',`${name}`); showToast('เพิ่มสำเร็จ!'); }
+    closeMod('sa-modal'); loadStaffAccounts();
+  } catch(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }
+  btn.disabled=false; btn.innerHTML='<i data-lucide="save" style="width:14px;height:14px"></i> บันทึก'; if(typeof lucide!=="undefined")lucide.createIcons();
+};
+window.deleteSaAccount=async()=>{ if(!editingSaId||!confirm('ลบบัญชีนี้?')) return; try{ await deleteDoc(doc(db,'staffAccounts',editingSaId)); showToast('ลบสำเร็จ'); closeMod('sa-modal'); loadStaffAccounts(); } catch(e){ showToast('เกิดข้อผิดพลาด','error'); } };
+window.toggleStaff=async(id,active)=>{ try{ await updateDoc(doc(db,'staffAccounts',id),{active}); showToast(active?'เปิดแล้ว':'ปิดแล้ว'); loadStaffAccounts(); } catch(e){ showToast('เกิดข้อผิดพลาด','error'); } };
+window.quickDeleteSa=async(id)=>{ if(!confirm('ลบบัญชีนี้?')) return; try{ await deleteDoc(doc(db,'staffAccounts',id)); showToast('ลบแล้ว'); loadStaffAccounts(); } catch(e){ showToast('เกิดข้อผิดพลาด','error'); } };
+
+// ── impersonate ──
+let allImpStudents=[],selImpUid=null,selImpData=null;
+async function loadImpersonate() {
+  if(allImpStudents.length){ renderImpList(allImpStudents); return; }
+  try {
+    const snap=await getDocs(collection(db,'students'));
+    allImpStudents=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.firstName||'').localeCompare(b.firstName||'','th'));
+    renderImpList(allImpStudents);
+  } catch(e){}
+}
+function renderImpList(list) {
+  const el=document.getElementById('imp-list');
+  if(!list.length){ el.innerHTML='<div class="text-center text-muted text-sm" style="padding:16px">ไม่พบ</div>'; return; }
+  el.innerHTML=list.map(s=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:var(--radius-sm);transition:background 120ms" onmouseover="this.style.background='var(--bg-2)'" onmouseout="this.style.background=''" onclick="selectImp('${s.id}')">
+    ${s.photoURL?`<img src="${s.photoURL}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0">`:`<div class="avatar avatar-sm">${(s.firstName||'?')[0]}</div>`}
+    <div style="flex:1;min-width:0"><div class="font-medium text-sm">${s.firstName||''} ${s.lastName||''}</div><div class="text-xs text-muted">ห้อง ${s.room||'-'} · เลข ${s.studentId||'-'}</div></div>
+    <i data-lucide="chevron-right" style="width:13px;height:13px;color:var(--text-3)"></i>
+  </div>`).join('');
+  if(typeof lucide!=="undefined")lucide.createIcons();
+}
+window.filterImpersonate=()=>{ const q=(document.getElementById('imp-search')?.value||'').toLowerCase(); renderImpList(q?allImpStudents.filter(s=>(`${s.firstName} ${s.lastName} ${s.studentId} ${s.room}`).toLowerCase().includes(q)):allImpStudents); };
+window.selectImp=(uid)=>{
+  selImpUid=uid; selImpData=allImpStudents.find(s=>s.id===uid)||{};
+  const prev=document.getElementById('imp-preview'); if(prev) prev.style.display='block';
+  const av=document.getElementById('imp-prev-av'); if(av) av.innerHTML=selImpData.photoURL?`<img src="${selImpData.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:(selImpData.firstName||'?')[0];
+  setText('imp-prev-name',`${selImpData.firstName||''} ${selImpData.lastName||''}`);
+  setText('imp-prev-sub',`ห้อง ${selImpData.room||'-'} · เลข ${selImpData.studentId||'-'}`);
+  if(typeof lucide!=="undefined")lucide.createIcons();
+};
+window.doImpersonate=()=>{ if(!selImpUid){ showToast('เลือกนักเรียนก่อน','error'); return; } sessionStorage.setItem('imp_uid',selImpUid); sessionStorage.setItem('imp_name',`${selImpData.firstName||''} ${selImpData.lastName||''}`); window.open(`dashboard.html?imp=${selImpUid}`,'_blank'); showToast(`เปิดมุมมองของ ${selImpData.firstName||selImpUid}`); };
+
+// ── export ──
+window.syncToSheets = async (action) => {
+  const url = document.getElementById('sheets-url')?.value.trim();
+  if(!url) { showToast('กรุณาใส่ Apps Script URL ก่อน','error'); return; }
+  // save URL
+  localStorage.setItem('sheets_url', url);
+  const status = document.getElementById('sync-status');
+  if(status) status.textContent = 'กำลัง sync...';
+  showToast('กำลัง sync ไป Google Sheet...');
+  try {
+    const res = await fetch(`${url}?action=${action}`, {mode:'no-cors'});
+    if(status) status.textContent = `✓ Sync สำเร็จ (${new Date().toLocaleTimeString('th-TH')})`;
+    showToast('Sync สำเร็จ! เช็คใน Google Sheet ได้เลย');
+  } catch(e) {
+    if(status) status.textContent = `✓ ส่งคำขอแล้ว (no-cors mode)`;
+    showToast('ส่งคำขอ Sync แล้ว เช็คใน Sheet ได้เลย');
+  }
+};
+
+// โหลด saved URL
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('sheets_url');
+  if(saved) { const el=document.getElementById('sheets-url'); if(el) el.value=saved; }
+});
+
+window.doExportRosterPDF = async () => {
+  showToast('กำลังเตรียม PDF...');
+  try {
+    let gNames = ['Vermelha','Dourada','Verde','Azul','Roxa','Rosa'];
+    try { const gs=await getDoc(doc(db,'systemSettings','groupNames')); if(gs.exists()&&gs.data().names) gNames=gs.data().names; } catch(_){}
+    const snap = await getDocs(collection(db,'students'));
+    const students = snap.docs.map(d=>({id:d.id,...d.data()}))
+      .filter(s=>s.status==='registered')
+      .sort((a,b)=>(a.groupId-b.groupId)||((a.teamId||0)-(b.teamId||0))||((a.firstName||'').localeCompare(b.firstName||'','th')));
+
+    const byGroup = {};
+    const ungrouped = [];
+    students.forEach(s=>{ const g=s.groupId; if(g) { byGroup[g]=byGroup[g]||[]; byGroup[g].push(s); } else ungrouped.push(s); });
+
+    const GROUP_COLORS = ['#2d6b5a','#1a7a4e','#9a7408','#1a5e8a','#b52525','#7c3aed'];
+
+    let bodyHtml = `
+      <div class="cover">
+        <h1>ใบรายชื่อลงทะเบียนเข้าร่วมกิจกรรม</h1>
+        <h2>Sci-Math CARNIVAL 89 · สายวิทยาศาสตร์–คณิตศาสตร์</h2>
+        <hr>
+        <table class="info">
+          <tr><td class="k">วันที่จัดกิจกรรม</td><td>27 มิถุนายน 2569</td></tr>
+          <tr><td class="k">สถานที่</td><td>บริเวณลานอเนกประสงค์ 70 ปี โรงเรียนเตรียมอุดมศึกษา</td></tr>
+          <tr><td class="k">นักเรียนทั้งหมด</td><td>${students.length} คน</td></tr>
+        </table>
+        <table class="summary">
+          <thead><tr><th>กลุ่ม</th><th>ชื่อกลุ่ม</th><th>จำนวน</th></tr></thead>
+          <tbody>
+          ${Object.keys(byGroup).sort((a,b)=>a-b).map(gid=>`
+            <tr><td style="text-align:center">${gid}</td><td>กลุ่มที่ ${gid} — ${gNames[(gid-1)%6]||'กลุ่ม '+gid}</td><td style="text-align:center">${byGroup[gid].length}</td></tr>`).join('')}
+          ${ungrouped.length?`<tr><td style="text-align:center">-</td><td>ยังไม่จัดกลุ่ม</td><td style="text-align:center">${ungrouped.length}</td></tr>`:''}
+          <tr class="total"><td></td><td>รวมทั้งหมด</td><td style="text-align:center">${students.length}</td></tr>
+          </tbody>
+        </table>
+      </div>`;
+
+    Object.keys(byGroup).sort((a,b)=>a-b).forEach(gid => {
+      const gname = gNames[(gid-1)%6] || `กลุ่ม ${gid}`;
+      const color = GROUP_COLORS[(gid-1)%6];
+      const members = byGroup[gid];
+      bodyHtml += `
+        <div class="group-page">
+          <div class="group-header" style="background:${color}">
+            <span>กลุ่มที่ ${gid} — ${gname}</span>
+            <span>${members.length} คน</span>
+          </div>
+          <table class="roster">
+            <thead><tr><th style="width:30px">ที่</th><th>ชื่อ-นามสกุล</th><th style="width:80px">ชื่อเล่น</th><th style="width:50px">ห้อง</th><th style="width:90px">เลขประจำตัว</th><th style="width:40px">ทีม</th><th>ลายเซ็น</th></tr></thead>
+            <tbody>
+            ${members.map((s,i)=>`
+              <tr class="${i%2?'odd':''}">
+                <td style="text-align:center">${i+1}</td>
+                <td>${s.firstName||''} ${s.lastName||''}</td>
+                <td>${s.nickname||''}</td>
+                <td style="text-align:center">${s.room||''}</td>
+                <td style="text-align:center">${s.studentId||''}</td>
+                <td style="text-align:center">${s.teamId||''}</td>
+                <td class="sig"></td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+          <div class="page-foot">กลุ่มที่ ${gid} "${gname}" · ${members.length} คน · 27 มิถุนายน 2569</div>
+        </div>`;
+    });
+
+    const css = `
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap');
+      * { box-sizing:border-box; margin:0; padding:0; }
+      body { font-family:'Noto Sans Thai',sans-serif; font-size:10pt; color:#1a1a1a; }
+      h1 { font-size:16pt; color:#2d6b5a; text-align:center; margin-bottom:4px; }
+      h2 { font-size:11pt; color:#6b7a8d; text-align:center; margin-bottom:16px; }
+      hr { border:none; border-top:2px solid #2d6b5a; margin-bottom:16px; }
+      .cover { padding:24px; }
+      .info { width:100%; border-collapse:collapse; margin-bottom:20px; }
+      .info td { padding:5px 8px; } .info td.k { font-weight:700; color:#2d6b5a; width:160px; }
+      .summary { width:100%; border-collapse:collapse; }
+      .summary th { background:#2d6b5a; color:#fff; padding:6px 10px; text-align:left; }
+      .summary td { padding:5px 10px; border-bottom:1px solid #d0e6da; }
+      .summary tr:nth-child(even) td { background:#f8faf9; }
+      .summary tr.total td { font-weight:700; background:#d0e6da; }
+      .group-page { break-before:page; padding:20px; }
+      .group-header { display:flex; justify-content:space-between; align-items:center; color:#fff; font-weight:700; font-size:13pt; padding:10px 16px; border-radius:6px; margin-bottom:12px; }
+      .roster { width:100%; border-collapse:collapse; font-size:9pt; }
+      .roster th { background:#d0e6da; color:#2d6b5a; font-weight:700; padding:6px 5px; border:0.5px solid #c8d8d0; }
+      .roster td { padding:5px; border:0.5px solid #c8d8d0; vertical-align:middle; min-height:22px; }
+      .roster tr.odd td { background:#f8f8f8; }
+      .roster td.sig { min-width:100px; }
+      .page-foot { margin-top:10px; text-align:center; font-size:8pt; color:#6b7a8d; }
+      @media print {
+        .group-page { break-before:page; }
+        body { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      }`;
+
+    const win = window.open('','_blank');
+    win.document.write(`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>ใบรายชื่อ CARNIVAL 89</title><style>${css}</style></head><body>${bodyHtml}</body></html>`);
+    win.document.close();
+    setTimeout(()=>{ win.focus(); win.print(); }, 1200);
+  } catch(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }
+};
+
+window.doExportRoster = async () => {
+  showToast('กำลัง export ใบรายชื่อ...');
+  try {
+    let gNames = ['Vermelha','Dourada','Verde','Azul','Roxa','Rosa'];
+    try { const gs=await getDoc(doc(db,'systemSettings','groupNames')); if(gs.exists()&&gs.data().names) gNames=gs.data().names; } catch(_){}
+    const snap = await getDocs(collection(db,'students'));
+    const students = snap.docs.map(d=>({...d.data()}))
+      .filter(s=>s.status==='registered')
+      .sort((a,b)=>(a.groupId-b.groupId)||((a.teamId||0)-(b.teamId||0))||((a.firstName||'').localeCompare(b.firstName||'','th')));
+
+    // groupBy groupId
+    const byGroup = {};
+    students.forEach(s=>{ const g=s.groupId||0; if(!byGroup[g]) byGroup[g]=[]; byGroup[g].push(s); });
+
+    let csv = '\uFEFF';
+    const groups = Object.keys(byGroup).sort((a,b)=>a-b);
+    groups.forEach(gid => {
+      const gName = gid>0 ? (gNames[(gid-1)%6]||`กลุ่ม ${gid}`) : 'ยังไม่จัดกลุ่ม';
+      csv += `"กลุ่มที่ ${gid} — ${gName}"\n`;
+      csv += `"ลำดับ","ชื่อ-นามสกุล","ชื่อเล่น","ห้อง","เลขประจำตัว","ทีม","ลายเซ็น"\n`;
+      byGroup[gid].forEach((s,i)=>{
+        csv += `"${i+1}","${s.firstName||''} ${s.lastName||''}","${s.nickname||''}","${s.room||''}","${s.studentId||''}","${s.teamId||''}","_______________________"\n`;
+      });
+      csv += `"จำนวน ${byGroup[gid].length} คน"\n\n`;
+    });
+
+    const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='roster-by-group.csv'; a.click();
+    URL.revokeObjectURL(url);
+    showToast('Export สำเร็จ!');
+  } catch(e){ showToast('Export ไม่สำเร็จ: '+e.message,'error'); }
+};
+
+window.doExportCSV=async type=>{
+  showToast('กำลัง export...');
+  try {
+    let rows=[],filename='export.csv';
+    if(type==='students'){
+      const snap=await getDocs(collection(db,'students'));
+      rows=[['ชื่อ','นามสกุล','ชื่อเล่น','เลขประจำตัว','ห้อง','อีเมล','เบอร์','IG','Line','โรค','ยา','แพ้','เบอร์ฉุกเฉิน','partyId','กลุ่ม','ทีม','เช็คอิน']];
+      snap.forEach(d=>{ const s=d.data(); rows.push([s.firstName,s.lastName,s.nickname,s.studentId,s.room,s.email,s.phone,s.instagram,s.lineId,s.disease,s.medicine,s.allergy,s.emergencyPhone,s.partyId,s.groupId,s.teamId,s.checkinStatus==='checked_in'?'✓':'']); }); filename='students.csv';
+    } else if(type==='groups'){
+      const gSnap=await getDocs(collection(db,'students'));
+      let gNames=[...DEFAULT_GROUP_NAMES];
+      try{const gs=await getDoc(doc(db,'systemSettings','groupNames'));if(gs.exists()&&gs.data().names)gNames=gs.data().names;}catch(_){}
+      rows=[['กลุ่ม','ชื่อกลุ่ม','ทีม','ชื่อ','นามสกุล','ชื่อเล่น','ห้อง','เลขประจำตัว','เบอร์โทร','Line','Instagram']];
+      const stus=gSnap.docs.map(d=>({...d.data()})).filter(s=>s.groupId).sort((a,b)=>(a.groupId-b.groupId)||((a.teamId||0)-(b.teamId||0)));
+      stus.forEach(s=>rows.push([s.groupId,gNames[(s.groupId-1)%6]||'กลุ่ม '+s.groupId,s.teamId,s.firstName,s.lastName,s.nickname,s.room,s.studentId,s.phone,s.lineId,s.instagram]));
+      filename='groups-roster.csv';
+    } else if(type==='parties'){
+      const snap=await getDocs(collection(db,'groupSystems'));
+      rows=[['groupId','code','หัวหน้า','จำนวนสมาชิก','สมาชิก']];
+      snap.forEach(d=>{ const p=d.data(); rows.push([d.id,p.code,p.leaderName,(p.members||[]).length,(p.members||[]).map(m=>m.name).join(' / ')]); }); filename='trio-groups.csv';
+    }
+    const csv='\uFEFF'+rows.map(r=>r.map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); URL.revokeObjectURL(url);
+    showToast(`Export ${filename} สำเร็จ!`);
+  } catch(e){ showToast('Export ไม่สำเร็จ: '+e.message,'error'); }
+};
+
+// ── audit logs ──
+async function loadLogs() {
+  const tbody=document.getElementById('logs-tbody');
+  try {
+    const snap=await getDocs(query(collection(db,'auditLogs'),orderBy('at','desc'),limit(50)));
+    tbody.innerHTML='';
+    if(snap.empty){ tbody.innerHTML='<tr><td colspan="4" class="text-center text-muted" style="padding:20px">ยังไม่มี log</td></tr>'; return; }
+    snap.forEach(d=>{ const l=d.data(); const tr=document.createElement('tr');
+      tr.innerHTML=`<td class="text-xs text-muted">${l.at?.toDate?.()?.toLocaleString('th-TH')||'-'}</td><td class="text-sm">${l.by||'-'}</td><td><div class="badge badge-accent text-xs">${l.action||'-'}</div></td><td class="text-sm text-muted">${l.detail||'-'}</td>`;
+      tbody.appendChild(tr);
+    });
+  } catch(e){}
+}
+
+if(typeof lucide!=="undefined")lucide.createIcons();
+</script>
+</body>
+</html>

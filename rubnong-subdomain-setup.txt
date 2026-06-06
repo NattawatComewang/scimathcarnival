@@ -1,0 +1,35 @@
+วิธีตั้ง subdomain: rubnong.triamudomscimath.com
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ทางเลือก A — Cloudflare Pages Custom Domain (แนะนำ)
+──────────────────────────────────────────────────
+1. Cloudflare Dashboard → Pages → เลือก project
+2. กด "Custom domains" → Add custom domain
+3. กรอก: rubnong.triamudomscimath.com
+4. Cloudflare จะสร้าง CNAME ให้อัตโนมัติ
+5. อัปโหลดไฟล์ rubnong.html ขึ้น project เดิม
+
+จากนั้น:
+6. Cloudflare Pages → Settings → Build & deployments
+   → ไม่ต้องเปลี่ยนอะไร ไฟล์ rubnong.html จะอยู่ที่
+   https://rubnong.triamudomscimath.com/rubnong.html
+
+แต่ถ้าอยากให้เข้า rubnong.triamudomscimath.com แล้วเปิด rubnong.html เลย:
+7. Cloudflare Pages → Settings → Build output → Root path = /
+8. สร้างไฟล์ index.html ใหม่สำหรับ subdomain นี้โดยเฉพาะ
+   (แนะนำ: ทำ Cloudflare Pages project แยก)
+
+ทางเลือก B — Cloudflare Pages project แยก (ง่ายที่สุด)
+──────────────────────────────────────────────────────
+1. Cloudflare Dashboard → Pages → Create project
+2. เลือก "Direct upload"
+3. อัปโหลดเฉพาะไฟล์: rubnong.html (rename เป็น index.html ก่อน)
+   + css/base.css, css/motion.css, js/theme.js, logo.png
+4. Project name: rubnong-scimath
+5. Custom domain → rubnong.triamudomscimath.com
+
+DNS Record (เพิ่มใน Cloudflare DNS):
+  Type: CNAME
+  Name: rubnong
+  Target: rubnong-scimath.pages.dev
+  Proxy: ON (สีส้ม)

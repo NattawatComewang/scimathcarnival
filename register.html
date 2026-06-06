@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>SciMath TU — ลงทะเบียน</title>
+<link rel="stylesheet" href="css/base.css">
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/theme.js"></script>
+<style>
+* { -webkit-tap-highlight-color: transparent; }
+body {
+  min-height: 100vh; background: var(--bg);
+  padding-bottom: 32px;
+  max-width: 480px; margin: 0 auto;
+}
+
+/* ── TOP BAR ── */
+.top-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-1); border-bottom: 1px solid var(--border);
+  padding: 0 16px; height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.top-bar-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem; }
+.top-bar-logo img { width: 26px; height: 26px; border-radius: 6px; object-fit: cover; }
+
+/* ── PROGRESS ── */
+.progress-wrap {
+  padding: 14px 16px 10px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+}
+.progress-header { margin-bottom: 10px; }
+.progress-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.progress-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 0;
+}
+.progress-label { font-size: 0.78rem; font-weight: 600; color: var(--text-2); white-space: nowrap; }
+.progress-label span { color: var(--text); }
+.progress-bar { flex: 1; height: 4px; background: var(--bg-3); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 500ms cubic-bezier(0.4,0,0.2,1); }
+
+/* ── STAGE CONTENT ── */
+.stage { display: none; padding: 20px 16px; }
+.stage.active { display: block; }
+
+.stage-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px; background: var(--bg-1); border: 1px solid var(--border);
+}
+.stage-title { font-size: 1.2rem; font-weight: 700; text-align: center; margin-bottom: 6px; }
+.stage-sub   { color: var(--text-2); font-size: 0.875rem; text-align: center; line-height: 1.65; margin-bottom: 20px; }
+
+/* ── CARDS ── */
+.s-card {
+  background: var(--bg-1); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px; margin-bottom: 12px;
+}
+.s-card-label {
+  font-size: 0.72rem; font-weight: 600; color: var(--text-3);
+  display: flex; align-items: center; gap: 6px; margin-bottom: 14px;
+}
+
+/* ── ELIGIBILITY ── */
+.elig-status {
+  border-radius: var(--radius-lg); padding: 24px;
+  text-align: center; margin-bottom: 16px;
+}
+.elig-status.checking { background: var(--bg-2); border: 1px solid var(--border); }
+.elig-status.ok       { background: var(--green-dim); border: 1px solid rgba(45,184,122,0.25); }
+.elig-status.fail     { background: var(--red-dim);   border: 1px solid rgba(224,85,85,0.25); }
+.elig-icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+/* ── CONSENT ── */
+.consent-item {
+  display: flex; gap: 12px; padding: 14px;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 8px;
+}
+.consent-icon { color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+.consent-text { font-size: 0.875rem; line-height: 1.65; color: var(--text-2); }
+.consent-check {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; margin-top: 16px;
+}
+.consent-check label {
+  display: flex; align-items: flex-start; gap: 10px;
+  cursor: pointer; font-size: 0.875rem; line-height: 1.6;
+}
+.consent-check input[type=checkbox] { margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; }
+
+/* ── FORM ── */
+.f-stack { display: flex; flex-direction: column; gap: 14px; }
+
+/* ── QUIZ ── */
+/* ── QUIZ CARD STYLE ── */
+.quiz-q {
+  margin-bottom: 28px;
+}
+.quiz-q-num { font-size: 0.72rem; color: var(--text-3); margin-bottom: 6px; }
+.quiz-q-text { font-size: 1rem; font-weight: 600; margin-bottom: 14px; line-height: 1.5; color: var(--text); }
+.quiz-opts {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.quiz-opt {
+  background: var(--bg-1); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 14px 12px;
+  cursor: pointer; transition: all 180ms var(--ease-out);
+  font-size: 0.875rem; line-height: 1.4; color: var(--text-2);
+  text-align: center; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px; min-height: 70px;
+  user-select: none;
+}
+.quiz-opt:hover { border-color: var(--accent); color: var(--text); background: var(--accent-dim); transform: translateY(-2px); }
+.quiz-opt:active { transform: scale(0.97); }
+.quiz-opt.selected {
+  border-color: var(--accent); background: var(--accent-dim);
+  color: var(--accent); font-weight: 600;
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+.quiz-opt .opt-letter {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--bg-2); border: 1.5px solid var(--border);
+  font-size: 0.68rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 180ms var(--ease-out); flex-shrink: 0; color: var(--text-3);
+}
+.quiz-opt.selected .opt-letter {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+}
+.quiz-divider {
+  height: 1px; background: var(--border); margin: 4px 0 24px;
+}
+
+/* ── REVIEW ── */
+.review-section { margin-bottom: 14px; }
+.review-section-title {
+  font-size: 0.72rem; font-weight: 600; color: var(--accent); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.review-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.875rem;
+}
+.review-row:last-child { border-bottom: none; }
+.review-label { color: var(--text-2); flex-shrink: 0; margin-right: 12px; }
+.review-value { font-weight: 500; text-align: right; }
+
+/* ── SUCCESS ── */
+.success-box {
+  background: var(--green-dim); border: 1px solid rgba(45,184,122,0.25);
+  border-radius: var(--radius-lg); padding: 28px; text-align: center;
+}
+.success-check {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--green); display: flex; align-items: center;
+  justify-content: center; margin: 0 auto 16px;
+}
+
+/* ── BOTTOM ACTIONS ── */
+.stage-footer {
+  position: sticky; bottom: 0; z-index: 50;
+  background: var(--bg-1); border-top: 1px solid var(--border);
+  padding: 12px 16px; display: flex; gap: 10px;
+}
+.stage-footer .btn { flex: 1; justify-content: center; }
+.btn-next-primary {
+  flex: 2; justify-content: center;
+  background: var(--text); color: var(--bg);
+  border-color: transparent;
+}
+.btn-next-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+/* ── CHECKLIST ── */
+.checklist-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 0.875rem;
+}
+.checklist-item:last-child { border-bottom: none; }
+.checklist-item .check-dot {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.check-dot.done { background: var(--green); }
+.check-dot.pending { background: var(--bg-3); border: 2px solid var(--border-2); }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-logo">
+    <img src="logo.png" alt="logo" onerror="this.style.display='none'">
+    SciMath TU
+  </div>
+  <button class="theme-toggle" onclick="toggleTheme()" title="สลับธีม">
+    <span class="icon-moon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+    <span class="icon-sun"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></span>
+  </button>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap" id="progress-wrap">
+  <div class="progress-header">
+    <div class="progress-title">ลงทะเบียน CARNIVAL 89</div>
+  </div>
+  <div class="progress-row">
+    <div class="progress-label"><span id="progress-current">1</span> จาก <span id="progress-total">7</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:14%"></div></div>
+  </div>
+</div>
+
+<!-- ══════ STAGE 1: ELIGIBILITY ══════ -->
+<div class="stage active" id="st-1">
+  <div class="stage-icon" style="background:var(--accent-dim)">
+    <i data-lucide="shield-check" style="width:28px;height:28px;color:var(--accent)"></i>
+  </div>
+  <div class="stage-title">ตรวจสอบสิทธิ์</div>
+  <div class="stage-sub">ระบบกำลังตรวจสอบว่าคุณ<br>มีสิทธิ์เข้าร่วมกิจกรรมนี้</div>
+
+  <div id="elig-status-box" class="elig-status checking">
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;color:var(--text-2)">
+      <i data-lucide="loader" style="width:20px;height:20px"></i>
+      <span>กำลังตรวจสอบ...</span>
+    </div>
+  </div>
+
+  <div id="elig-manual" class="s-card hidden">
+    <div class="s-card-label"><i data-lucide="edit-3" style="width:12px;height:12px"></i> กรอกข้อมูลเพื่อตรวจสอบ</div>
+    <div class="f-stack">
+      <div class="form-group">
+        <label class="form-label">เลขห้องเรียน <span class="required">*</span></label>
+        <input class="form-input" id="elig-room" placeholder="เช่น 65, 278, 842"
+          maxlength="4" inputmode="numeric" pattern="[0-9]*"
+          oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+        <div class="form-hint">กรอกเลขห้อง เช่น 27, 65, 278, 842</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ STAGE 2: CONSENT ══════ -->
+<div class="stage" id="st-2">
+  <div class="stage-icon" style="background:var(--blue-dim)">
+    <i data-lucide="file-text" style="width:28px;height:28px;color:var(--blue)"></i>
+  </div>
+  <div class="stage-title">ข้อตกลงและความเป็นส่วนตัว</div>
+  <div class="stage-sub">โปรดอ่านและยอมรับก่อนดำเนินการต่อ</div>
+
+  <div class="consent-item">
+    <div class="consent-icon"><i data-lucide="users" style="width:18px;height:18px"></i></div>
+    <div class="consent-text">ข้อมูลที่คุณกรอกจะถูกใช้เพื่อ<strong>จัดกิจกรรมรับน้องเท่านั้น</strong> และจะไม่ถูกเผยแพร่ต่อสาธารณะ</div>
+  </div>
+  <div class="consent-item">
+    <div class="consent-icon"><i data-lucide="heart-pulse" style="width:18px;height:18px"></i></div>
+    <div class="consent-text">ข้อมูลสุขภาพของคุณจะเข้าถึงได้เฉพาะ<strong>ฝ่ายสวัสดิการ</strong>เพื่อดูแลความปลอดภัยในวันงาน</div>
+  </div>
+  <div class="consent-item">
+    <div class="consent-icon"><i data-lucide="brain" style="width:18px;height:18px"></i></div>
+    <div class="consent-text">ผลแบบสำรวจสไตล์การทำงานใช้เพื่อ<strong>จัดกลุ่มให้สมดุล</strong> ไม่ใช่การตัดสินตัวตน</div>
+  </div>
+  <div class="consent-item">
+    <div class="consent-icon"><i data-lucide="lock" style="width:18px;height:18px"></i></div>
+    <div class="consent-text">ข้อมูลทั้งหมดจะถูกลบหลังจากกิจกรรมสิ้นสุดตามนโยบายของโรงเรียน</div>
+  </div>
+
+  <div class="consent-check">
+    <label>
+      <input type="checkbox" id="consent-1">
+      <span>ฉันได้อ่านและ<strong>ยินยอมให้ใช้ข้อมูลส่วนตัว</strong>เพื่อจัดกิจกรรมรับน้อง</span>
+    </label>
+  </div>
+  <div class="consent-check" style="margin-top:8px">
+    <label>
+      <input type="checkbox" id="consent-2">
+      <span>ฉันเข้าใจว่า<strong>ข้อมูลสุขภาพ</strong>จะถูกใช้เพื่อความปลอดภัยของฉันเท่านั้น</span>
+    </label>
+  </div>
+</div>
+
+<!-- ══════ STAGE 3: BASIC PROFILE ══════ -->
+<div class="stage" id="st-3">
+  <div class="stage-icon" style="background:var(--accent-dim)">
+    <i data-lucide="user" style="width:28px;height:28px;color:var(--accent)"></i>
+  </div>
+  <div class="stage-title">ข้อมูลส่วนตัว</div>
+  <div class="stage-sub">กรอกข้อมูลพื้นฐานของคุณ</div>
+
+  <div class="s-card">
+    <div class="s-card-label"><i data-lucide="user" style="width:12px;height:12px"></i> ข้อมูลทั่วไป</div>
+    <div class="f-stack">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">ชื่อ <span class="required">*</span></label>
+          <input class="form-input" id="r-firstname" placeholder="ชื่อ">
+        </div>
+        <div class="form-group">
+          <label class="form-label">นามสกุล <span class="required">*</span></label>
+          <input class="form-input" id="r-lastname" placeholder="นามสกุล">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ชื่อเล่น <span class="required">*</span></label>
+        <input class="form-input" id="r-nickname" placeholder="ชื่อเล่น">
+      </div>
+      <div class="form-group">
+        <label class="form-label">เลขประจำตัวนักเรียน <span class="required">*</span></label>
+        <input class="form-input" id="r-studentid" placeholder="เลขประจำตัว" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label class="form-label">ห้องเรียน <span class="required">*</span></label>
+        <input class="form-input" id="r-room" placeholder="เช่น 65, 278, 842" maxlength="4" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+      </div>
+      <div class="form-group">
+        <label class="form-label">เบอร์โทรศัพท์ <span class="required">*</span></label>
+        <input class="form-input" id="r-phone" placeholder="0xx-xxx-xxxx" type="tel">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Line ID <span style="color:var(--text-3);font-weight:400;font-size:0.75rem">(ไม่บังคับ)</span></label>
+        <input class="form-input" id="r-line" placeholder="Line ID ของคุณ">
+        <div class="form-hint">ไม่บังคับ ใช้ติดต่อสอบถามได้</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Instagram <span style="color:var(--text-3);font-weight:400;font-size:0.75rem">(ไม่บังคับ)</span></label>
+        <div style="position:relative">
+          <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:0.9rem;pointer-events:none">@</span>
+          <input class="form-input" id="r-instagram" placeholder="username" style="padding-left:26px">
+        </div>
+        <div class="form-hint">ไม่บังคับ ใช้ติดต่อกันในกลุ่ม</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ STAGE 4: EMERGENCY ══════ -->
+<div class="stage" id="st-4">
+  <div class="stage-icon" style="background:var(--red-dim)">
+    <i data-lucide="heart-pulse" style="width:28px;height:28px;color:var(--red)"></i>
+  </div>
+  <div class="stage-title">ข้อมูลสุขภาพและฉุกเฉิน</div>
+  <div class="stage-sub" style="color:var(--text-2)">ข้อมูลส่วนนี้ใช้เพื่อดูแลความปลอดภัย<br>ในวันกิจกรรมเท่านั้น ไม่บังคับทุกข้อ</div>
+
+  <div class="s-card">
+    <div class="s-card-label" style="color:var(--red)"><i data-lucide="activity" style="width:12px;height:12px"></i> ข้อมูลสุขภาพ</div>
+    <!-- toggle ปุ่ม -->
+    <div style="margin-bottom:14px">
+      <div style="font-size:0.875rem;font-weight:500;margin-bottom:10px">มีโรคประจำตัว อาหารแพ้ หรือข้อจำกัดด้านสุขภาพไหม?</div>
+      <div style="display:flex;gap:8px">
+        <button type="button" id="health-yes-btn" onclick="toggleHealth(true)"
+          style="flex:1;padding:11px;border-radius:var(--radius-sm);font-size:0.875rem;font-weight:600;border:1.5px solid var(--border);background:var(--bg-1);color:var(--text-2);cursor:pointer;transition:all 0.15s;font-family:var(--font)">
+          มี
+        </button>
+        <button type="button" id="health-no-btn" onclick="toggleHealth(false)"
+          style="flex:1;padding:11px;border-radius:var(--radius-sm);font-size:0.875rem;font-weight:600;border:1.5px solid var(--border);background:var(--bg-1);color:var(--text-2);cursor:pointer;transition:all 0.15s;font-family:var(--font)">
+          ไม่มี
+        </button>
+      </div>
+    </div>
+    <div id="health-fields" style="display:none">
+      <div class="f-stack">
+        <div class="form-group">
+          <label class="form-label">โรคประจำตัว</label>
+          <input class="form-input" id="r-disease" placeholder="เช่น โรคหัวใจ, หอบหืด">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ยาที่ต้องพกประจำ</label>
+          <input class="form-input" id="r-medicine" placeholder="เช่น ยาหอบหืด, ยาแก้แพ้">
+        </div>
+        <div class="form-group">
+          <label class="form-label">อาหารที่แพ้</label>
+          <input class="form-input" id="r-allergy" placeholder="เช่น อาหารทะเล, ถั่ว">
+        </div>
+        <div class="form-group">
+          <label class="form-label">สิ่งที่ควรระวังเป็นพิเศษ</label>
+          <textarea class="form-input" id="r-warning" rows="2"
+            placeholder="เช่น เป็นลมง่าย, แพ้แดด, หอบ"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s-card">
+    <div class="s-card-label" style="color:var(--red)"><i data-lucide="phone" style="width:12px;height:12px"></i> เบอร์ติดต่อฉุกเฉิน</div>
+    <div class="f-stack">
+      <div class="form-group">
+        <label class="form-label">เบอร์โทรฉุกเฉิน <span class="required">*</span></label>
+        <input class="form-input" id="r-em-phone" placeholder="0xx-xxx-xxxx" type="tel">
+      </div>
+    </div>
+  </div>
+
+  <div class="s-card">
+    <div class="s-card-label"><i data-lucide="message-circle" style="width:12px;height:12px"></i> ฝากถึงพี่สวัสดิการ</div>
+    <div class="form-group">
+      <textarea class="form-input" id="r-welfare-note" rows="3"
+        placeholder="มีอะไรอยากให้พี่สวัสดิการรู้เพิ่มเติมไหม? เช่น ขอพิจารณาเรื่องพิเศษ, สิ่งที่กังวล ฯลฯ"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ STAGE 5: ACTIVITY PREFERENCE ══════ -->
+<div class="stage" id="st-5">
+  <div class="stage-icon" style="background:var(--amber-dim)">
+    <i data-lucide="zap" style="width:28px;height:28px;color:var(--amber)"></i>
+  </div>
+  <div class="stage-title">สไตล์การร่วมกิจกรรม</div>
+  <div class="stage-sub">ตอบตามตัวเองได้เลย ไม่มีถูกผิด<br><span style="font-size:0.78rem;color:var(--text-3)">ข้อมูลนี้ช่วยให้พี่ๆ จัดกลุ่มได้เหมาะสมขึ้น</span></div>
+
+  <div style="background:var(--accent-dim);border:1px solid var(--accent-dim-2);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;font-size:0.8rem;color:var(--text-2);display:flex;gap:10px;align-items:flex-start">
+    <i data-lucide="sparkles" style="width:14px;height:14px;color:var(--accent);flex-shrink:0;margin-top:1px"></i>
+    <span>ตอบตามตัวเองได้เลย ไม่มีถูกผิด คำตอบนี้จะช่วยให้พี่ๆ จัดกลุ่มที่สนุกและสมดุลขึ้น</span>
+  </div>
+  <div id="pref-container"></div>
+</div>
+
+<!-- ══════ STAGE 6: TEAM STYLE CHECK ══════ -->
+<div class="stage" id="st-6">
+  <div class="stage-icon" style="background:var(--accent-dim)">
+    <i data-lucide="sparkles" style="width:28px;height:28px;color:var(--accent)"></i>
+  </div>
+  <div class="stage-title">Type Indicator</div>
+  <div class="stage-sub">คำตอบของคุณจะถูกนำไปใช้เพื่อ<strong>คละน้องๆ ให้อยู่ในกลุ่มที่หลากหลายและสมดุล</strong><br><span style="font-size:0.78rem;color:var(--text-3)">ไม่มีผิดถูก · ไม่ใช่การตัดสินตัวตน · ตอบตามความรู้สึกจริงๆ</span></div>
+
+  <div style="background:var(--accent-dim);border:1px solid var(--accent-dim-2);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;font-size:0.8rem;color:var(--text-2);display:flex;gap:10px;align-items:flex-start">
+    <i data-lucide="info" style="width:14px;height:14px;color:var(--accent);flex-shrink:0;margin-top:1px"></i>
+    <span>ผลของแบบประเมินนี้จะถูกนำไปใช้เพื่อ<strong>คละน้องๆ ให้อยู่ในกลุ่มที่หลากหลายและสมดุล</strong> เท่านั้น ไม่มีการตัดสินว่าคำตอบไหนดีหรือไม่ดี</span>
+  </div>
+  <div id="quiz-container"></div>
+</div>
+
+<!-- ══════ STAGE 7: REVIEW ══════ -->
+<div class="stage" id="st-7">
+  <div class="stage-icon" style="background:var(--green-dim)">
+    <i data-lucide="clipboard-check" style="width:28px;height:28px;color:var(--green)"></i>
+  </div>
+  <div class="stage-title">ตรวจสอบข้อมูล</div>
+  <div class="stage-sub">กรุณาตรวจสอบข้อมูลก่อนยืนยัน<br><span style="font-size:0.78rem;opacity:0.7">สามารถแก้ไขได้ภายหลังตามที่กำหนด</span></div>
+
+  <div id="review-content"></div>
+
+  <div class="consent-check" style="margin-top:4px">
+    <label>
+      <input type="checkbox" id="final-consent">
+      <span>ฉันยืนยันว่าข้อมูลทั้งหมดถูกต้อง และยินยอมให้นำข้อมูลไปใช้ตามที่แจ้งไว้ <span style="color:var(--red)">*</span></span>
+    </label>
+  </div>
+</div>
+
+<!-- ══════ STAGE 8: SUCCESS ══════ -->
+<div class="stage" id="st-8">
+  <div class="success-box" style="margin-bottom:16px">
+    <div class="success-check">
+      <i data-lucide="check" style="width:28px;height:28px;color:#fff"></i>
+    </div>
+    <div style="font-size:1.2rem;font-weight:700;margin-bottom:6px">ลงทะเบียนสำเร็จแล้ว!</div>
+    <div style="color:var(--text-2);font-size:0.875rem;line-height:1.65">
+      ข้อมูลของคุณถูกบันทึกเรียบร้อย<br>รอประกาศกลุ่มจากคณะกรรมการฯ
+    </div>
+  </div>
+
+  <div class="s-card">
+    <div class="s-card-label"><i data-lucide="list-checks" style="width:12px;height:12px"></i> สิ่งที่ต้องทำต่อไป</div>
+    <div id="next-checklist"></div>
+  </div>
+
+  <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px"
+    onclick="window.location.href='dashboard.html'">
+    <i data-lucide="layout-dashboard" style="width:15px;height:15px"></i>
+    ไปยัง Dashboard
+  </button>
+</div>
+
+<!-- STAGE FOOTER (sticky) -->
+<div class="stage-footer" id="stage-footer">
+  <button class="btn btn-ghost" id="btn-back" onclick="prevStage()" style="display:none">
+    <i data-lucide="arrow-left" style="width:14px;height:14px"></i> ก่อนหน้า
+  </button>
+  <button class="btn btn-primary" id="btn-next" onclick="nextStage()">
+    ถัดไป <i data-lucide="arrow-right" style="width:14px;height:14px"></i>
+  </button>
+</div>
+
+<div id="toast-container"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, addDoc,
+  collection, query, where, getDocs, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDtuK_Rvq9Ki3QiytCTWON6S4J2iHKlTCU",
+  authDomain: "rubnong-official.firebaseapp.com",
+  projectId: "rubnong-official",
+  storageBucket: "rubnong-official.firebasestorage.app",
+  messagingSenderId: "982944596814",
+  appId: "1:982944596814:web:cf61c860632eb42b4a541f"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const SUPER = '8868278@student.triamudom.ac.th';
+
+// ── HELPERS ──────────────────────────────────────────
+function showToast(msg, type='success') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const color = type==='success'?'var(--green)':'var(--red)';
+  const icon  = type==='success'?'check-circle':'alert-circle';
+  t.innerHTML = `<i data-lucide="${icon}" style="width:16px;height:16px;color:${color};flex-shrink:0"></i><span>${msg}</span>`;
+  c.appendChild(t); lucide.createIcons();
+  setTimeout(()=>t.remove(), 3000);
+}
+const v = id => document.getElementById(id)?.value?.trim()||'';
+
+// ── STAGE CONFIG ──────────────────────────────────────
+const STAGES = [
+  { id:1, name:'ตรวจสอบสิทธิ์' },
+  { id:2, name:'ข้อตกลง' },
+  { id:3, name:'ข้อมูลส่วนตัว' },
+  { id:4, name:'ข้อมูลสุขภาพ' },
+  { id:5, name:'ความชอบ' },
+  { id:6, name:'Team Style' },
+  { id:7, name:'ตรวจสอบ' },
+];
+let currentStage = 1;
+let quizAnswers  = {};
+let hasHealthIssue = null;
+
+window.toggleHealth = (hasIssue) => {
+  hasHealthIssue = hasIssue;
+  const fields = document.getElementById('health-fields');
+  const yesBtn = document.getElementById('health-yes-btn');
+  const noBtn  = document.getElementById('health-no-btn');
+  if(fields) fields.style.display = hasIssue ? 'block' : 'none';
+  if(yesBtn) {
+    yesBtn.style.background = hasIssue ? 'var(--accent)' : 'var(--bg-1)';
+    yesBtn.style.color = hasIssue ? '#fff' : 'var(--text-2)';
+    yesBtn.style.borderColor = hasIssue ? 'var(--accent)' : 'var(--border)';
+  }
+  if(noBtn) {
+    noBtn.style.background = !hasIssue ? 'var(--accent)' : 'var(--bg-1)';
+    noBtn.style.color = !hasIssue ? '#fff' : 'var(--text-2)';
+    noBtn.style.borderColor = !hasIssue ? 'var(--accent)' : 'var(--border)';
+  }
+  if(!hasIssue) {
+    ['r-disease','r-medicine','r-allergy','r-warning'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.value = '';
+    });
+  }
+};
+let prefAnswers  = {};
+let currentUser  = null;
+let eligRoom     = '';
+
+// ── PROGRESS UI ───────────────────────────────────────
+function renderProgress(stage) {
+  document.getElementById('progress-current').textContent = stage;
+  document.getElementById('progress-total').textContent   = STAGES.length;
+  document.getElementById('progress-fill').style.width   = `${Math.round((stage/STAGES.length)*100)}%`;
+}
+
+function showStage(n) {
+  document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+  document.getElementById(`st-${n}`)?.classList.add('active');
+
+  const backBtn = document.getElementById('btn-back');
+  const nextBtn = document.getElementById('btn-next');
+  const footer  = document.getElementById('stage-footer');
+  const progressWrap = document.getElementById('progress-wrap');
+
+  if (n === 8) {
+    footer.style.display = 'none';
+    progressWrap.style.display = 'none';
+    return;
+  }
+  footer.style.display = 'flex';
+  progressWrap.style.display = 'block';
+
+  backBtn.style.display = n > 1 ? 'flex' : 'none';
+  nextBtn.innerHTML = n === 7
+    ? '<i data-lucide="check" style="width:14px;height:14px"></i> ยืนยันลงทะเบียน'
+    : 'ถัดไป <i data-lucide="arrow-right" style="width:14px;height:14px"></i>';
+  nextBtn.className = n === 7
+    ? 'btn btn-primary btn-next-primary'
+    : 'btn btn-primary btn-next-primary';
+  lucide.createIcons();
+  renderProgress(n);
+  window.scrollTo(0,0);
+}
+
+// ── PREFERENCE QUESTIONS ──────────────────────────────
+const PREFS = [
+  { id:'p1', text:'ถ้าเลือกได้ อยากเล่นฐานแบบไหน?', opts:[
+    'ใช้ความคิดและแก้ปัญหา',
+    'ใช้การสื่อสารและพูดคุย',
+    'ใช้การเคลื่อนไหวและร่างกาย',
+    'ทำงานเป็นทีมร่วมกัน',
+  ]},
+  { id:'p2', text:'ฐานที่ต้องขยับตัวหรือวิ่งเบาๆ โอเคไหม?', opts:[
+    'สบายมาก ชอบแบบนั้น',
+    'พอได้ แต่ไม่ควรหักโหม',
+    'ไม่ค่อยสะดวก',
+    'มีข้อจำกัดด้านร่างกาย',
+  ]},
+  { id:'p3', text:'อยากได้กลุ่มที่บรรยากาศแบบไหน?', opts:[
+    'กลุ่มคึกคัก มีพลังงาน',
+    'กลุ่มสบายๆ ไม่เครียด',
+    'กลุ่มที่สมดุล ไม่หนักไม่เบา',
+    'ไม่มีความเห็น ให้ระบบจัด',
+  ]},
+  { id:'p4', text:'ถ้าต้องเลือกบทบาทในทีม คุณอยากเป็น...', opts:[
+    'ผู้นำ คอยจัดการและตัดสินใจ',
+    'ผู้ช่วย สนับสนุนทีม',
+    'นักคิด วางแผนและให้ไอเดีย',
+    'ผู้ดูแลบรรยากาศ ทำให้ทุกคนสนุก',
+  ]},
+];
+
+let QUIZ = [
+  { id:'q1', text:'ถ้าต้องเข้ากลุ่มกับเพื่อนใหม่ คุณมักจะ…', opts:[
+    'เริ่มชวนคุยก่อน',
+    'รอดูจังหวะก่อน',
+    'ชวนคนที่ดูเงียบๆ คุย',
+    'สังเกตภาพรวมก่อนว่าควรทำอะไร',
+  ]},
+  { id:'q2', text:'เวลาเล่นเกมกลุ่ม คุณเป็นสายไหน', opts:[
+    'สายลุย — ลองก่อนแล้วค่อยคิด',
+    'สายคิดแผน — วางกลยุทธ์ก่อน',
+    'สายเชียร์ — ให้กำลังใจทีม',
+    'สายงง แต่ร่วมเต็มที่',
+  ]},
+  { id:'q3', text:'ถ้าพี่บอกว่า "ขอตัวแทน 1 คน" คุณจะ…', opts:[
+    'ยกมือเลย',
+    'มองหน้าเพื่อนก่อน',
+    'ดันเพื่อนข้างๆ ไปก่อน',
+    'ถามก่อนว่าต้องทำอะไร',
+  ]},
+  { id:'q4', text:'คุณถนัดบทบาทไหนในทีมที่สุด', opts:[
+    'คนนำ — คนเริ่มและพาทีมไปต่อ',
+    'คนวางแผน — จัดระบบและแบ่งงาน',
+    'คนทำงาน — ช่วยให้ทุกอย่างเรียบร้อย',
+    'คนดูแล — รักษาบรรยากาศและช่วยเพื่อน',
+  ]},
+  { id:'q5', text:'อยากให้ทีมของคุณเป็นแบบไหน', opts:[
+    'คึกคัก ชวนคุยง่าย',
+    'เป็นระบบ แบ่งงานชัดเจน',
+    'อบอุ่น ไม่กดดัน',
+    'สร้างสรรค์ มีอะไรแปลกๆ สนุกๆ',
+  ]},
+];
+
+function renderPrefs() {
+  const letters = ['A','B','C','D'];
+  document.getElementById('pref-container').innerHTML = PREFS.map((q,qi) => `
+    <div class="quiz-q">
+      <div class="quiz-q-num">ข้อ ${qi+1} / ${PREFS.length}</div>
+      <div class="quiz-q-text">${q.text}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,oi) => `
+          <div class="quiz-opt" onclick="selectPref('${q.id}',${oi},this)">
+            <div class="opt-letter">${letters[oi]}</div>
+            <span>${o}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+    ${qi < PREFS.length-1 ? '<div class="quiz-divider"></div>' : ''}`).join('');
+}
+
+async function loadQuizFromFirestore() {
+  try {
+    const snap = await getDoc(doc(db,'systemSettings','typeIndicator'));
+    if(snap.exists() && snap.data().questions) {
+      QUIZ = snap.data().questions;
+    }
+  } catch(_) {}
+}
+
+function renderQuiz() {
+  const letters = ['A','B','C','D'];
+  document.getElementById('quiz-container').innerHTML = QUIZ.map((q,qi) => `
+    <div class="quiz-q">
+      <div class="quiz-q-num">ข้อ ${qi+1} / ${QUIZ.length}</div>
+      <div class="quiz-q-text">${q.text}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,oi) => `
+          <div class="quiz-opt" onclick="selectQuiz('${q.id}',${oi},this)">
+            <div class="opt-letter">${letters[oi]}</div>
+            <span>${o}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+    ${qi < QUIZ.length-1 ? '<div class="quiz-divider"></div>' : ''}`).join('');
+}
+
+window.selectPref = (qid, oi, el) => {
+  el.closest('.quiz-opts').querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected'); prefAnswers[qid] = oi;
+};
+window.selectQuiz = (qid, oi, el) => {
+  el.closest('.quiz-opts').querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected'); quizAnswers[qid] = oi;
+};
+
+// ── REVIEW ────────────────────────────────────────────
+function buildReview() {
+  const prefLabels = PREFS.map(q => `${q.opts[prefAnswers[q.id]]||'-'}`);
+  const quizLabels = QUIZ.map(q  => `${q.opts[quizAnswers[q.id]]||'-'}`);
+
+  document.getElementById('review-content').innerHTML = `
+    <div class="s-card" style="margin-bottom:10px">
+      <div class="review-section">
+        <div class="review-section-title"><i data-lucide="user" style="width:11px;height:11px"></i> ข้อมูลส่วนตัว</div>
+        ${[
+          ['ชื่อ-นามสกุล', v('r-firstname')+' '+v('r-lastname')],
+          ['ชื่อเล่น', v('r-nickname')],
+          ['เลขประจำตัว', v('r-studentid')],
+          ['ห้อง', v('r-room')],
+          ['เบอร์โทร', v('r-phone')],
+          ['Instagram', v('r-instagram') ? '@'+v('r-instagram').replace('@','') : '-'],
+        ].map(([l,val])=>`<div class="review-row"><span class="review-label">${l}</span><span class="review-value">${val||'-'}</span></div>`).join('')}
+      </div>
+      <div class="review-section">
+        <div class="review-section-title"><i data-lucide="heart-pulse" style="width:11px;height:11px"></i> ข้อมูลสุขภาพ</div>
+        ${[
+          ['โรคประจำตัว', v('r-disease')||'ไม่มี'],
+          ['อาหารที่แพ้', v('r-allergy')||'ไม่มี'],
+          ['เบอร์ฉุกเฉิน', v('r-em-phone')],
+        ].map(([l,val])=>`<div class="review-row"><span class="review-label">${l}</span><span class="review-value">${val||'-'}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="review-section">
+        <div class="review-section-title"><i data-lucide="zap" style="width:11px;height:11px"></i> ความชอบในกิจกรรม</div>
+        ${PREFS.map((q,i)=>`<div class="review-row"><span class="review-label" style="font-size:0.8rem">${q.text.slice(0,20)}...</span><span class="review-value" style="font-size:0.8rem">${prefLabels[i]}</span></div>`).join('')}
+      </div>
+      <div class="review-section">
+        <div class="review-section-title"><i data-lucide="sparkles" style="width:11px;height:11px"></i> Team Style</div>
+        ${QUIZ.map((q,i)=>`<div class="review-row"><span class="review-label" style="font-size:0.8rem">ข้อ ${i+1}</span><span class="review-value" style="font-size:0.8rem">${quizLabels[i]}</span></div>`).join('')}
+      </div>
+    </div>`;
+  lucide.createIcons();
+}
+
+// ── NEXT CHECKLIST (stage 8) ──────────────────────────
+function renderNextChecklist() {
+  const items = [
+    { done:true,  text:'เข้าสู่ระบบแล้ว' },
+    { done:true,  text:'กรอกข้อมูลแล้ว' },
+    { done:true,  text:'ทำ Team Style Check แล้ว' },
+    { done:false, text:'เลือก Trio (ถ้าต้องการ)' },
+    { done:false, text:'รอประกาศกลุ่ม' },
+    { done:false, text:'เตรียมตัวสำหรับวันงาน' },
+  ];
+  document.getElementById('next-checklist').innerHTML = items.map(item=>`
+    <div class="checklist-item">
+      <div class="check-dot ${item.done?'done':'pending'}">
+        ${item.done ? '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+      </div>
+      <span style="${item.done?'color:var(--text-2)':''}">${item.text}</span>
+    </div>`).join('');
+}
+
+// ── VALIDATION ────────────────────────────────────────
+function validate(stage) {
+  if (stage===1) {
+    const room = v('elig-room');
+    if (!room || !/^[0-9]{2,4}$/.test(room)) {
+      showToast('กรุณากรอกเลขห้อง 2-4 หลัก','error'); return false;
+    }
+    return true;
+  }
+  if (stage===2) {
+    if (!document.getElementById('consent-1').checked || !document.getElementById('consent-2').checked) {
+      showToast('กรุณายืนยันข้อตกลงทั้งหมด','error'); return false;
+    }
+    return true;
+  }
+  if (stage===3) {
+    const required = ['r-firstname','r-lastname','r-nickname','r-studentid','r-room','r-phone'];
+    for (const id of required) {
+      if (!v(id)) { showToast('กรุณากรอกข้อมูลให้ครบ','error'); return false; }
+    }
+    if (!/^[0-9]{2,4}$/.test(v('r-room'))) {
+      showToast('เลขห้องต้องเป็นตัวเลข 2-4 หลัก','error'); return false;
+    }
+    return true;
+  }
+  if (stage===4) {
+    if (!v('r-em-phone')) { showToast('กรุณากรอกเบอร์โทรฉุกเฉิน','error'); return false; }
+    return true;
+  }
+  if (stage===5) {
+    if (Object.keys(prefAnswers).length < PREFS.length) {
+      showToast(`กรุณาตอบให้ครบ ${PREFS.length} ข้อ`,'error'); return false;
+    }
+    return true;
+  }
+  if (stage===6) {
+    if (Object.keys(quizAnswers).length < QUIZ.length) {
+      showToast(`กรุณาตอบให้ครบ ${QUIZ.length} ข้อ`,'error'); return false;
+    }
+    return true;
+  }
+  if (stage===7) {
+    if (!document.getElementById('final-consent').checked) {
+      showToast('กรุณายืนยันความถูกต้องของข้อมูล','error'); return false;
+    }
+    return true;
+  }
+  return true;
+}
+
+// ── ELIGIBILITY CHECK ─────────────────────────────────
+async function checkEligibility(room) {
+  // SuperAdmin และ Anonymous (test) ผ่านเสมอ
+  if (!currentUser?.email || currentUser.email === SUPER) return true;
+  if (currentUser.isAnonymous) return true;
+  try {
+    const snap = await getDoc(doc(db,'registrationSettings','main'));
+    if (!snap.exists()) return true;
+    const d = snap.data();
+    // ถ้าไม่ได้กำหนดห้อง ให้ทุกคนผ่าน
+    if (!d.eligibleRooms || !d.eligibleRooms.length) return true;
+    // เช็คทั้งแบบ string และ number
+    return d.eligibleRooms.includes(room) || d.eligibleRooms.includes(String(room));
+  } catch(e) { return true; }
+}
+
+// ── STAGE NAVIGATION ─────────────────────────────────
+window.nextStage = async () => {
+  if (!validate(currentStage)) return;
+
+  const btn = document.getElementById('btn-next');
+  btn.disabled = true;
+
+  if (currentStage === 1) {
+    // Eligibility check
+    const room = v('elig-room');
+    eligRoom = room;
+    const ok = await checkEligibility(room);
+    if (!ok) {
+      document.getElementById('elig-status-box').className = 'elig-status fail';
+      document.getElementById('elig-status-box').innerHTML = `
+        <i data-lucide="x-circle" style="width:36px;height:36px;color:var(--red);margin-bottom:8px"></i>
+        <div style="font-weight:600;color:var(--red)">ไม่พบห้อง ${room} ในรายการ</div>
+        <div style="font-size:0.85rem;color:var(--text-2);margin-top:6px">
+          กรุณาตรวจสอบเลขห้องอีกครั้ง หรือติดต่อฝ่ายทะเบียน
+        </div>`;
+      lucide.createIcons();
+      btn.disabled = false; return;
+    }
+    // สำเร็จ
+    document.getElementById('elig-status-box').className = 'elig-status ok';
+    document.getElementById('elig-status-box').innerHTML = `
+      <i data-lucide="check-circle" style="width:36px;height:36px;color:var(--green);margin-bottom:8px"></i>
+      <div style="font-weight:600;color:var(--green)">ห้อง ${room} — มีสิทธิ์เข้าร่วม</div>
+      <div style="font-size:0.85rem;color:var(--text-2);margin-top:4px">กำลังไปขั้นตอนถัดไป...</div>`;
+    lucide.createIcons();
+    await new Promise(r => setTimeout(r, 800));
+  }
+
+  if (currentStage === 7) {
+    await submitRegistration(); btn.disabled = false; return;
+  }
+
+  currentStage++;
+  if (currentStage === 5) renderPrefs();
+  if (currentStage === 6) loadQuizFromFirestore().then(() => renderQuiz());
+  if (currentStage === 7) buildReview();
+  showStage(currentStage);
+  btn.disabled = false;
+};
+
+window.prevStage = () => {
+  if (currentStage <= 1) return;
+  currentStage--;
+  showStage(currentStage);
+};
+
+// ── SUBMIT ────────────────────────────────────────────
+async function submitRegistration() {
+  if (!currentUser) { window.location.href='login.html'; return; }
+  const btn = document.getElementById('btn-next');
+  btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" style="width:14px;height:14px"></i> กำลังบันทึก...';
+  lucide.createIcons();
+  try {
+    const data = {
+      firstName:     v('r-firstname'),
+      lastName:      v('r-lastname'),
+      nickname:      v('r-nickname'),
+      studentId:     v('r-studentid'),
+      room:          v('r-room'),
+      phone:         v('r-phone'),
+      lineId:        v('r-line'),
+      instagram:     v('r-instagram') ? '@'+v('r-instagram').replace('@','') : '',
+      disease:       v('r-disease'),
+      medicine:      v('r-medicine'),
+      allergy:       v('r-allergy'),
+      warning:       v('r-warning'),
+      emergencyPhone: v('r-em-phone'),
+      hasHealthIssue: hasHealthIssue || false,
+      welfareNote:    v('r-welfare-note'),
+      prefAnswers,
+      quizAnswers,
+      email:          currentUser.email,
+      uid:            currentUser.uid,
+      duoStatus:      'no_duo',
+      status:         'registered',
+      stage:          'registered',
+      registeredAt:   serverTimestamp(),
+    };
+    await setDoc(doc(db,'students',currentUser.uid), data);
+    await addDoc(collection(db,'auditLogs'), {
+      action:'REGISTER', detail:`${data.firstName} ${data.lastName} ลงทะเบียน`,
+      by: currentUser.email, at: serverTimestamp(),
+    });
+    currentStage = 8;
+    showStage(8);
+    renderNextChecklist();
+  } catch(e) {
+    showToast('เกิดข้อผิดพลาด: '+e.message,'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="check" style="width:14px;height:14px"></i> ยืนยันลงทะเบียน';
+    lucide.createIcons();
+  }
+}
+
+// ── AUTH ──────────────────────────────────────────────
+onAuthStateChanged(auth, async user => {
+  if (!user) { window.location.href='login.html'; return; }
+  currentUser = user;
+
+  // ถ้าลงทะเบียนแล้ว ไป dashboard เลย
+  const snap = await getDoc(doc(db,'students',user.uid));
+  if (snap.exists() && snap.data().status === 'registered') {
+    window.location.href = 'dashboard.html'; return;
+  }
+
+  // SuperAdmin — ข้าม eligibility ไปเลย แสดง form กรอกห้อง
+  if (user.email === SUPER) {
+    document.getElementById('elig-status-box').className = 'elig-status ok';
+    document.getElementById('elig-status-box').innerHTML = `
+      <i data-lucide="shield-check" style="width:28px;height:28px;color:var(--green);margin-bottom:6px"></i>
+      <div style="font-weight:600;color:var(--green)">SuperAdmin — มีสิทธิ์ทดสอบระบบ</div>`;
+    lucide.createIcons();
+    document.getElementById('elig-manual').classList.remove('hidden');
+    return;
+  }
+
+  // นักเรียนปกติ — แสดง form กรอกห้อง
+  document.getElementById('elig-status-box').className = 'elig-status checking';
+  document.getElementById('elig-status-box').innerHTML = `
+    <i data-lucide="info" style="width:20px;height:20px;color:var(--text-3)"></i>
+    <div style="font-size:0.85rem;color:var(--text-2);margin-top:8px">
+      กรอกเลขห้องเรียนเพื่อตรวจสอบสิทธิ์
+    </div>`;
+  lucide.createIcons();
+  document.getElementById('elig-manual').classList.remove('hidden');
+});
+
+lucide.createIcons();
+showStage(1);
+</script>
+</body>
+</html>

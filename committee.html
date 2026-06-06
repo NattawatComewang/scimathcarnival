@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SciMath TU — กรรมการสายการเรียน</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/motion.css">
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/theme.js"></script>
+<style>
+body { background: var(--bg); }
+
+/* ── PAGE HERO ── */
+.page-hero { text-align:center; padding:56px 24px 40px; max-width:640px; margin:0 auto; }
+.page-hero h1 { font-size:clamp(1.8rem,4vw,2.6rem); margin-bottom:10px; }
+.page-hero p  { color:var(--text-2); line-height:1.7; font-size:0.95rem; }
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  max-width:1140px; margin:0 auto 28px; padding:0 24px;
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+}
+.search-wrap {
+  flex:1; min-width:220px; display:flex; align-items:center; gap:8px;
+  background:var(--bg-1); border:1px solid var(--border);
+  border-radius:var(--radius-sm); padding:8px 14px;
+}
+.search-wrap input {
+  border:none; background:none; outline:none;
+  color:var(--text); font-size:0.9rem; font-family:var(--font); width:100%;
+}
+.search-wrap input::placeholder { color:var(--text-3); }
+.filter-chips { display:flex; gap:6px; flex-wrap:wrap; }
+.chip {
+  padding:6px 14px; border-radius:100px; font-size:0.8rem; font-weight:500;
+  cursor:pointer; border:1px solid var(--border); background:var(--bg-1);
+  color:var(--text-2); transition:all 150ms var(--ease-out);
+}
+.chip:hover { border-color:var(--accent); color:var(--accent); }
+.chip.active { background:var(--accent-dim); border-color:var(--accent); color:var(--accent); }
+
+/* ── GRID ── */
+.committee-grid {
+  max-width:1140px; margin:0 auto; padding:0 24px 80px;
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:20px;
+}
+
+/* ── CARD ── */
+.cm-card {
+  background:var(--bg-1); border:1px solid var(--border);
+  border-radius:var(--radius-lg); overflow:hidden;
+  cursor:pointer; transition:all 220ms var(--ease-out); display:flex; flex-direction:column;
+}
+.cm-card:hover {
+  border-color:var(--accent); transform:translateY(-5px);
+  box-shadow:0 14px 40px rgba(0,0,0,0.11);
+}
+
+/* Photo */
+.cm-photo {
+  width:100%; aspect-ratio:1/1; background:var(--bg-2);
+  display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.cm-photo-main, .cm-photo-hover {
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  transition:opacity 350ms var(--ease-out);
+}
+.cm-photo-hover { opacity:0; }
+.cm-card:hover .cm-photo-hover { opacity:1; }
+.cm-card:hover .cm-photo-main  { opacity:0; }
+.cm-photo-initials {
+  font-size:2.4rem; font-weight:700; color:var(--accent); user-select:none; z-index:1;
+}
+.cm-dept-badge {
+  position:absolute; top:10px; left:10px; z-index:2;
+  background:rgba(0,0,0,0.52); backdrop-filter:blur(6px);
+  color:#fff; font-size:0.68rem; font-weight:600;
+  padding:3px 9px; border-radius:100px;
+}
+
+/* Info */
+.cm-info { padding:14px 15px 16px; flex:1; display:flex; flex-direction:column; gap:2px; }
+.cm-name     { font-weight:700; font-size:0.95rem; line-height:1.3; }
+.cm-nick     { font-size:0.78rem; color:var(--text-3); }
+.cm-position { margin-top:6px; font-size:0.78rem; font-weight:500; color:var(--accent); display:flex; align-items:center; gap:4px; }
+.cm-room     { font-size:0.74rem; color:var(--text-3); display:flex; align-items:center; gap:4px; margin-top:2px; }
+
+/* ── DETAIL MODAL ── */
+.detail-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.6); backdrop-filter:blur(10px);
+  z-index:200; align-items:center; justify-content:center; padding:20px;
+}
+.detail-overlay.show { display:flex; }
+.detail-box {
+  background:var(--bg-1); border:1px solid var(--border);
+  border-radius:var(--radius-lg); overflow:hidden;
+  width:100%; max-width:560px; max-height:90vh; display:flex; flex-direction:column;
+  box-shadow:0 24px 64px rgba(0,0,0,0.2);
+  animation:popIn 250ms var(--ease-out) both;
+}
+@keyframes popIn {
+  from { transform:scale(0.94) translateY(16px); opacity:0; }
+  to   { transform:scale(1)    translateY(0);    opacity:1; }
+}
+.detail-close {
+  position:absolute; top:12px; right:12px; z-index:3;
+  width:32px; height:32px; border-radius:50%;
+  background:rgba(0,0,0,0.5); backdrop-filter:blur(4px);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; border:none; color:#fff; transition:background 150ms;
+}
+.detail-close:hover { background:rgba(0,0,0,0.75); }
+
+/* Gallery */
+.gallery-wrap {
+  position:relative; aspect-ratio:4/3; background:var(--bg-2);
+  overflow:hidden; flex-shrink:0;
+}
+.gallery-main-img {
+  width:100%; height:100%; object-fit:cover;
+  transition:opacity 300ms var(--ease-out);
+}
+.gallery-initials {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-size:4rem; font-weight:700; color:var(--accent);
+}
+.gallery-arrow {
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:36px; height:36px; border-radius:50%;
+  background:rgba(0,0,0,0.45); backdrop-filter:blur(4px);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; border:none; color:#fff; z-index:2;
+  transition:background 150ms;
+}
+.gallery-arrow:hover { background:rgba(0,0,0,0.7); }
+.gallery-arrow.left  { left:12px; }
+.gallery-arrow.right { right:12px; }
+.gallery-dots { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:2; }
+.g-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.5); transition:all 200ms; cursor:pointer; }
+.g-dot.active { background:#fff; width:18px; border-radius:3px; }
+.gallery-thumbs {
+  display:flex; gap:6px; padding:10px 16px 0; overflow-x:auto; scrollbar-width:none;
+}
+.gallery-thumbs::-webkit-scrollbar { display:none; }
+.g-thumb {
+  width:52px; height:52px; border-radius:8px; overflow:hidden;
+  cursor:pointer; flex-shrink:0; border:2px solid transparent;
+  transition:border-color 150ms;
+}
+.g-thumb.active { border-color:var(--accent); }
+.g-thumb img { width:100%; height:100%; object-fit:cover; }
+
+/* Detail body */
+.detail-body { padding:16px 20px 20px; overflow-y:auto; }
+.detail-name { font-size:1.3rem; font-weight:700; margin-bottom:2px; }
+.detail-nick { color:var(--text-3); font-size:0.88rem; margin-bottom:12px; }
+.detail-meta { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+.detail-meta-row {
+  display:flex; align-items:center; gap:8px; font-size:0.875rem; color:var(--text-2);
+}
+.detail-meta-row a { color:var(--accent); text-decoration:none; }
+.detail-meta-row a:hover { text-decoration:underline; }
+.detail-meta-row i { color:var(--accent); flex-shrink:0; }
+.detail-bio {
+  font-size:0.875rem; color:var(--text-2); line-height:1.75;
+  padding-top:12px; border-top:1px solid var(--border);
+}
+
+/* ── SKELETON ── */
+.skeleton-card { background:var(--bg-1); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+.empty-state { grid-column:1/-1; text-align:center; padding:64px 24px; color:var(--text-3); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:600px) {
+  .committee-grid { grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px; }
+  .filter-chips { display:none; }
+  .detail-box { max-width:100%; margin:0; border-radius:var(--radius-lg) var(--radius-lg) 0 0; align-self:flex-end; }
+}
+
+/* ── NAV DROPDOWN ── */
+.nav-dropdown { position: relative; }
+.nav-dropdown-btn { display: flex; align-items: center; gap: 4px; cursor: pointer; border: none; background: none; font-family: var(--font); }
+.nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius-lg); min-width: 240px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); z-index: 200; padding: 6px; animation: fadeUp 200ms var(--ease-out) both; }
+.nav-dropdown.open .nav-dropdown-menu { display: block; }
+.nav-dropdown.open .nav-dropdown-btn i[data-lucide="chevron-down"] { transform: rotate(180deg); }
+.nav-dropdown-item { display: grid; grid-template-columns: 20px 1fr; gap: 4px 8px; align-items: start; padding: 10px 12px; border-radius: var(--radius-sm); text-decoration: none; color: var(--text); font-size: 0.875rem; font-weight: 500; transition: background 150ms; }
+.nav-dropdown-item:hover { background: var(--bg-2); }
+.nav-dropdown-item i { margin-top: 2px; color: var(--accent); }
+.nav-dropdown-item.active { background: var(--accent-dim); color: var(--accent); }
+.nav-dropdown-desc { grid-column: 2; font-size: 0.75rem; color: var(--text-3); font-weight: 400; }
+</style>
+<script>
+function toggleDropdown() {
+  document.getElementById('nav-dd')?.classList.toggle('open');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('click', function(e) {
+    if(!e.target.closest('#nav-dd')) {
+      document.getElementById('nav-dd')?.classList.remove('open');
+    }
+  });
+});
+</script>
+</head>
+<body>
+
+<nav id="public-nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <img src="logo.png" class="nav-logo-img" alt="SciMath" onerror="this.style.display='none'">
+      <span class="nav-logo-text">SciMath TU</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">หน้าแรก</a>
+      <a class="nav-link active" href="committee.html">บุคลากร</a>
+      <div class="nav-dropdown" id="nav-dd">
+        <button class="nav-link nav-dropdown-btn" onclick="toggleDropdown()">รับน้อง <i data-lucide="chevron-down" style="width:13px;height:13px;transition:transform 200ms"></i></button>
+        <div class="nav-dropdown-menu">
+          <a class="nav-dropdown-item " href="event.html"><i data-lucide="tent" style="width:14px;height:14px"></i>รับน้อง 89<span class="nav-dropdown-desc">ภาพรวมกิจกรรม CARNIVAL</span></a>
+          <a class="nav-dropdown-item " href="schedule.html"><i data-lucide="calendar-range" style="width:14px;height:14px"></i>กำหนดการกิจกรรม<span class="nav-dropdown-desc">ไทม์ไลน์และตารางเวลา</span></a>
+          <a class="nav-dropdown-item " href="activities.html"><i data-lucide="layers" style="width:14px;height:14px"></i>6 ฐานกิจกรรม<span class="nav-dropdown-desc">รายละเอียดทุกฐาน</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <a class="btn btn-primary btn-sm" id="nav-cta" href="login.html">
+        <i data-lucide="log-in" style="width:14px;height:14px"></i> เข้าสู่ระบบ
+      </a>
+      <button class="hamburger btn-icon" onclick="document.getElementById('mobile-menu').classList.toggle('open')">
+        <i data-lucide="menu" style="width:20px;height:20px"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a class="mobile-nav-link" href="index.html"><i data-lucide="home" style="width:18px;height:18px"></i>หน้าแรก</a>
+  <a class="mobile-nav-link" href="committee.html"><i data-lucide="users" style="width:18px;height:18px"></i>บุคลากร</a>
+  <div style="padding:4px 0;border-bottom:1px solid var(--border)">
+    <div style="font-size:0.72rem;color:var(--text-3);padding:6px 16px 4px">รับน้อง</div>
+    <a class="mobile-nav-link" href="event.html" style="padding-left:28px"><i data-lucide="tent" style="width:16px;height:16px"></i>รับน้อง 89</a>
+    <a class="mobile-nav-link" href="schedule.html" style="padding-left:28px"><i data-lucide="calendar-range" style="width:16px;height:16px"></i>กำหนดการกิจกรรม</a>
+    <a class="mobile-nav-link" href="activities.html" style="padding-left:28px"><i data-lucide="layers" style="width:16px;height:16px"></i>6 ฐานกิจกรรม</a>
+  </div>
+  <div class="divider" style="margin:8px 0"></div>
+  <a class="mobile-nav-link" href="login.html"><i data-lucide="log-in" style="width:18px;height:18px"></i>เข้าสู่ระบบ</a>
+</div>
+
+<!-- Hero -->
+<div class="page-hero">
+  <h1>กรรมการสายการเรียน</h1>
+  <p>คณะกรรมการสายการเรียนวิทยาศาสตร์-คณิตศาสตร์<br>โรงเรียนเตรียมอุดมศึกษา</p>
+  <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px;flex-wrap:wrap">
+    <a href="mailto:tuscimath.official@gmail.com" style="display:flex;align-items:center;gap:6px;font-size:0.85rem;color:var(--text-2);text-decoration:none;transition:color 150ms" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-2)'">
+      <i data-lucide="mail" style="width:14px;height:14px"></i> tuscimath.official@gmail.com
+    </a>
+    <a href="https://instagram.com/tuscimath.official" target="_blank" style="display:flex;align-items:center;gap:6px;font-size:0.85rem;color:var(--text-2);text-decoration:none;transition:color 150ms" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-2)'">
+      <i data-lucide="instagram" style="width:14px;height:14px"></i> @tuscimath.official
+    </a>
+  </div>
+</div>
+
+<!-- Filter -->
+<div class="filter-bar">
+  <div class="search-wrap">
+    <i data-lucide="search" style="width:15px;height:15px;color:var(--text-3);flex-shrink:0"></i>
+    <input type="text" id="search-input" placeholder="ค้นหาชื่อ ตำแหน่ง ฝ่าย..." oninput="filterCards()">
+  </div>
+  
+</div>
+
+<!-- Grid -->
+<div class="committee-grid" id="committee-grid">
+  ${[...Array(8)].map(()=>`
+  <div class="skeleton-card">
+    <div class="skeleton" style="aspect-ratio:1/1"></div>
+    <div style="padding:14px 16px">
+      <div class="skeleton" style="height:14px;width:70%;border-radius:4px;margin-bottom:8px"></div>
+      <div class="skeleton" style="height:10px;width:45%;border-radius:4px"></div>
+    </div>
+  </div>`).join('')}
+</div>
+
+<!-- Detail Modal -->
+<div class="detail-overlay" id="detail-overlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-box" id="detail-box">
+
+    <!-- Gallery -->
+    <div class="gallery-wrap" id="gallery-wrap">
+      <button class="detail-close" onclick="closeDetail()">
+        <i data-lucide="x" style="width:15px;height:15px"></i>
+      </button>
+      <div class="gallery-initials" id="gallery-initials"></div>
+      <img class="gallery-main-img" id="gallery-img" src="" alt="" style="display:none">
+      <button class="gallery-arrow left"  id="arr-left"  onclick="galleryPrev()"><i data-lucide="chevron-left"  style="width:16px;height:16px"></i></button>
+      <button class="gallery-arrow right" id="arr-right" onclick="galleryNext()"><i data-lucide="chevron-right" style="width:16px;height:16px"></i></button>
+      <div class="gallery-dots" id="gallery-dots"></div>
+    </div>
+
+    <!-- Thumbnails -->
+    <div class="gallery-thumbs" id="gallery-thumbs"></div>
+
+    <!-- Body -->
+    <div class="detail-body">
+      <div class="detail-name" id="d-name"></div>
+      <div class="detail-nick" id="d-nick"></div>
+      <div class="detail-meta">
+        <div class="detail-meta-row"><i data-lucide="briefcase" style="width:14px;height:14px"></i><span id="d-position"></span></div>
+        <div class="detail-meta-row"><i data-lucide="door-open" style="width:14px;height:14px"></i><span id="d-room"></span></div>
+        <div class="detail-meta-row" id="d-email-row" style="display:none">
+          <i data-lucide="mail" style="width:14px;height:14px"></i>
+          <a id="d-email" href="#"></a>
+        </div>
+        <div class="detail-meta-row" id="d-ig-row" style="display:none">
+          <i data-lucide="instagram" style="width:14px;height:14px"></i>
+          <a id="d-ig" href="#" target="_blank"></a>
+        </div>
+      </div>
+      <div class="detail-bio" id="d-bio" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script type="module">
+import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app  = initializeApp({
+  apiKey: "AIzaSyDtuK_Rvq9Ki3QiytCTWON6S4J2iHKlTCU",
+  authDomain: "rubnong-official.firebaseapp.com",
+  projectId: "rubnong-official",
+  storageBucket: "rubnong-official.firebasestorage.app",
+  messagingSenderId: "982944596814",
+  appId: "1:982944596814:web:cf61c860632eb42b4a541f"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+onAuthStateChanged(auth, user => {
+  if(user) {
+    const cta = document.getElementById('nav-cta');
+    if(cta) { cta.href='dashboard.html'; cta.innerHTML='<i data-lucide="layout-dashboard" style="width:14px;height:14px"></i> Dashboard'; lucide.createIcons(); }
+  }
+});
+
+// ── STATE ──────────────────────────────────────────────
+let allMembers   = [];
+let activeFilter = 'all';
+let currentMember = null;
+let galleryIndex  = 0;
+
+// ── UTILS ──────────────────────────────────────────────
+const getInitials = (name='') => {
+  const p = name.trim().split(' ');
+  return p.length > 1 ? p[0][0]+p[1][0] : (name[0]||'?');
+};
+
+// ── CARD RENDER ────────────────────────────────────────
+function cardHTML(m, idx) {
+  const initials   = getInitials(`${m.firstName||''} ${m.lastName||''}`);
+  const photos     = m.photos || (m.photoURL ? [m.photoURL] : []);
+  const mainPhoto  = photos[0] || '';
+  const hoverPhoto = photos[1] || '';
+
+  return `
+    <div class="cm-card" onclick="openDetail(${idx})">
+      <div class="cm-photo">
+        ${mainPhoto
+          ? `<img class="cm-photo-main"  src="${mainPhoto}"  alt="${m.firstName}" loading="lazy" onerror="this.style.display='none'">
+             ${hoverPhoto ? `<img class="cm-photo-hover" src="${hoverPhoto}" alt="${m.firstName}" loading="lazy">` : ''}`
+          : ''}
+        <div class="cm-photo-initials" ${mainPhoto?'style="display:none"':''}>${initials}</div>
+
+      </div>
+      <div class="cm-info">
+        <div class="cm-name">${m.firstName||''} ${m.lastName||''}</div>
+        <div class="cm-nick">${m.nickname ? `(${m.nickname})` : ''}</div>
+        <div class="cm-position"><i data-lucide="briefcase" style="width:11px;height:11px"></i>${m.position||'-'}</div>
+        ${m.email ? `<div class="cm-room"><i data-lucide="mail" style="width:10px;height:10px"></i>${m.email}</div>` : ''}
+        ${m.instagram ? `<div class="cm-room"><i data-lucide="instagram" style="width:10px;height:10px"></i>${m.instagram}</div>` : ''}
+      </div>
+    </div>`;
+}
+
+function render(members) {
+  const grid = document.getElementById('committee-grid');
+  if(!members.length) {
+    grid.innerHTML = `<div class="empty-state">
+      <i data-lucide="users" style="width:40px;height:40px;opacity:0.3;margin-bottom:10px"></i>
+      <div>ไม่พบบุคลากรที่ค้นหา</div>
+    </div>`; lucide.createIcons(); return;
+  }
+  grid.innerHTML = members.map((m,i) => cardHTML(m, allMembers.indexOf(m))).join('');
+  lucide.createIcons();
+}
+
+// ── FILTERS ────────────────────────────────────────────
+function buildChips(members) {
+  // no dept filter;
+}
+
+window.setFilter = (dept, el) => {
+  activeFilter = dept;
+  document.querySelectorAll('.filter-chips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active'); filterCards();
+};
+window.filterCards = () => {
+  const q = document.getElementById('search-input')?.value.toLowerCase()||'';
+  let f = allMembers;
+  if(activeFilter!=='all') f = f.filter(m=>m.dept===activeFilter);
+  if(q) f = f.filter(m=>(`${m.firstName} ${m.lastName} ${m.nickname} ${m.position} ${m.dept}`).toLowerCase().includes(q));
+  render(f);
+};
+
+// ── GALLERY ────────────────────────────────────────────
+function setGalleryPhoto(idx) {
+  if(!currentMember) return;
+  const photos = currentMember.photos || (currentMember.photoURL?[currentMember.photoURL]:[]);
+  galleryIndex = Math.max(0, Math.min(idx, photos.length-1));
+
+  const img = document.getElementById('gallery-img');
+  const ini = document.getElementById('gallery-initials');
+  if(photos.length && photos[galleryIndex]) {
+    img.src = photos[galleryIndex];
+    img.style.display = 'block';
+    ini.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    ini.style.display = 'flex';
+  }
+  // arrows
+  document.getElementById('arr-left').style.display  = photos.length>1 ? 'flex' : 'none';
+  document.getElementById('arr-right').style.display = photos.length>1 ? 'flex' : 'none';
+  // dots
+  const dotsEl = document.getElementById('gallery-dots');
+  dotsEl.innerHTML = photos.map((_,i)=>`<div class="g-dot ${i===galleryIndex?'active':''}" onclick="setGalleryPhoto(${i})"></div>`).join('');
+  // thumbs
+  const thumbsEl = document.getElementById('gallery-thumbs');
+  thumbsEl.innerHTML = photos.map((p,i)=>`
+    <div class="g-thumb ${i===galleryIndex?'active':''}" onclick="setGalleryPhoto(${i})">
+      <img src="${p}" onerror="this.parentElement.style.display='none'">
+    </div>`).join('');
+  if(photos.length<=1) thumbsEl.style.display='none'; else thumbsEl.style.display='flex';
+}
+
+window.galleryPrev = () => setGalleryPhoto(galleryIndex-1);
+window.galleryNext = () => setGalleryPhoto(galleryIndex+1);
+
+// swipe support
+let touchX = 0;
+document.getElementById('gallery-wrap').addEventListener('touchstart', e=>{ touchX = e.touches[0].clientX; });
+document.getElementById('gallery-wrap').addEventListener('touchend', e=>{
+  const dx = e.changedTouches[0].clientX - touchX;
+  if(Math.abs(dx)>40) dx<0 ? galleryNext() : galleryPrev();
+});
+
+// ── DETAIL MODAL ────────────────────────────────────────
+window.openDetail = (idx) => {
+  const m = allMembers[idx]; if(!m) return;
+  currentMember = m; galleryIndex = 0;
+
+  const initials = getInitials(`${m.firstName||''} ${m.lastName||''}`);
+  document.getElementById('gallery-initials').textContent = initials;
+  setGalleryPhoto(0);
+
+  document.getElementById('d-name').textContent     = `${m.firstName||''} ${m.lastName||''}`;
+  document.getElementById('d-nick').textContent     = m.nickname ? `(${m.nickname})` : '';
+  document.getElementById('d-position').textContent = m.position||'-';
+  document.getElementById('d-room').textContent     = m.room||'-';
+
+  const emailRow = document.getElementById('d-email-row');
+  const emailEl  = document.getElementById('d-email');
+  if(m.email) { emailEl.textContent=m.email; emailEl.href=`mailto:${m.email}`; emailRow.style.display='flex'; }
+  else emailRow.style.display='none';
+
+  const igRow = document.getElementById('d-ig-row');
+  const igEl  = document.getElementById('d-ig');
+  if(m.instagram) {
+    const handle = m.instagram.replace('@','');
+    igEl.textContent=`@${handle}`; igEl.href=`https://instagram.com/${handle}`;
+    igRow.style.display='flex';
+  } else igRow.style.display='none';
+
+  const bioEl = document.getElementById('d-bio');
+  if(m.bio) { bioEl.textContent=m.bio; bioEl.style.display='block'; }
+  else bioEl.style.display='none';
+
+  document.getElementById('detail-overlay').classList.add('show');
+  lucide.createIcons();
+};
+
+window.closeDetail = () => {
+  document.getElementById('detail-overlay').classList.remove('show');
+  currentMember = null;
+};
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDetail(); });
+document.addEventListener('keydown', e=>{
+  if(!currentMember) return;
+  if(e.key==='ArrowLeft')  galleryPrev();
+  if(e.key==='ArrowRight') galleryNext();
+});
+
+// ── LOAD ───────────────────────────────────────────────
+const FALLBACK = [
+  { firstName:'ประธาน',  lastName:'สายวิทย์',  nickname:'ตัน',   position:'ประธาน',    dept:'ประธาน',       room:'ม.6/1', bio:'ดูแลภาพรวมสายการเรียน' },
+  { firstName:'รองประธาน',lastName:'คนที่หนึ่ง',nickname:'รอง',  position:'รองประธาน', dept:'รองประธาน',    room:'ม.6/2', bio:'' },
+  { firstName:'เลขา',    lastName:'สายวิทย์',  nickname:'เลขา',  position:'เลขานุการ', dept:'เลขานุการ',    room:'ม.6/1', bio:'' },
+  { firstName:'กิจกรรม', lastName:'หนึ่ง',     nickname:'กิจ',   position:'หัวหน้า',   dept:'ฝ่ายกิจกรรม', room:'ม.6/2', bio:'' },
+  { firstName:'ทะเบียน', lastName:'หนึ่ง',     nickname:'ทะ',    position:'หัวหน้า',   dept:'ฝ่ายทะเบียน', room:'ม.6/3', bio:'' },
+  { firstName:'สวัสดิการ',lastName:'หนึ่ง',    nickname:'สวัส',  position:'หัวหน้า',   dept:'ฝ่ายสวัสดิการ',room:'ม.6/1',bio:'' },
+  { firstName:'PR',      lastName:'หนึ่ง',     nickname:'พีอาร์',position:'หัวหน้า',   dept:'ฝ่าย PR/Design',room:'ม.6/4',bio:'' },
+  { firstName:'Tech',    lastName:'หนึ่ง',     nickname:'เทค',   position:'สมาชิก',    dept:'ฝ่าย PR/Design',room:'ม.6/2',bio:'' },
+];
+
+async function load() {
+  try {
+    const snap = await getDocs(collection(db,'committees'));
+    allMembers = snap.empty ? FALLBACK : snap.docs.map(d=>({id:d.id,...d.data()}));
+  } catch(e) { allMembers = FALLBACK; }
+  buildChips(allMembers);
+  render(allMembers);
+}
+load();
+</script>
+</body>
+</html>

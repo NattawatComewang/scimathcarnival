@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="logo.png">
+<title>กำหนดการ — Sci-Math CARNIVAL 89</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/motion.css">
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/theme.js"></script>
+<style>
+body { background: var(--bg); }
+.section { max-width: 900px; margin: 0 auto; padding: 40px 28px 60px; }
+.page-hero { padding: 48px 28px 32px; max-width: 900px; margin: 0 auto; }
+.page-hero h1 { font-size: clamp(1.8rem,4vw,2.4rem); font-weight: 700; margin-bottom: 8px; }
+.page-hero p { color: var(--text-2); font-size: 0.95rem; line-height: 1.7; }
+
+/* Timeline vertical */
+.tl-vert { position: relative; padding-left: 32px; }
+.tl-vert::before {
+  content: ''; position: absolute; left: 11px; top: 8px; bottom: 8px;
+  width: 2px; background: var(--border);
+}
+.tl-item {
+  position: relative; margin-bottom: 28px;
+  animation: fadeUp 450ms var(--ease-out) both;
+}
+.tl-item:nth-child(1){animation-delay:0ms}.tl-item:nth-child(2){animation-delay:60ms}
+.tl-item:nth-child(3){animation-delay:120ms}.tl-item:nth-child(4){animation-delay:180ms}
+.tl-item:nth-child(5){animation-delay:240ms}.tl-item:nth-child(6){animation-delay:300ms}
+.tl-dot {
+  position: absolute; left: -32px; top: 4px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--bg-1); border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; font-weight: 700; z-index: 1;
+  transition: all 200ms;
+}
+.tl-item.done   .tl-dot { background: var(--green);  border-color: var(--green);  color: #fff; }
+.tl-item.active .tl-dot { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 0 4px var(--accent-dim); }
+.tl-item.future .tl-dot { background: var(--bg-2);   border-color: var(--border-2); color: var(--text-3); }
+.tl-card {
+  background: var(--bg-1); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px 18px;
+  transition: all 200ms var(--ease-out);
+}
+.tl-item.active .tl-card { border-color: var(--accent); background: var(--accent-dim); }
+.tl-item:hover .tl-card { transform: translateX(4px); border-color: var(--border-2); }
+.tl-item.active:hover .tl-card { transform: translateX(4px); border-color: var(--accent); }
+.tl-date { font-size: 0.78rem; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+.tl-item.done .tl-date { color: var(--green); }
+.tl-item.future .tl-date { color: var(--text-3); }
+.tl-title { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.tl-desc  { font-size: 0.875rem; color: var(--text-2); line-height: 1.65; }
+.tl-tag { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; padding: 3px 10px; border-radius: 100px; font-size: 0.72rem; font-weight: 500; }
+.tl-tag.done   { background: var(--green-dim); color: var(--green); }
+.tl-tag.active { background: var(--accent-dim); color: var(--accent); }
+.tl-tag.future { background: var(--bg-2); color: var(--text-3); }
+
+/* Day schedule */
+.day-card { background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 14px; }
+.day-head { padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--bg-2); display: flex; align-items: center; gap: 10px; }
+.day-head-date { font-weight: 700; font-size: 0.95rem; }
+.day-head-sub   { font-size: 0.8rem; color: var(--text-2); }
+.sched-row { display: flex; gap: 14px; padding: 12px 18px; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.sched-row:last-child { border-bottom: none; }
+.sched-time { font-size: 0.8rem; color: var(--text-3); min-width: 90px; flex-shrink: 0; padding-top: 2px; font-variant-numeric: tabular-nums; }
+.sched-info { flex: 1; }
+.sched-name { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+.sched-loc  { font-size: 0.78rem; color: var(--text-3); margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+.sched-dot  { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+
+/* Nav dropdown */
+.nav-dropdown { position: relative; }
+.nav-dropdown-btn { display: flex; align-items: center; gap: 4px; cursor: pointer; border: none; background: none; font-family: var(--font); }
+.nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius-lg); min-width: 240px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); z-index: 200; padding: 6px; animation: fadeUp 200ms var(--ease-out) both; }
+.nav-dropdown.open .nav-dropdown-menu { display: block; }
+.nav-dropdown.open .nav-dropdown-btn i[data-lucide="chevron-down"] { transform: rotate(180deg); }
+.nav-dropdown-item { display: grid; grid-template-columns: 20px 1fr; gap: 4px 8px; align-items: start; padding: 10px 12px; border-radius: var(--radius-sm); text-decoration: none; color: var(--text); font-size: 0.875rem; font-weight: 500; transition: background 150ms; }
+.nav-dropdown-item:hover { background: var(--bg-2); }
+.nav-dropdown-item i { margin-top: 2px; color: var(--accent); }
+.nav-dropdown-item.active { background: var(--accent-dim); color: var(--accent); }
+.nav-dropdown-desc { grid-column: 2; font-size: 0.75rem; color: var(--text-3); font-weight: 400; }
+@media(max-width:600px){ .section,.page-hero{ padding-left:16px;padding-right:16px; } }
+
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+  #public-nav { padding: 0 16px; }
+  .section, .page-hero { padding-left: 16px; padding-right: 16px; }
+  .page-hero h1 { font-size: 1.6rem; }
+  .act-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<nav id="public-nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html"><img src="logo.png" class="nav-logo-img" alt="SciMath" onerror="this.style.display='none'"><span class="nav-logo-text">SciMath TU</span></a>
+    <div class="nav-links">
+      <a class="nav-link " href="event.html">รับน้อง 89</a>
+      <a class="nav-link active" href="schedule.html">กำหนดการ</a>
+      <a class="nav-link " href="activities.html">6 ฐานกิจกรรม</a>
+    </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="hamburger-btn" onclick="document.getElementById('mob-nav').style.display=document.getElementById('mob-nav').style.display==='flex'?'none':'flex'" style="display:none;width:40px;height:40px;border-radius:8px;background:var(--bg-2);border:1px solid var(--border);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <a class="btn btn-primary btn-sm" href="login.html"><i data-lucide="log-in" style="width:14px;height:14px"></i> เข้าสู่ระบบ</a>
+      <button class="hamburger btn-icon" onclick="document.getElementById('mobile-menu').classList.toggle('open')"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a class="mobile-nav-link" href="index.html"><i data-lucide="home" style="width:18px;height:18px"></i>หน้าแรก</a>
+  <a class="mobile-nav-link" href="committee.html"><i data-lucide="users" style="width:18px;height:18px"></i>บุคลากร</a>
+  <div style="padding:4px 0;border-bottom:1px solid var(--border)">
+    <div style="font-size:0.72rem;color:var(--text-3);padding:6px 16px 4px">รับน้อง</div>
+    <a class="mobile-nav-link" href="event.html" style="padding-left:28px"><i data-lucide="tent" style="width:16px;height:16px"></i>รับน้อง 89</a>
+    <a class="mobile-nav-link" href="schedule.html" style="padding-left:28px;color:var(--accent)"><i data-lucide="calendar-range" style="width:16px;height:16px"></i>กำหนดการกิจกรรม</a>
+    <a class="mobile-nav-link" href="activities.html" style="padding-left:28px"><i data-lucide="layers" style="width:16px;height:16px"></i>6 ฐานกิจกรรม</a>
+  </div>
+  <a class="mobile-nav-link" href="login.html"><i data-lucide="log-in" style="width:18px;height:18px"></i>เข้าสู่ระบบ</a>
+</div>
+
+<div class="page-hero">
+  <h1>กำหนดการกิจกรรม</h1>
+  <p>ไทม์ไลน์สำคัญตั้งแต่เปิดรับสมัครจนถึงวันงาน</p>
+</div>
+
+<!-- ไทม์ไลน์ -->
+<div class="section" style="padding-top:0">
+  <div style="font-size:0.9rem;font-weight:700;margin-bottom:20px;color:var(--text)">ไทม์ไลน์สำคัญ</div>
+    <div class="tl-vert">
+    <div class="tl-item active">
+      <div class="tl-dot">★</div>
+      <div class="tl-card">
+        <div class="tl-date">4–14 มิ.ย. 2569</div>
+        <div class="tl-title">เปิดลงทะเบียนน้อง</div>
+        <div class="tl-desc">น้องใหม่ทุกคนลงทะเบียนผ่านระบบออนไลน์</div>
+        <div class="tl-tag active"><i data-lucide="clock" style="width:10px;height:10px"></i> กำลังดำเนินการ</div>
+      </div>
+    </div>
+    <div class="tl-item future">
+      <div class="tl-dot">2</div>
+      <div class="tl-card">
+        <div class="tl-date">22 มิ.ย. 2569</div>
+        <div class="tl-title">ประกาศกลุ่ม</div>
+        <div class="tl-desc">ประกาศผลการจัดกลุ่มทุกคน</div>
+        <div class="tl-tag future"><i data-lucide="clock" style="width:10px;height:10px"></i> รอดำเนินการ</div>
+      </div>
+    </div>
+    <div class="tl-item future">
+      <div class="tl-dot">3</div>
+      <div class="tl-card">
+        <div class="tl-date">27 มิ.ย. 2569</div>
+        <div class="tl-title">วันงานรับน้อง — Sci-Math CARNIVAL</div>
+        <div class="tl-desc">08.00 – 17.00 น. · โรงเรียนเตรียมอุดมศึกษา</div>
+        <div class="tl-tag future"><i data-lucide="calendar-heart" style="width:10px;height:10px"></i> รอวันงาน</div>
+      </div>
+    </div>
+  </div>
+
+ -->
+<div class="section" style="padding-top:0">
+  <div style="font-size:0.9rem;font-weight:700;margin-bottom:16px;color:var(--text)">กำหนดการวันงาน</div>
+  <div class="day-card">
+    <div class="day-head">
+      <i data-lucide="calendar-heart" style="width:18px;height:18px;color:var(--accent)"></i>
+      <div>
+        <div class="day-head-date">27 มิถุนายน 2569</div>
+        <div class="day-head-sub">วันงานรับน้อง Sci-Math CARNIVAL 89</div>
+      </div>
+    </div>
+    <div class="sched-row"><div class="sched-dot"></div><div class="sched-time">07.30</div><div class="sched-info"><div class="sched-name">เปิดลงทะเบียน</div><div class="sched-loc"><i data-lucide="map-pin" style="width:11px;height:11px"></i>จุดรับลงทะเบียน</div></div></div>
+    <div class="sched-row"><div class="sched-dot"></div><div class="sched-time">08.30</div><div class="sched-info"><div class="sched-name">พิธีเปิดงาน</div></div></div>
+    <div class="sched-row" style="background:var(--accent-dim)"><div class="sched-dot" style="background:var(--accent)"></div><div class="sched-time">09.00 – 09.40</div><div class="sched-info"><div class="sched-name" style="color:var(--accent);font-weight:600">กิจกรรมที่ 1</div><div class="sched-loc"><i data-lucide="layers" style="width:11px;height:11px"></i>ฐานกิจกรรม</div></div></div>
+    <div class="sched-row" style="background:var(--accent-dim)"><div class="sched-dot" style="background:var(--accent)"></div><div class="sched-time">09.45 – 10.25</div><div class="sched-info"><div class="sched-name" style="color:var(--accent);font-weight:600">กิจกรรมที่ 2</div><div class="sched-loc"><i data-lucide="layers" style="width:11px;height:11px"></i>ฐานกิจกรรม</div></div></div>
+    <div class="sched-row"><div class="sched-dot" style="background:var(--amber)"></div><div class="sched-time">10.25 – 10.50</div><div class="sched-info"><div class="sched-name">พักเบรก</div><div class="sched-loc"><i data-lucide="coffee" style="width:11px;height:11px"></i>พื้นที่พักผ่อน</div></div></div>
+    <div class="sched-row" style="background:var(--accent-dim)"><div class="sched-dot" style="background:var(--accent)"></div><div class="sched-time">10.55 – 11.35</div><div class="sched-info"><div class="sched-name" style="color:var(--accent);font-weight:600">กิจกรรมที่ 3</div><div class="sched-loc"><i data-lucide="layers" style="width:11px;height:11px"></i>ฐานกิจกรรม</div></div></div>
+    <div class="sched-row"><div class="sched-dot" style="background:var(--amber)"></div><div class="sched-time">11.35 – 13.00</div><div class="sched-info"><div class="sched-name">พักเที่ยง + มินิคอนเสิร์ต</div><div class="sched-loc"><i data-lucide="music" style="width:11px;height:11px"></i>คอนเสิร์ต 12.15 – 12.45</div></div></div>
+    <div class="sched-row" style="background:var(--accent-dim)"><div class="sched-dot" style="background:var(--accent)"></div><div class="sched-time">13.05 – 13.45</div><div class="sched-info"><div class="sched-name" style="color:var(--accent);font-weight:600">กิจกรรมที่ 4</div><div class="sched-loc"><i data-lucide="layers" style="width:11px;height:11px"></i>ฐานกิจกรรม</div></div></div>
+    <div class="sched-row" style="background:var(--accent-dim)"><div class="sched-dot" style="background:var(--accent)"></div><div class="sched-time">13.50 – 14.30</div><div class="sched-info"><div class="sched-name" style="color:var(--accent);font-weight:600">กิจกรรมที่ 5</div><div class="sched-loc"><i data-lucide="layers" style="width:11px;height:11px"></i>ฐานกิจกรรม</div></div></div>
+    <div class="sched-row" style="background:var(--accent-dim)"><div class="sched-dot" style="background:var(--accent)"></div><div class="sched-time">14.35 – 15.15</div><div class="sched-info"><div class="sched-name" style="color:var(--accent);font-weight:600">กิจกรรมที่ 6</div><div class="sched-loc"><i data-lucide="layers" style="width:11px;height:11px"></i>ฐานกิจกรรม</div></div></div>
+    <div class="sched-row"><div class="sched-dot"></div><div class="sched-time">15.20 – 15.35</div><div class="sched-info"><div class="sched-name">ปิดกิจกรรม</div></div></div>
+    <div class="sched-row" style="background:rgba(232,201,106,0.08)"><div class="sched-dot" style="background:var(--gold)"></div><div class="sched-time">15.35 เป็นต้นไป</div><div class="sched-info"><div class="sched-name" style="color:var(--gold);font-weight:600">บูม + เชียร์โต้</div><div class="sched-loc"><i data-lucide="star" style="width:11px;height:11px"></i>Grand Finale</div></div></div>
+  </div>
+</div>
+
+<footer style="background:var(--bg-1);border-top:1px solid var(--border);padding:28px;text-align:center;color:var(--text-3);font-size:0.8rem">
+  © 2569 คณะกรรมการสายการเรียนวิทย์–คณิต โรงเรียนเตรียมอุดมศึกษา
+</footer>
+<div id="toast-container"></div>
+
+</body>
+</html>

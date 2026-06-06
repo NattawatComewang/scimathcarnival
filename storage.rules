@@ -1,0 +1,42 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(uid) { return request.auth.uid == uid; }
+    function isSchoolEmail() {
+      return request.auth.token.email != null &&
+             request.auth.token.email.matches('.*@student\\.triamudom\\.ac\\.th');
+    }
+    function isAnonymous() {
+      return request.auth != null &&
+             request.auth.token.firebase.sign_in_provider == 'anonymous';
+    }
+    function isSuperAdmin() {
+      return request.auth.token.email == '8868278@student.triamudom.ac.th';
+    }
+    function canUploadAvatar() {
+      return isSchoolEmail() || isAnonymous() || isSuperAdmin();
+    }
+
+    match /avatars/{uid} {
+      allow read: if true;
+      allow write: if isSignedIn()
+                   && isOwner(uid)
+                   && canUploadAvatar()
+                   && request.resource.size < 2 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    match /committees/{filename} {
+      allow read: if true;
+      allow write: if isSuperAdmin()
+                   && request.resource.size < 3 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,5 @@
+# Cloudflare Pages redirects
+# rubnong.triamudomscimath.com → หน้า rubnong.html เป็น index
+
+/rubnong      /rubnong.html 200
+/rubnong/     /rubnong.html 200
