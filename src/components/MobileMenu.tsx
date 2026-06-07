@@ -1,0 +1,29 @@
+'use client';
+import { Home, Users, Tent, CalendarRange, Layers, LogIn } from 'lucide-react';
+
+interface Props {
+  isOpen: boolean;
+}
+
+export default function MobileMenu({ isOpen }: Props) {
+  return (
+    <div className={`mobile-menu${isOpen ? ' open' : ''}`} id="mobile-menu">
+      <a className="mobile-nav-link" href="/"><Home style={{ width: 18, height: 18 }} />หน้าแรก</a>
+      <a className="mobile-nav-link" href="/committee"><Users style={{ width: 18, height: 18 }} />บุคลากร</a>
+      <div style={{ padding: '4px 0', borderBottom: '1px solid var(--border)' }}>
+        <div style={{ fontSize: '0.72rem', color: 'var(--text-3)', padding: '6px 16px 4px' }}>รับน้อง</div>
+        <a className="mobile-nav-link" href="/event" style={{ paddingLeft: 28 }}>
+          <Tent style={{ width: 16, height: 16 }} />รับน้อง 89
+        </a>
+        <a className="mobile-nav-link" href="/schedule" style={{ paddingLeft: 28 }}>
+          <CalendarRange style={{ width: 16, height: 16 }} />กำหนดการกิจกรรม
+        </a>
+        <a className="mobile-nav-link" href="/activities" style={{ paddingLeft: 28 }}>
+          <Layers style={{ width: 16, height: 16 }} />6 ฐานกิจกรรม
+        </a>
+      </div>
+      <div className="divider" style={{ margin: '8px 0' }} />
+      <a className="mobile-nav-link" href="/login"><LogIn style={{ width: 18, height: 18 }} />เข้าสู่ระบบ</a>
+    </div>
+  );
+}
