@@ -1,0 +1,132 @@
+'use client';
+import Nav from '@/components/Nav';
+import Footer from '@/components/Footer';
+import { Calendar, Users, Clock, MapPin, Star, CalendarCheck, Megaphone } from 'lucide-react';
+
+const TIMELINE = [
+  { num: '★', label: 'เปิดลงทะเบียนน้อง', date: '4–14 มิ.ย. 2569', desc: 'น้องใหม่ทุกคนลงทะเบียนผ่านระบบออนไลน์', status: 'active', tag: 'กำลังดำเนินการ' },
+  { num: '2', label: 'ประกาศกลุ่ม', date: '22 มิ.ย. 2569', desc: 'ประกาศผลการจัดกลุ่มทุกคน', status: 'future', tag: 'รอดำเนินการ' },
+  { num: '3', label: 'วันงานรับน้อง — Sci-Math CARNIVAL', date: '27 มิ.ย. 2569', desc: '08.00 – 17.00 น. · โรงเรียนเตรียมอุดมศึกษา', status: 'future', tag: 'รอวันงาน' },
+];
+
+const ACTIVITIES = [
+  { num: 1, name: 'Memory Booth', sub: 'ฮับบันทึกความทรงจำ' },
+  { num: 2, name: 'The Game Alley', sub: 'ตรอกเกมแห่ง Carnival' },
+  { num: 3, name: "The Builder's Tent", sub: 'เต็นท์ช่างฝีมือ' },
+  { num: 4, name: 'The Haunted Tent', sub: 'มัมมี่ที่รัก' },
+  { num: 5, name: 'The Skill Booth', sub: 'ฮับทดสอบฝีมือ' },
+  { num: 6, name: 'The Grand Circus', sub: 'ละครสัตว์มหรรศจรรย์' },
+];
+
+export default function EventPage() {
+  return (
+    <>
+      <Nav activePage="event" />
+
+      {/* Hero */}
+      <section className="hero-section">
+        <img src="/carnival-hero.png" alt="" className="hero-bg-img" />
+        <div className="hero-content">
+          <div className="hero-eyebrow">
+            <Star style={{ width: 12, height: 12, fill: 'var(--gold)', stroke: 'none' }} />
+            กิจกรรมรับน้องสายวิทย์-คณิต รุ่น 89
+          </div>
+          <h1 className="hero-title">
+            Sci-Math<br />
+            <span className="accent">CARNIVAL</span>
+          </h1>
+          <div className="hero-subtitle">ยินดีต้อนรับเข้าสู่ครอบครัว SciMath TU</div>
+          <p className="hero-desc">
+            มาร่วมเป็นส่วนหนึ่งของงานรับน้องสุดพิเศษ<br />
+            ที่เต็มไปด้วยรอยยิ้ม มิตรภาพ<br />
+            และความทรงจำตลอด 3 ปีนี้
+          </p>
+          <div className="hero-btns">
+            <a className="btn-hero-primary" href="/login">
+              <CalendarCheck style={{ width: 18, height: 18 }} />
+              ลงทะเบียนเข้าร่วมกิจกรรม
+            </a>
+            <a className="btn-hero-secondary" href="/schedule">
+              <Megaphone style={{ width: 16, height: 16 }} />
+              ดูกำหนดการ
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats bar */}
+      <div style={{ padding: '0 28px' }}>
+        <div className="stats-bar">
+          {[
+            { icon: <Calendar style={{ width: 24, height: 24 }} />, label: 'วันงานรับน้อง', value: '27 มิ.ย. 2569' },
+            { icon: <Users style={{ width: 24, height: 24 }} />, label: 'ผู้เข้าร่วมโดยประมาณ', value: '1,400 คน' },
+            { icon: <Clock style={{ width: 24, height: 24 }} />, label: 'เวลา', value: '08.00 – 17.00' },
+            { icon: <MapPin style={{ width: 24, height: 24 }} />, label: 'สถานที่', value: 'โรงเรียนเตรียมอุดมศึกษา' },
+          ].map((s, i) => (
+            <div key={i} className="stat-item">
+              <div className="stat-icon">{s.icon}</div>
+              <div>
+                <div className="stat-label">{s.label}</div>
+                <div className="stat-value">{s.value}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Timeline */}
+      <div className="section" style={{ paddingTop: 12 }}>
+        <div className="section-header">
+          <span className="section-title">ไทม์ไลน์สำคัญ</span>
+        </div>
+        <div className="tl-vert">
+          {TIMELINE.map((item) => (
+            <div key={item.num} className={`tl-item ${item.status}`}>
+              <div className="tl-dot">{item.num}</div>
+              <div className="tl-card">
+                <div className="tl-date">{item.date}</div>
+                <div className="tl-title">{item.label}</div>
+                <div className="tl-desc">{item.desc}</div>
+                <div className={`tl-tag ${item.status}`}>
+                  <Clock style={{ width: 10, height: 10 }} /> {item.tag}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Activities */}
+      <div className="section">
+        <div className="section-header">
+          <span className="section-title">กิจกรรมทั้ง 6 ฐาน</span>
+        </div>
+        <div className="activity-grid">
+          {ACTIVITIES.map((a) => (
+            <a key={a.num} className="act-card" href="/activities" style={{ textDecoration: 'none' }}>
+              <div className="act-num">{a.num}</div>
+              <div className="act-name">{a.name}</div>
+              <div className="act-sub">{a.sub}</div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA Banner */}
+      <div className="section">
+        <div className="cta-banner">
+          <div className="cta-banner-icon">
+            <CalendarCheck style={{ width: 22, height: 22, color: 'white' }} />
+          </div>
+          <div className="cta-banner-text">
+            <div className="cta-banner-title">พร้อมแล้วหรือยัง?</div>
+            <div className="cta-banner-sub">ลงทะเบียนเพื่อเข้าร่วมกิจกรรมรับน้อง Sci-Math CARNIVAL 89 ได้แล้ววันนี้</div>
+          </div>
+          <a className="btn btn-primary" href="/register">ลงทะเบียน</a>
+        </div>
+      </div>
+
+      <Footer />
+    </>
+  );
+}
