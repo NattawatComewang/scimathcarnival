@@ -59,7 +59,7 @@ export default function RubnongPage() {
   }, []);
 
   return (
-    <div style={{ background: 'var(--bg)', maxWidth: 430, margin: '0 auto', minHeight: '100vh', paddingBottom: 72, fontFamily: 'var(--font)' }}>
+    <div className="rubnong-page" style={{ background: 'var(--bg)', maxWidth: 430, margin: '0 auto', minHeight: '100vh', paddingBottom: 72, fontFamily: 'var(--font)' }}>
       {/* Top bar */}
       <div className="top-bar">
         <a className="top-bar-logo" href="/">
