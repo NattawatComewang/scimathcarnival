@@ -1,12 +1,11 @@
 'use client';
-import { Home, Layers, Users, Calendar, QrCode, User, LogOut, Shield } from 'lucide-react';
+import { Home, Layers, Users, Calendar, QrCode, User, LogOut, Shield, Moon, Sun } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/contexts/AuthContext';
 import { getInitials } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Moon, Sun } from 'lucide-react';
 
 export type DashboardSection = 'home' | 'group' | 'duo' | 'activity' | 'pass' | 'profile';
 

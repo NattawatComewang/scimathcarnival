@@ -23,6 +23,7 @@ export default function EventPage() {
     <>
       <Nav activePage="event" />
 
+      <div className="event-page">
       {/* Hero */}
       <section className="hero-section">
         <img src="/carnival-hero.png" alt="" className="hero-bg-img" />
@@ -124,6 +125,7 @@ export default function EventPage() {
           </div>
           <a className="btn btn-primary" href="/register">ลงทะเบียน</a>
         </div>
+      </div>
       </div>
 
       <Footer />

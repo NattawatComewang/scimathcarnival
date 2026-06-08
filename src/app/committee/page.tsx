@@ -49,7 +49,7 @@ export default function CommitteePage() {
     <>
       <Nav activePage="committee" />
 
-      <div className="page-hero">
+      <div className="page-hero committee-hero">
         <h1>กรรมการสายการเรียน</h1>
         <p>คณะกรรมการสายการเรียนวิทยาศาสตร์-คณิตศาสตร์<br />โรงเรียนเตรียมอุดมศึกษา</p>
       </div>

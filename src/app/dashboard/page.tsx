@@ -89,10 +89,6 @@ export default function DashboardPage() {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden' }}>
-      {/* Sidebar (desktop) */}
-      <div style={{ display: 'none' }} className="sidebar-desktop-wrapper">
-        <DashboardSidebar activeSection={section} onSectionChange={setSection} isAdmin={isAdmin} />
-      </div>
       <DashboardSidebar activeSection={section} onSectionChange={setSection} isAdmin={isAdmin} />
 
       <div className="main-content">

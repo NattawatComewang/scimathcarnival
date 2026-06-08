@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, Tent, CalendarRange, Layers, LogIn, LayoutDashboard, Menu, Moon, Sun } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -16,6 +16,15 @@ export default function Nav({ activePage = 'none' }: Props) {
   const { theme, toggle } = useTheme();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (!dropdownRef.current?.contains(e.target as Node)) setDropdownOpen(false);
+    }
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -31,9 +40,9 @@ export default function Nav({ activePage = 'none' }: Props) {
             <a className={`nav-link${activePage === 'committee' ? ' active' : ''}`} href="/committee">บุคลากร</a>
 
             <div
+              ref={dropdownRef}
               className={`nav-dropdown${dropdownOpen ? ' open' : ''}`}
               id="nav-dd"
-              onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setDropdownOpen(false); }}
             >
               <button
                 className="nav-link nav-dropdown-btn"
