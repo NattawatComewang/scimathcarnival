@@ -126,7 +126,7 @@ export default function AdminPage() {
   if (loading || !user) return null;
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden' }}>
+    <div className="admin-page" style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden' }}>
       {/* Sidebar */}
       <div className="sidebar">
         <div className="sb-logo">
