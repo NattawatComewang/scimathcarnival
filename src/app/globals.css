@@ -1618,3 +1618,94 @@ body, .nav-link, .btn, .form-input, .card, .d-card, .s-card {
   display: flex; align-items: center; justify-content: center;
   font-size: 0.72rem; font-weight: 700; flex-shrink: 0; margin-top: 1px;
 }
+
+/* ══════════════════════════════════════════════════════
+   REGISTER PAGE
+══════════════════════════════════════════════════════ */
+.top-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-1); border-bottom: 1px solid var(--border);
+  padding: 0 16px; height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.top-bar-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem; }
+.top-bar-logo img { width: 26px; height: 26px; border-radius: 6px; object-fit: cover; }
+
+.progress-wrap {
+  padding: 14px 16px 10px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+}
+.progress-header { margin-bottom: 10px; }
+.progress-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.progress-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 0;
+}
+.progress-label { font-size: 0.78rem; font-weight: 600; color: var(--text-2); white-space: nowrap; }
+.progress-label span { color: var(--text); }
+.progress-bar { flex: 1; height: 4px; background: var(--bg-3); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 500ms cubic-bezier(0.4,0,0.2,1); }
+
+.stage { display: none; padding: 20px 16px; }
+.stage.active { display: block; }
+.stage-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px; background: var(--bg-1); border: 1px solid var(--border);
+}
+.stage-title { font-size: 1.2rem; font-weight: 700; text-align: center; margin-bottom: 6px; }
+.stage-sub   { color: var(--text-2); font-size: 0.875rem; text-align: center; line-height: 1.65; margin-bottom: 20px; }
+
+.s-card {
+  background: var(--bg-1); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px; margin-bottom: 12px;
+}
+
+.consent-item {
+  display: flex; gap: 12px; padding: 14px;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 8px;
+}
+.consent-text { font-size: 0.875rem; line-height: 1.65; color: var(--text-2); }
+.consent-check {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; margin-top: 16px;
+}
+.consent-check label {
+  display: flex; align-items: flex-start; gap: 10px;
+  cursor: pointer; font-size: 0.875rem; line-height: 1.6;
+}
+.consent-check input[type=checkbox] { margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; }
+
+.f-stack { display: flex; flex-direction: column; gap: 14px; }
+
+.review-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.875rem;
+}
+.review-row:last-child { border-bottom: none; }
+.review-label { color: var(--text-2); flex-shrink: 0; margin-right: 12px; }
+.review-value { font-weight: 500; text-align: right; }
+
+.success-box {
+  background: var(--green-dim); border: 1px solid rgba(45,184,122,0.25);
+  border-radius: var(--radius-lg); padding: 28px; text-align: center;
+}
+.success-check {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--green); display: flex; align-items: center;
+  justify-content: center; margin: 0 auto 16px;
+}
+
+.stage-footer {
+  position: sticky; bottom: 0; z-index: 50;
+  background: var(--bg-1); border-top: 1px solid var(--border);
+  padding: 12px 16px; display: flex; gap: 10px;
+}
+.stage-footer .btn { flex: 1; justify-content: center; }
+.btn-next-primary {
+  flex: 2; justify-content: center;
+  background: var(--text); color: var(--bg);
+  border-color: transparent;
+}
+.btn-next-primary:hover { opacity: 0.85; transform: translateY(-1px); }
