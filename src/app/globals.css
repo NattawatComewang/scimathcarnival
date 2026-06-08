@@ -1146,3 +1146,62 @@ body, .nav-link, .btn, .form-input, .card, .d-card, .s-card {
 @media (max-width: 600px) {
   .act-grid { grid-template-columns: 1fr; }
 }
+
+/* ══════════════════════════════════════════════════════
+   SCHEDULE PAGE
+══════════════════════════════════════════════════════ */
+.sched-section { max-width: 900px; padding: 40px 28px 60px; }
+.sched-hero { max-width: 900px; }
+
+.tl-vert { position: relative; padding-left: 32px; }
+.tl-vert::before {
+  content: ''; position: absolute; left: 11px; top: 8px; bottom: 8px;
+  width: 2px; background: var(--border);
+}
+.tl-item {
+  position: relative; margin-bottom: 28px;
+  animation: fadeUp 450ms var(--ease-out) both;
+}
+.tl-item:nth-child(1){animation-delay:0ms}.tl-item:nth-child(2){animation-delay:60ms}
+.tl-item:nth-child(3){animation-delay:120ms}.tl-item:nth-child(4){animation-delay:180ms}
+.tl-item:nth-child(5){animation-delay:240ms}.tl-item:nth-child(6){animation-delay:300ms}
+.tl-dot {
+  position: absolute; left: -32px; top: 4px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--bg-1); border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; font-weight: 700; z-index: 1;
+  transition: all 200ms;
+}
+.tl-item.done   .tl-dot { background: var(--green);  border-color: var(--green);  color: #fff; }
+.tl-item.active .tl-dot { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 0 4px var(--accent-dim); }
+.tl-item.future .tl-dot { background: var(--bg-2);   border-color: var(--border-2); color: var(--text-3); }
+.tl-card {
+  background: var(--bg-1); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px 18px;
+  transition: all 200ms var(--ease-out);
+}
+.tl-item.active .tl-card { border-color: var(--accent); background: var(--accent-dim); }
+.tl-item:hover .tl-card { transform: translateX(4px); border-color: var(--border-2); }
+.tl-item.active:hover .tl-card { transform: translateX(4px); border-color: var(--accent); }
+.tl-date { font-size: 0.78rem; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+.tl-item.done .tl-date { color: var(--green); }
+.tl-item.future .tl-date { color: var(--text-3); }
+.tl-title { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.tl-desc  { font-size: 0.875rem; color: var(--text-2); line-height: 1.65; }
+.tl-tag { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; padding: 3px 10px; border-radius: 100px; font-size: 0.72rem; font-weight: 500; }
+.tl-tag.done   { background: var(--green-dim); color: var(--green); }
+.tl-tag.active { background: var(--accent-dim); color: var(--accent); }
+.tl-tag.future { background: var(--bg-2); color: var(--text-3); }
+
+.day-card { background: var(--bg-1); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 14px; }
+.day-head { padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--bg-2); display: flex; align-items: center; gap: 10px; }
+.day-head-date { font-weight: 700; font-size: 0.95rem; }
+.day-head-sub   { font-size: 0.8rem; color: var(--text-2); }
+.sched-row { display: flex; gap: 14px; padding: 12px 18px; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.sched-row:last-child { border-bottom: none; }
+.sched-time { font-size: 0.8rem; color: var(--text-3); min-width: 90px; flex-shrink: 0; padding-top: 2px; font-variant-numeric: tabular-nums; }
+.sched-info { flex: 1; }
+.sched-name { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+.sched-loc  { font-size: 0.78rem; color: var(--text-3); margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+.sched-dot  { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }

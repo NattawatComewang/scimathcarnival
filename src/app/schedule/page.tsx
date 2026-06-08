@@ -27,12 +27,12 @@ export default function SchedulePage() {
   return (
     <>
       <Nav />
-      <div className="page-hero">
+      <div className="page-hero sched-hero">
         <h1>กำหนดการกิจกรรม</h1>
         <p>ไทม์ไลน์สำคัญตั้งแต่เปิดรับสมัครจนถึงวันงาน</p>
       </div>
 
-      <div className="section" style={{ paddingTop: 0 }}>
+      <div className="section sched-section" style={{ paddingTop: 0 }}>
         <div style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 20, color: 'var(--text)' }}>ไทม์ไลน์สำคัญ</div>
         <div className="tl-vert">
           {TIMELINE.map((item) => (
@@ -52,7 +52,7 @@ export default function SchedulePage() {
         </div>
       </div>
 
-      <div className="section" style={{ paddingTop: 0 }}>
+      <div className="section sched-section" style={{ paddingTop: 0 }}>
         <div style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 16, color: 'var(--text)' }}>กำหนดการวันงาน</div>
         <div className="day-card">
           <div className="day-head">
