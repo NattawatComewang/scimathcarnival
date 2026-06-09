@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuth()       { return request.auth != null; }
+    function uid()          { return request.auth.uid; }
+    function email()        { return request.auth.token.email; }
+    function isSuperAdmin() { return isAuth() && email() == '8868278@student.triamudom.ac.th'; }
+    function isSchool()     { return isAuth() && email().matches('.*@student\\.triamudom\\.ac\\.th'); }
+    function isStaff() {
+      return isSuperAdmin() ||
+        (isAuth() && exists(/databases/$(database)/documents/staffAccounts/$(uid())));
+    }
+
+    // Students: own read/write; staff can read/update any; super-admin can delete
+    match /students/{studentId} {
+      allow read:           if isAuth() && (uid() == studentId || isStaff());
+      allow create:         if isSchool() && uid() == studentId;
+      allow update:         if isAuth() && (uid() == studentId || isStaff());
+      allow delete:         if isSuperAdmin();
+    }
+
+    // Committee members: public read, staff write
+    match /committees/{id} {
+      allow read:  if true;
+      allow write: if isStaff();
+    }
+
+    // Announcements: public read, staff write
+    match /announcements/{id} {
+      allow read:  if true;
+      allow write: if isStaff();
+    }
+
+    // Assigned groups: authenticated read, staff write
+    match /groups/{id} {
+      allow read:  if isAuth();
+      allow write: if isStaff();
+    }
+
+    // Trio groups: school students may create/join/leave; only leader may delete
+    match /trioGroups/{id} {
+      allow read:   if isAuth();
+      allow create: if isSchool();
+      allow update: if isSchool();
+      allow delete: if isSchool() && uid() == resource.data.leaderId;
+    }
+
+    // Config / settings: authenticated read, super-admin write
+    match /settings/{id} {
+      allow read:  if isAuth();
+      allow write: if isSuperAdmin();
+    }
+
+    // Staff accounts: any staff may read; only super-admin may write
+    match /staffAccounts/{id} {
+      allow read:  if isStaff();
+      allow write: if isSuperAdmin();
+    }
+
+    // Audit logs: staff read; authenticated append-only; no edits or deletes
+    match /auditLogs/{id} {
+      allow read:           if isStaff();
+      allow create:         if isAuth();
+      allow update, delete: if false;
+    }
+  }
+}
