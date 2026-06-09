@@ -3,7 +3,8 @@ service firebase.storage {
   match /b/{bucket}/o {
 
     // Student avatars: owner may write (max 2 MB image), anyone may read
-    match /avatars/{userId}/{allPaths=**} {
+    // Uploaded as the object `avatars/{uid}` (no sub-path), so match it exactly.
+    match /avatars/{userId} {
       allow read: if true;
       allow write: if request.auth != null
                    && request.auth.uid == userId
