@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   collection, getDocs, addDoc, deleteDoc, doc, updateDoc,
@@ -61,12 +61,7 @@ export default function AdminPage() {
     }
   }, [user, loading, router, showToast]);
 
-  useEffect(() => {
-    if (dataLoaded[section]) return;
-    loadSection(section);
-  }, [section]);
-
-  async function loadSection(sec: AdminSection) {
+  const loadSection = useCallback(async function loadSection(sec: AdminSection) {
     try {
       if (sec === 'overview' || sec === 'students') {
         const snap = await getDocs(collection(db, 'students'));
@@ -100,7 +95,12 @@ export default function AdminPage() {
     } catch (e) {
       showToast('โหลดข้อมูลล้มเหลว', 'error');
     }
-  }
+  }, [showToast]);
+
+  useEffect(() => {
+    if (dataLoaded[section]) return;
+    loadSection(section);
+  }, [section, loadSection]);
 
   async function addAnnouncement() {
     if (!newAnnTitle.trim()) return;
