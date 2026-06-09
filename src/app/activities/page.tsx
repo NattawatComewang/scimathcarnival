@@ -57,7 +57,7 @@ const ACTIVITIES = [
 export default function ActivitiesPage() {
   return (
     <>
-      <Nav />
+      <Nav activePage="activities" />
       <div className="page-hero">
         <h1>6 ฐานกิจกรรม</h1>
         <p>CARNIVAL 89 · สนุกสนาน สร้างมิตรภาพ และความทรงจำตลอดกาล</p>
@@ -87,9 +87,7 @@ export default function ActivitiesPage() {
         </div>
       </div>
 
-      <footer style={{ background: 'var(--bg-1)', borderTop: '1px solid var(--border)', padding: 28, textAlign: 'center', color: 'var(--text-3)', fontSize: '0.8rem' }}>
-        © 2569 คณะกรรมการสายการเรียนวิทย์–คณิต โรงเรียนเตรียมอุดมศึกษา
-      </footer>
+      <Footer />
     </>
   );
 }

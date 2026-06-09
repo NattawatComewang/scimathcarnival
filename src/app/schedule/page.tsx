@@ -1,5 +1,6 @@
 'use client';
 import Nav from '@/components/Nav';
+import Footer from '@/components/Footer';
 import { Clock, CalendarHeart, MapPin, Coffee, Music, Star, Layers } from 'lucide-react';
 
 const TIMELINE = [
@@ -26,7 +27,7 @@ const DAY_SCHEDULE = [
 export default function SchedulePage() {
   return (
     <>
-      <Nav />
+      <Nav activePage="schedule" />
       <div className="page-hero sched-hero">
         <h1>กำหนดการกิจกรรม</h1>
         <p>ไทม์ไลน์สำคัญตั้งแต่เปิดรับสมัครจนถึงวันงาน</p>
@@ -85,9 +86,7 @@ export default function SchedulePage() {
         </div>
       </div>
 
-      <footer style={{ background: 'var(--bg-1)', borderTop: '1px solid var(--border)', padding: 28, textAlign: 'center', color: 'var(--text-3)', fontSize: '0.8rem' }}>
-        © 2569 คณะกรรมการสายการเรียนวิทย์–คณิต โรงเรียนเตรียมอุดมศึกษา
-      </footer>
+      <Footer />
     </>
   );
 }
