@@ -59,7 +59,7 @@ export default function AvatarPicker({ uid, children, onUploaded, onError }: Pro
   }
 
   return (
-    <div style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }} onClick={() => inputRef.current?.click()}>
+    <div className="avatar-picker-wrap" style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }} onClick={() => inputRef.current?.click()}>
       {children}
       <div style={{
         position: 'absolute', inset: 0, borderRadius: '50%',
