@@ -1,0 +1,30 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Student avatars: owner may write (max 2 MB image), anyone may read
+    // Uploaded as the object `avatars/{uid}` (no sub-path), so match it exactly.
+    match /avatars/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.uid == userId
+                   && request.resource.size < 2 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // Committee member photos: public read, staff write
+    match /committees/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && (request.auth.token.email == '8868278@student.triamudom.ac.th'
+                       || firestore.exists(/databases/(default)/documents/staffAccounts/$(request.auth.uid)));
+    }
+
+    // Event assets (poster, banners): public read, super-admin write
+    match /events/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.token.email == '8868278@student.triamudom.ac.th';
+    }
+  }
+}

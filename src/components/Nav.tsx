@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import MobileMenu from './MobileMenu';
 
-type ActivePage = 'home' | 'committee' | 'event' | 'none';
+type ActivePage = 'home' | 'committee' | 'event' | 'schedule' | 'activities' | 'none';
 
 interface Props {
   activePage?: ActivePage;
@@ -57,12 +57,12 @@ export default function Nav({ activePage = 'none' }: Props) {
                   รับน้อง 89
                   <span className="nav-dropdown-desc">ภาพรวมกิจกรรม CARNIVAL</span>
                 </a>
-                <a className="nav-dropdown-item" href="/schedule">
+                <a className={`nav-dropdown-item${activePage === 'schedule' ? ' active' : ''}`} href="/schedule">
                   <CalendarRange style={{ width: 14, height: 14 }} />
                   กำหนดการกิจกรรม
                   <span className="nav-dropdown-desc">ไทม์ไลน์และตารางเวลา</span>
                 </a>
-                <a className="nav-dropdown-item" href="/activities">
+                <a className={`nav-dropdown-item${activePage === 'activities' ? ' active' : ''}`} href="/activities">
                   <Layers style={{ width: 14, height: 14 }} />
                   6 ฐานกิจกรรม
                   <span className="nav-dropdown-desc">รายละเอียดทุกฐาน</span>

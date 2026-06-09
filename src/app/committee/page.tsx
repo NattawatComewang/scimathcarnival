@@ -1,16 +1,19 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
-import { Search, Briefcase, DoorOpen, Mail, X } from 'lucide-react';
+import { Search, Briefcase, DoorOpen, Mail, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getInitials } from '@/lib/utils';
 
 interface Member {
   id: string;
-  name: string;
+  firstName?: string;
+  lastName?: string;
+  name?: string;
   nickname?: string;
+  department?: string;
   position?: string;
   room?: string;
   email?: string;
@@ -21,29 +24,76 @@ interface Member {
   order?: number;
 }
 
+const FALLBACK_MEMBERS: Member[] = [
+  { id: 'f1', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายวิชาการ',       position: 'หัวหน้าฝ่าย', room: 'ม.6/1', order: 1 },
+  { id: 'f2', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายวิชาการ',       position: 'กรรมการ',     room: 'ม.6/2', order: 2 },
+  { id: 'f3', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายกิจกรรม',      position: 'หัวหน้าฝ่าย', room: 'ม.6/3', order: 3 },
+  { id: 'f4', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายกิจกรรม',      position: 'กรรมการ',     room: 'ม.6/4', order: 4 },
+  { id: 'f5', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายประชาสัมพันธ์', position: 'หัวหน้าฝ่าย', room: 'ม.6/5', order: 5 },
+  { id: 'f6', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายประชาสัมพันธ์', position: 'กรรมการ',     room: 'ม.6/6', order: 6 },
+];
+
+function memberName(m: Member) {
+  if (m.firstName || m.lastName) return `${m.firstName ?? ''} ${m.lastName ?? ''}`.trim();
+  return m.name ?? 'ไม่ระบุชื่อ';
+}
+
+function memberPhotos(m: Member): string[] {
+  const list: string[] = [];
+  if (m.photoURL) list.push(m.photoURL);
+  m.photos?.forEach((p) => { if (p && !list.includes(p)) list.push(p); });
+  return list;
+}
+
 export default function CommitteePage() {
-  const [members, setMembers] = useState<Member[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState<Member | null>(null);
+  const [members, setMembers]       = useState<Member[]>([]);
+  const [loading, setLoading]       = useState(true);
+  const [isFallback, setIsFallback] = useState(false);
+  const [search, setSearch]         = useState('');
+  const [activeDept, setActiveDept] = useState('ทั้งหมด');
+  const [selected, setSelected]     = useState<Member | null>(null);
+  const [photoIdx, setPhotoIdx]     = useState(0);
 
   useEffect(() => {
     async function load() {
       try {
-        const snap = await getDocs(collection(db, 'committee'));
-        const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Member));
-        data.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
-        setMembers(data);
-      } catch (_) {}
-      finally { setLoading(false); }
+        const snap = await getDocs(collection(db, 'committees'));
+        if (snap.empty) {
+          setMembers(FALLBACK_MEMBERS);
+          setIsFallback(true);
+        } else {
+          const data = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Member));
+          data.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+          setMembers(data);
+        }
+      } catch (_) {
+        setMembers(FALLBACK_MEMBERS);
+        setIsFallback(true);
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);
 
-  const filtered = members.filter((m) => {
+  const departments = useMemo(() => {
+    const set = new Set(members.map((m) => m.department).filter(Boolean) as string[]);
+    return ['ทั้งหมด', ...Array.from(set).sort()];
+  }, [members]);
+
+  const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    return !q || m.name?.toLowerCase().includes(q) || m.position?.toLowerCase().includes(q) || m.nickname?.toLowerCase().includes(q);
-  });
+    return members.filter((m) => {
+      const name = memberName(m).toLowerCase();
+      const matchQ    = !q || name.includes(q) || m.nickname?.toLowerCase().includes(q) || m.position?.toLowerCase().includes(q);
+      const matchDept = activeDept === 'ทั้งหมด' || m.department === activeDept;
+      return matchQ && matchDept;
+    });
+  }, [members, search, activeDept]);
+
+  function open(m: Member) { setSelected(m); setPhotoIdx(0); }
+
+  const selPhotos = selected ? memberPhotos(selected) : [];
 
   return (
     <>
@@ -54,7 +104,7 @@ export default function CommitteePage() {
         <p>คณะกรรมการสายการเรียนวิทยาศาสตร์-คณิตศาสตร์<br />โรงเรียนเตรียมอุดมศึกษา</p>
       </div>
 
-      <div className="filter-bar">
+      <div className="filter-bar" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 12 }}>
         <div className="search-wrap">
           <Search style={{ width: 15, height: 15, color: 'var(--text-3)', flexShrink: 0 }} />
           <input
@@ -64,7 +114,26 @@ export default function CommitteePage() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
+        {departments.length > 1 && (
+          <div className="chip-row">
+            {departments.map((dept) => (
+              <button
+                key={dept}
+                className={`chip${activeDept === dept ? ' active' : ''}`}
+                onClick={() => setActiveDept(dept)}
+              >
+                {dept}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
+
+      {isFallback && !loading && (
+        <p style={{ textAlign: 'center', color: 'var(--text-3)', fontSize: '0.78rem', marginBottom: 8 }}>
+          ข้อมูลตัวอย่าง — รายชื่อจริงจะเปิดเผยเร็วๆ นี้
+        </p>
+      )}
 
       <div className="committee-grid" id="committee-grid">
         {loading
@@ -77,23 +146,26 @@ export default function CommitteePage() {
                 </div>
               </div>
             ))
-          : filtered.map((m) => (
-              <div key={m.id} className="committee-card" onClick={() => setSelected(m)} style={{ cursor: 'pointer' }}>
-                <div className="cm-photo-wrap">
-                  {m.photoURL
-                    ? <img src={m.photoURL} alt={m.name} className="cm-photo" />
-                    : <div className="cm-initials">{getInitials(m.name)}</div>}
+          : filtered.map((m) => {
+              const display = memberName(m);
+              return (
+                <div key={m.id} className="committee-card" onClick={() => open(m)} style={{ cursor: 'pointer' }}>
+                  <div className="cm-photo-wrap">
+                    {m.photoURL
+                      ? <img src={m.photoURL} alt={display} className="cm-photo" />
+                      : <div className="cm-initials">{getInitials(display)}</div>}
+                  </div>
+                  <div className="cm-info">
+                    <div className="cm-name">{display}</div>
+                    {m.nickname   && <div className="cm-nick">({m.nickname})</div>}
+                    {m.position   && <div className="cm-position">{m.position}</div>}
+                    {m.department && <div className="cm-dept">{m.department}</div>}
+                  </div>
                 </div>
-                <div className="cm-info">
-                  <div className="cm-name">{m.name}</div>
-                  {m.nickname && <div className="cm-nick">({m.nickname})</div>}
-                  {m.position && <div className="cm-position">{m.position}</div>}
-                </div>
-              </div>
-            ))}
+              );
+            })}
       </div>
 
-      {/* Detail modal */}
       {selected && (
         <div className="detail-overlay" onClick={(e) => { if (e.target === e.currentTarget) setSelected(null); }}>
           <div className="detail-box">
@@ -101,13 +173,35 @@ export default function CommitteePage() {
               <button className="detail-close" onClick={() => setSelected(null)}>
                 <X style={{ width: 15, height: 15 }} />
               </button>
-              {selected.photoURL
-                ? <img className="gallery-main-img" src={selected.photoURL} alt={selected.name} />
-                : <div className="gallery-initials">{getInitials(selected.name)}</div>}
+
+              {selPhotos.length > 0 ? (
+                <>
+                  <img className="gallery-main-img" src={selPhotos[photoIdx]} alt={memberName(selected)} />
+                  {selPhotos.length > 1 && (
+                    <>
+                      <button className="gallery-prev" onClick={() => setPhotoIdx((i) => (i - 1 + selPhotos.length) % selPhotos.length)}>
+                        <ChevronLeft style={{ width: 18, height: 18 }} />
+                      </button>
+                      <button className="gallery-next" onClick={() => setPhotoIdx((i) => (i + 1) % selPhotos.length)}>
+                        <ChevronRight style={{ width: 18, height: 18 }} />
+                      </button>
+                      <div className="gallery-dots">
+                        {selPhotos.map((_, i) => (
+                          <button key={i} className={`gallery-dot${i === photoIdx ? ' active' : ''}`} onClick={() => setPhotoIdx(i)} />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <div className="gallery-initials">{getInitials(memberName(selected))}</div>
+              )}
             </div>
+
             <div className="detail-body">
-              <div className="detail-name">{selected.name}</div>
-              {selected.nickname && <div className="detail-nick">({selected.nickname})</div>}
+              <div className="detail-name">{memberName(selected)}</div>
+              {selected.nickname   && <div className="detail-nick">({selected.nickname})</div>}
+              {selected.department && <div className="cm-dept" style={{ marginBottom: 10 }}>{selected.department}</div>}
               <div className="detail-meta">
                 {selected.position && (
                   <div className="detail-meta-row">
@@ -127,7 +221,11 @@ export default function CommitteePage() {
                 )}
                 {selected.instagram && (
                   <div className="detail-meta-row">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                      <circle cx="12" cy="12" r="4"/>
+                      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                    </svg>
                     <a href={`https://instagram.com/${selected.instagram.replace('@', '')}`} target="_blank" rel="noreferrer">
                       {selected.instagram}
                     </a>
