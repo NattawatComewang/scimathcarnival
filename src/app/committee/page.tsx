@@ -6,23 +6,8 @@ import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import { Search, Briefcase, DoorOpen, Mail, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getInitials } from '@/lib/utils';
-
-interface Member {
-  id: string;
-  firstName?: string;
-  lastName?: string;
-  name?: string;
-  nickname?: string;
-  department?: string;
-  position?: string;
-  room?: string;
-  email?: string;
-  instagram?: string;
-  bio?: string;
-  photoURL?: string;
-  photos?: string[];
-  order?: number;
-}
+import type { Member } from './lib/types';
+import { memberName, memberPhotos } from './lib/helpers';
 
 const FALLBACK_MEMBERS: Member[] = [
   { id: 'f1', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายวิชาการ',       position: 'หัวหน้าฝ่าย', room: 'ม.6/1', order: 1 },
@@ -32,18 +17,6 @@ const FALLBACK_MEMBERS: Member[] = [
   { id: 'f5', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายประชาสัมพันธ์', position: 'หัวหน้าฝ่าย', room: 'ม.6/5', order: 5 },
   { id: 'f6', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายประชาสัมพันธ์', position: 'กรรมการ',     room: 'ม.6/6', order: 6 },
 ];
-
-function memberName(m: Member) {
-  if (m.firstName || m.lastName) return `${m.firstName ?? ''} ${m.lastName ?? ''}`.trim();
-  return m.name ?? 'ไม่ระบุชื่อ';
-}
-
-function memberPhotos(m: Member): string[] {
-  const list: string[] = [];
-  if (m.photoURL) list.push(m.photoURL);
-  m.photos?.forEach((p) => { if (p && !list.includes(p)) list.push(p); });
-  return list;
-}
 
 export default function CommitteePage() {
   const [members, setMembers]       = useState<Member[]>([]);

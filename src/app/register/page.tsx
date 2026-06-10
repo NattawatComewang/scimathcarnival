@@ -7,26 +7,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/components/Toast';
 import { Moon, Sun, ShieldCheck, FileText, User, HeartPulse, Brain, ClipboardList, CheckCircle, ChevronRight, ChevronLeft } from 'lucide-react';
+import type { FormData } from './lib/types';
 
 const TOTAL_STAGES = 7;
-
-interface FormData {
-  room: string;
-  consent1: boolean;
-  consent2: boolean;
-  firstname: string;
-  lastname: string;
-  nickname: string;
-  studentId: string;
-  phone: string;
-  lineId: string;
-  instagram: string;
-  allergies: string;
-  healthNote: string;
-  emergencyName: string;
-  emergencyPhone: string;
-  emergencyRelation: string;
-}
 
 const STAGE_ICONS = [
   <ShieldCheck style={{ width: 28, height: 28, color: 'var(--accent)' }} />,

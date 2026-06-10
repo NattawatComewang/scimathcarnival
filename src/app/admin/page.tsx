@@ -12,66 +12,15 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/Toast';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
-  LayoutDashboard, Users, Layers, ClipboardCheck, Settings,
-  UserCog, Bell, CalendarCog, Shield, FileDown, ScrollText,
   LogOut, Moon, Sun, Plus, Trash2, RefreshCw, Search, X,
-  Eye, EyeOff, Edit3, Check, ChevronDown, ChevronUp,
+  Eye, EyeOff, Edit3, Check, ChevronDown, ChevronUp, FileDown,
 } from 'lucide-react';
-
-type AdminSection =
-  | 'overview' | 'students' | 'groups' | 'checkin'
-  | 'registration' | 'committee' | 'announcements'
-  | 'event-settings' | 'staff-accounts' | 'export' | 'logs';
-
-const NAV_ITEMS: { id: AdminSection; label: string; icon: React.ReactNode }[] = [
-  { id: 'overview',       label: 'Overview',            icon: <LayoutDashboard style={{ width: 14, height: 14 }} /> },
-  { id: 'students',       label: 'ข้อมูลนักเรียน',      icon: <Users style={{ width: 14, height: 14 }} /> },
-  { id: 'groups',         label: 'กลุ่ม/ทีม',            icon: <Layers style={{ width: 14, height: 14 }} /> },
-  { id: 'checkin',        label: 'Check-in',             icon: <ClipboardCheck style={{ width: 14, height: 14 }} /> },
-  { id: 'registration',   label: 'ตั้งค่าการลงทะเบียน', icon: <Settings style={{ width: 14, height: 14 }} /> },
-  { id: 'committee',      label: 'บุคลากร',              icon: <UserCog style={{ width: 14, height: 14 }} /> },
-  { id: 'announcements',  label: 'ประกาศ',               icon: <Bell style={{ width: 14, height: 14 }} /> },
-  { id: 'event-settings', label: 'ตั้งค่างาน',           icon: <CalendarCog style={{ width: 14, height: 14 }} /> },
-  { id: 'staff-accounts', label: 'บัญชีพี่',             icon: <Shield style={{ width: 14, height: 14 }} /> },
-  { id: 'export',         label: 'Export',               icon: <FileDown style={{ width: 14, height: 14 }} /> },
-  { id: 'logs',           label: 'Audit Logs',           icon: <ScrollText style={{ width: 14, height: 14 }} /> },
-];
-
-// ── Interfaces ────────────────────────────────────────────────────────────────
-interface Student {
-  id: string;
-  firstname?: string; lastname?: string; nickname?: string;
-  room?: string; studentId?: string; email?: string;
-  phone?: string; lineId?: string; instagram?: string;
-  allergies?: string; healthNote?: string;
-  emergencyName?: string; emergencyPhone?: string; emergencyRelation?: string;
-  registered?: boolean; checkedIn?: boolean; groupId?: string;
-}
-interface Announcement {
-  id: string; title: string; body?: string; createdAt: Date | null; pinned?: boolean;
-}
-interface LogEntry {
-  id: string; action: string; detail: string; by: string; at: Date | null;
-}
-interface Group {
-  id: string; name: string; members: string[]; color?: string;
-}
-interface CommitteeMember {
-  id: string;
-  firstName?: string; lastName?: string; nickname?: string;
-  department?: string; position?: string; room?: string;
-  email?: string; instagram?: string; bio?: string;
-  photoURL?: string; photos?: string[]; order?: number;
-}
-interface RegSettings {
-  isOpen: boolean; startDate: string; endDate: string; eligibleRooms: string;
-}
-interface EventSettings {
-  name: string; date: string; location: string; description: string; lineUrl?: string;
-}
-interface StaffAccount {
-  id: string; email: string; name: string; role: string; active: boolean;
-}
+import type { Announcement } from '@/lib/types';
+import type {
+  AdminSection, Student, LogEntry, Group, CommitteeMember,
+  RegSettings, EventSettings, StaffAccount,
+} from './lib/types';
+import { NAV_ITEMS } from './lib/constants';
 
 const EMPTY_MEMBER: Partial<CommitteeMember> = {
   firstName: '', lastName: '', nickname: '', department: '',

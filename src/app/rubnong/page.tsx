@@ -10,9 +10,7 @@ import {
   Mail
 } from 'lucide-react';
 
-type Screen = 'home' | 'ann' | 'schedule' | 'contact';
-
-interface Announcement { id: string; title: string; createdAt: Date | null; }
+import type { Screen, Announcement } from './lib/types';
 
 const BASES = [
   { num: 1, name: 'Memory Booth', sub: 'ฮับบันทึกความทรงจำ' },

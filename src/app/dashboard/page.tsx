@@ -20,72 +20,11 @@ import {
   MessageCircle,
 } from 'lucide-react';
 
-// ── Interfaces ────────────────────────────────────────────────────────────────
-interface StudentData {
-  firstname?: string; lastname?: string; nickname?: string;
-  room?: string; studentId?: string;
-  phone?: string; lineId?: string; instagram?: string;
-  allergies?: string; healthNote?: string;
-  emergencyName?: string; emergencyPhone?: string; emergencyRelation?: string;
-  photoURL?: string;
-  registered?: boolean; checkedIn?: boolean;
-  groupId?: string; trioGroupId?: string;
-}
-
-interface Announcement {
-  id: string; title: string; body?: string; createdAt: Date | null; pinned?: boolean;
-}
-
-interface MemberInfo {
-  uid: string; name: string; nickname?: string; room?: string;
-}
-
-interface TrioGroup {
-  id: string;
-  leaderId: string;
-  members: string[];
-  memberInfo: MemberInfo[];
-  code: string;
-  joinRequests: MemberInfo[];
-  createdAt: Date | null;
-}
-
-interface StudentSearchResult {
-  uid: string; firstname?: string; lastname?: string; nickname?: string; room?: string;
-}
-
-interface AssignedGroup {
-  id: string; name: string; members: string[]; memberInfo?: MemberInfo[];
-}
-
-interface EventInfo {
-  name?: string; date?: string; location?: string; description?: string; lineUrl?: string;
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function genCode() {
-  return Math.random().toString(36).slice(2, 8).toUpperCase();
-}
-
-function useCountdown(target: Date | null) {
-  const [text, setText] = useState('');
-  useEffect(() => {
-    if (!target) return;
-    function tick() {
-      const diff = target!.getTime() - Date.now();
-      if (diff <= 0) { setText(''); return; }
-      const d = Math.floor(diff / 86400000);
-      const h = Math.floor((diff % 86400000) / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      setText(d > 0 ? `${d} วัน ${h} ชม. ${m} นาที` : `${h} ชม. ${m} นาที ${s} วิ`);
-    }
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [target]);
-  return text;
-}
+import type { Announcement } from '@/lib/types';
+import type {
+  StudentData, MemberInfo, TrioGroup, StudentSearchResult, AssignedGroup, EventInfo,
+} from './lib/types';
+import { genCode, useCountdown } from './lib/helpers';
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function DashboardPage() {

@@ -8,19 +8,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/components/Toast';
 import { Moon, Sun, ShieldAlert, AlertTriangle, Eye, EyeOff, Lock, Mail } from 'lucide-react';
-
-type LoginMode = 'student' | 'staff';
-
-function isInAppBrowser() {
-  if (typeof navigator === 'undefined') return false;
-  const ua = navigator.userAgent;
-  return /Line\/|Instagram|FBAN|FBAV|Twitter|MicroMessenger|WhatsApp|Snapchat/i.test(ua);
-}
-
-function isLineBrowser() {
-  if (typeof navigator === 'undefined') return false;
-  return /Line\//i.test(navigator.userAgent);
-}
+import type { LoginMode } from './lib/types';
+import { isInAppBrowser, isLineBrowser } from './lib/helpers';
 
 export default function LoginPage() {
   const { user, loading } = useAuth();
