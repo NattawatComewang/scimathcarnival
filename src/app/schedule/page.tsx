@@ -10,18 +10,18 @@ const TIMELINE = [
 ];
 
 const DAY_SCHEDULE = [
-  { time: '07.30', name: 'เปิดลงทะเบียน', loc: 'จุดรับลงทะเบียน', locIcon: <MapPin style={{ width: 11, height: 11 }} />, highlight: false },
+  { time: '07.30', name: 'เปิดลงทะเบียน', loc: 'จุดรับลงทะเบียน', locIcon: <MapPin className="w-[11px] h-[11px]" />, highlight: false },
   { time: '08.30', name: 'พิธีเปิดงาน', loc: null, locIcon: null, highlight: false },
-  { time: '09.00 – 09.40', name: 'กิจกรรมที่ 1', loc: 'ฐานกิจกรรม', locIcon: <Layers style={{ width: 11, height: 11 }} />, highlight: true },
-  { time: '09.45 – 10.25', name: 'กิจกรรมที่ 2', loc: 'ฐานกิจกรรม', locIcon: <Layers style={{ width: 11, height: 11 }} />, highlight: true },
-  { time: '10.25 – 10.50', name: 'พักเบรก', loc: 'พื้นที่พักผ่อน', locIcon: <Coffee style={{ width: 11, height: 11 }} />, highlight: false, amber: true },
-  { time: '10.55 – 11.35', name: 'กิจกรรมที่ 3', loc: 'ฐานกิจกรรม', locIcon: <Layers style={{ width: 11, height: 11 }} />, highlight: true },
-  { time: '11.35 – 13.00', name: 'พักเที่ยง + มินิคอนเสิร์ต', loc: 'คอนเสิร์ต 12.15 – 12.45', locIcon: <Music style={{ width: 11, height: 11 }} />, highlight: false },
-  { time: '13.05 – 13.45', name: 'กิจกรรมที่ 4', loc: 'ฐานกิจกรรม', locIcon: <Layers style={{ width: 11, height: 11 }} />, highlight: true },
-  { time: '13.50 – 14.30', name: 'กิจกรรมที่ 5', loc: 'ฐานกิจกรรม', locIcon: <Layers style={{ width: 11, height: 11 }} />, highlight: true },
-  { time: '14.35 – 15.15', name: 'กิจกรรมที่ 6', loc: 'ฐานกิจกรรม', locIcon: <Layers style={{ width: 11, height: 11 }} />, highlight: true },
+  { time: '09.00 – 09.40', name: 'กิจกรรมที่ 1', loc: 'ฐานกิจกรรม', locIcon: <Layers className="w-[11px] h-[11px]" />, highlight: true },
+  { time: '09.45 – 10.25', name: 'กิจกรรมที่ 2', loc: 'ฐานกิจกรรม', locIcon: <Layers className="w-[11px] h-[11px]" />, highlight: true },
+  { time: '10.25 – 10.50', name: 'พักเบรก', loc: 'พื้นที่พักผ่อน', locIcon: <Coffee className="w-[11px] h-[11px]" />, highlight: false, amber: true },
+  { time: '10.55 – 11.35', name: 'กิจกรรมที่ 3', loc: 'ฐานกิจกรรม', locIcon: <Layers className="w-[11px] h-[11px]" />, highlight: true },
+  { time: '11.35 – 13.00', name: 'พักเที่ยง + มินิคอนเสิร์ต', loc: 'คอนเสิร์ต 12.15 – 12.45', locIcon: <Music className="w-[11px] h-[11px]" />, highlight: false },
+  { time: '13.05 – 13.45', name: 'กิจกรรมที่ 4', loc: 'ฐานกิจกรรม', locIcon: <Layers className="w-[11px] h-[11px]" />, highlight: true },
+  { time: '13.50 – 14.30', name: 'กิจกรรมที่ 5', loc: 'ฐานกิจกรรม', locIcon: <Layers className="w-[11px] h-[11px]" />, highlight: true },
+  { time: '14.35 – 15.15', name: 'กิจกรรมที่ 6', loc: 'ฐานกิจกรรม', locIcon: <Layers className="w-[11px] h-[11px]" />, highlight: true },
   { time: '15.20 – 15.35', name: 'ปิดกิจกรรม', loc: null, locIcon: null, highlight: false },
-  { time: '15.35 เป็นต้นไป', name: 'บูม + เชียร์โต้', loc: 'Grand Finale', locIcon: <Star style={{ width: 11, height: 11 }} />, highlight: false, gold: true },
+  { time: '15.35 เป็นต้นไป', name: 'บูม + เชียร์โต้', loc: 'Grand Finale', locIcon: <Star className="w-[11px] h-[11px]" />, highlight: false, gold: true },
 ];
 
 export default function SchedulePage() {
@@ -44,7 +44,7 @@ export default function SchedulePage() {
                 <div className="tl-title">{item.label}</div>
                 <div className="tl-desc">{item.desc}</div>
                 <div className={`tl-tag ${item.status}`}>
-                  <Clock style={{ width: 10, height: 10 }} />
+                  <Clock className="w-2.5 h-2.5" />
                   {item.status === 'active' ? 'กำลังดำเนินการ' : 'รอดำเนินการ'}
                 </div>
               </div>
@@ -57,7 +57,7 @@ export default function SchedulePage() {
         <div style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 16, color: 'var(--text)' }}>กำหนดการวันงาน</div>
         <div className="day-card">
           <div className="day-head">
-            <CalendarHeart style={{ width: 18, height: 18, color: 'var(--accent)' }} />
+            <CalendarHeart className="w-[18px] h-[18px]" style={{ color: 'var(--accent)' }} />
             <div>
               <div className="day-head-date">27 มิถุนายน 2569</div>
               <div className="day-head-sub">วันงานรับน้อง Sci-Math CARNIVAL 89</div>

@@ -398,7 +398,7 @@ export default function AdminPage() {
       {/* ── Sidebar ── */}
       <div className="sidebar">
         <div className="sb-logo">
-          <img src="/logo.png" style={{ width: 34, height: 34, borderRadius: 8, objectFit: 'cover' }} alt="logo" />
+          <img src="/logo.png" className="w-[34px] h-[34px]" style={{ borderRadius: 8, objectFit: 'cover' }} alt="logo" />
           <span className="sb-logo-text">Admin</span>
         </div>
 
@@ -431,12 +431,12 @@ export default function AdminPage() {
 
         <div className="sb-footer">
           <button className="nav-item" onClick={toggle}>
-            <span className="icon-moon"><Moon style={{ width: 14, height: 14 }} /></span>
-            <span className="icon-sun"><Sun style={{ width: 14, height: 14 }} /></span>
+            <span className="icon-moon"><Moon className="w-3.5 h-3.5" /></span>
+            <span className="icon-sun"><Sun className="w-3.5 h-3.5" /></span>
             {theme === 'dark' ? 'โหมดสว่าง' : 'โหมดมืด'}
           </button>
           <button className="nav-item danger" onClick={async () => { await signOut(auth); router.push('/login'); }}>
-            <LogOut style={{ width: 14, height: 14 }} /> ออกจากระบบ
+            <LogOut className="w-3.5 h-3.5" /> ออกจากระบบ
           </button>
         </div>
       </div>
@@ -447,7 +447,7 @@ export default function AdminPage() {
           <div className="topbar-title">{NAV_ITEMS.find((n) => n.id === section)?.label}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <button className="btn btn-sm btn-secondary" onClick={() => { markDirty(section); loadSection(section); }}>
-              <RefreshCw style={{ width: 13, height: 13 }} />
+              <RefreshCw className="w-[13px] h-[13px]" />
             </button>
             <span style={{ fontSize: '0.78rem', color: 'var(--text-3)' }}>{user.email}</span>
           </div>
@@ -503,12 +503,12 @@ export default function AdminPage() {
               <div className="page-title"><h2>ข้อมูลนักเรียน</h2><p>{students.length} คน</p></div>
               <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '8px 12px' }}>
-                  <Search style={{ width: 14, height: 14, color: 'var(--text-3)', flexShrink: 0 }} />
+                  <Search className="w-3.5 h-3.5" style={{ color: 'var(--text-3)', flexShrink: 0 }} />
                   <input style={{ border: 'none', background: 'none', outline: 'none', color: 'var(--text)', fontSize: '0.9rem', width: '100%' }} placeholder="ค้นหาชื่อ ห้อง เลข..." value={studentSearch} onChange={(e) => setStudentSearch(e.target.value)} />
-                  {studentSearch && <button onClick={() => setStudentSearch('')} style={{ color: 'var(--text-3)' }}><X style={{ width: 13, height: 13 }} /></button>}
+                  {studentSearch && <button onClick={() => setStudentSearch('')} style={{ color: 'var(--text-3)' }}><X className="w-[13px] h-[13px]" /></button>}
                 </div>
                 {selectedStudent && (
-                  <button className="btn btn-sm btn-secondary" onClick={() => setSelectedStudent(null)}><X style={{ width: 13, height: 13 }} /> ปิดพาเนล</button>
+                  <button className="btn btn-sm btn-secondary" onClick={() => setSelectedStudent(null)}><X className="w-[13px] h-[13px]" /> ปิดพาเนล</button>
                 )}
               </div>
 
@@ -553,10 +553,10 @@ export default function AdminPage() {
                       </div>
                       <div style={{ display: 'flex', gap: 6 }}>
                         <button className="btn btn-sm btn-secondary" onClick={() => setEditingStudent((e) => !e)}>
-                          <Edit3 style={{ width: 12, height: 12 }} />
+                          <Edit3 className="w-3 h-3" />
                         </button>
                         <button className="btn btn-sm" style={{ background: 'var(--red-dim)', color: 'var(--red)' }} onClick={() => deleteStudent(selectedStudent.id)}>
-                          <Trash2 style={{ width: 12, height: 12 }} />
+                          <Trash2 className="w-3 h-3" />
                         </button>
                       </div>
                     </div>
@@ -604,7 +604,7 @@ export default function AdminPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <button className={`toggle ${groupsRevealed ? 'on' : ''}`} onClick={toggleGroupReveal} />
                   <span style={{ fontSize: '0.9rem' }}>
-                    {groupsRevealed ? <><Eye style={{ width: 13, height: 13, display: 'inline', marginRight: 4 }} />เปิดเผยกลุ่มให้นักเรียนเห็นแล้ว</> : <><EyeOff style={{ width: 13, height: 13, display: 'inline', marginRight: 4 }} />ยังไม่เปิดเผยกลุ่ม</>}
+                    {groupsRevealed ? <><Eye className="w-[13px] h-[13px]" style={{ display: 'inline', marginRight: 4 }} />เปิดเผยกลุ่มให้นักเรียนเห็นแล้ว</> : <><EyeOff className="w-[13px] h-[13px]" style={{ display: 'inline', marginRight: 4 }} />ยังไม่เปิดเผยกลุ่ม</>}
                   </span>
                 </div>
               </div>
@@ -612,7 +612,7 @@ export default function AdminPage() {
               <div className="d-card" style={{ marginBottom: 14 }}>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <input className="form-input" style={{ flex: 1 }} placeholder="ชื่อกลุ่มใหม่..." value={newGroupName} onChange={(e) => setNewGroupName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') addGroup(); }} />
-                  <button className="btn btn-primary" onClick={addGroup}><Plus style={{ width: 14, height: 14 }} /> เพิ่มกลุ่ม</button>
+                  <button className="btn btn-primary" onClick={addGroup}><Plus className="w-3.5 h-3.5" /> เพิ่มกลุ่ม</button>
                 </div>
               </div>
 
@@ -631,7 +631,7 @@ export default function AdminPage() {
                         <td style={{ padding: '8px 6px', fontWeight: 600 }}>{g.name}</td>
                         <td style={{ padding: '8px 6px', color: 'var(--text-3)' }}>{g.members?.length ?? 0} คน</td>
                         <td style={{ padding: '8px 6px', textAlign: 'right' }}>
-                          <button className="btn btn-sm btn-ghost" style={{ color: 'var(--red)' }} onClick={() => deleteGroup(g.id)}><Trash2 style={{ width: 13, height: 13 }} /></button>
+                          <button className="btn btn-sm btn-ghost" style={{ color: 'var(--red)' }} onClick={() => deleteGroup(g.id)}><Trash2 className="w-[13px] h-[13px]" /></button>
                         </td>
                       </tr>
                     ))}
@@ -652,9 +652,9 @@ export default function AdminPage() {
 
               <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '8px 12px' }}>
-                  <Search style={{ width: 14, height: 14, color: 'var(--text-3)', flexShrink: 0 }} />
+                  <Search className="w-3.5 h-3.5" style={{ color: 'var(--text-3)', flexShrink: 0 }} />
                   <input style={{ border: 'none', background: 'none', outline: 'none', color: 'var(--text)', fontSize: '0.9rem', width: '100%' }} placeholder="ค้นหาชื่อ ห้อง เลขประจำตัว..." value={ciSearch} onChange={(e) => setCiSearch(e.target.value)} autoFocus />
-                  {ciSearch && <button onClick={() => setCiSearch('')} style={{ color: 'var(--text-3)' }}><X style={{ width: 13, height: 13 }} /></button>}
+                  {ciSearch && <button onClick={() => setCiSearch('')} style={{ color: 'var(--text-3)' }}><X className="w-[13px] h-[13px]" /></button>}
                 </div>
               </div>
 
@@ -721,7 +721,7 @@ export default function AdminPage() {
                 </div>
 
                 <button className="btn btn-primary" onClick={saveRegSettings} disabled={savingReg}>
-                  <Check style={{ width: 14, height: 14 }} /> {savingReg ? 'กำลังบันทึก...' : 'บันทึก'}
+                  <Check className="w-3.5 h-3.5" /> {savingReg ? 'กำลังบันทึก...' : 'บันทึก'}
                 </button>
               </div>
             </>
@@ -732,7 +732,7 @@ export default function AdminPage() {
             <>
               <div className="page-title" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <div><h2>บุคลากร</h2><p>{committeeList.length} คน</p></div>
-                <button className="btn btn-primary btn-sm" onClick={openNewMember}><Plus style={{ width: 14, height: 14 }} /> เพิ่ม</button>
+                <button className="btn btn-primary btn-sm" onClick={openNewMember}><Plus className="w-3.5 h-3.5" /> เพิ่ม</button>
               </div>
 
               {/* Member form */}
@@ -740,7 +740,7 @@ export default function AdminPage() {
                 <div className="d-card" style={{ marginBottom: 16, borderColor: 'var(--accent)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                     <div style={{ fontWeight: 600 }}>{editingMember ? 'แก้ไขบุคลากร' : 'เพิ่มบุคลากรใหม่'}</div>
-                    <button onClick={closeMemberForm}><X style={{ width: 15, height: 15, color: 'var(--text-3)' }} /></button>
+                    <button onClick={closeMemberForm}><X className="w-[15px] h-[15px]" style={{ color: 'var(--text-3)' }} /></button>
                   </div>
                   <div className="form-grid">
                     {([['firstName','ชื่อ'],['lastName','นามสกุล'],['nickname','ชื่อเล่น'],['department','ฝ่าย/กลุ่ม'],['position','ตำแหน่ง'],['room','ห้อง'],['email','อีเมล'],['instagram','Instagram']] as [keyof CommitteeMember, string][]).map(([k, l]) => (
@@ -763,7 +763,7 @@ export default function AdminPage() {
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                         <button className="btn btn-sm btn-secondary" onClick={() => photoInputRef.current?.click()}>เลือกรูป</button>
                         {photoFile && <span style={{ fontSize: '0.8rem', color: 'var(--text-3)' }}>{photoFile.name}</span>}
-                        {!photoFile && memberForm.photoURL && <img src={memberForm.photoURL} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6 }} alt="" />}
+                        {!photoFile && memberForm.photoURL && <img src={memberForm.photoURL} className="w-10 h-10" style={{ objectFit: 'cover', borderRadius: 6 }} alt="" />}
                       </div>
                     </div>
                   </div>
@@ -791,7 +791,7 @@ export default function AdminPage() {
                         <td style={{ padding: '8px 6px', color: 'var(--text-3)' }}>{m.order ?? '-'}</td>
                         <td style={{ padding: '8px 6px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            {m.photoURL && <img src={m.photoURL} style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }} alt="" />}
+                            {m.photoURL && <img src={m.photoURL} className="w-7 h-7" style={{ borderRadius: '50%', objectFit: 'cover' }} alt="" />}
                             <span>{m.firstName} {m.lastName} {m.nickname ? `(${m.nickname})` : ''}</span>
                           </div>
                         </td>
@@ -799,8 +799,8 @@ export default function AdminPage() {
                         <td style={{ padding: '8px 6px' }}>{m.position}</td>
                         <td style={{ padding: '8px 6px' }}>{m.room}</td>
                         <td style={{ padding: '8px 6px', textAlign: 'right', display: 'flex', gap: 4 }}>
-                          <button className="btn btn-sm btn-ghost" onClick={() => openEditMember(m)}><Edit3 style={{ width: 13, height: 13 }} /></button>
-                          <button className="btn btn-sm btn-ghost" style={{ color: 'var(--red)' }} onClick={() => deleteMember(m.id)}><Trash2 style={{ width: 13, height: 13 }} /></button>
+                          <button className="btn btn-sm btn-ghost" onClick={() => openEditMember(m)}><Edit3 className="w-[13px] h-[13px]" /></button>
+                          <button className="btn btn-sm btn-ghost" style={{ color: 'var(--red)' }} onClick={() => deleteMember(m.id)}><Trash2 className="w-[13px] h-[13px]" /></button>
                         </td>
                       </tr>
                     ))}
@@ -823,7 +823,7 @@ export default function AdminPage() {
                       <button className={`toggle${newAnnPinned ? ' on' : ''}`} style={{ transform: 'scale(0.85)' }} onClick={() => setNewAnnPinned((p) => !p)} />
                       ปักหมุด
                     </label>
-                    <button className="btn btn-primary" onClick={addAnnouncement}><Plus style={{ width: 14, height: 14 }} /> เพิ่มประกาศ</button>
+                    <button className="btn btn-primary" onClick={addAnnouncement}><Plus className="w-3.5 h-3.5" /> เพิ่มประกาศ</button>
                   </div>
                 </div>
               </div>
@@ -850,10 +850,10 @@ export default function AdminPage() {
                         <td style={{ padding: '8px 4px', textAlign: 'right' }}>
                           <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
                             <button className="btn btn-sm btn-ghost" title={a.pinned ? 'ถอดหมุด' : 'ปักหมุด'} onClick={() => togglePin(a.id, !!a.pinned)}>
-                              {a.pinned ? <ChevronDown style={{ width: 13, height: 13 }} /> : <ChevronUp style={{ width: 13, height: 13 }} />}
+                              {a.pinned ? <ChevronDown className="w-[13px] h-[13px]" /> : <ChevronUp className="w-[13px] h-[13px]" />}
                             </button>
                             <button className="btn btn-sm btn-ghost" style={{ color: 'var(--red)' }} onClick={() => deleteAnnouncement(a.id)}>
-                              <Trash2 style={{ width: 13, height: 13 }} />
+                              <Trash2 className="w-[13px] h-[13px]" />
                             </button>
                           </div>
                         </td>
@@ -894,7 +894,7 @@ export default function AdminPage() {
                     <input className="form-input" type="url" placeholder="https://line.me/ti/g2/..." value={eventSettings.lineUrl ?? ''} onChange={(e) => setEventSettings((p) => ({ ...p, lineUrl: e.target.value }))} />
                   </div>
                   <button className="btn btn-primary" style={{ alignSelf: 'flex-start' }} onClick={saveEventSettings} disabled={savingEvent}>
-                    <Check style={{ width: 14, height: 14 }} /> {savingEvent ? 'กำลังบันทึก...' : 'บันทึก'}
+                    <Check className="w-3.5 h-3.5" /> {savingEvent ? 'กำลังบันทึก...' : 'บันทึก'}
                   </button>
                 </div>
               </div>
@@ -925,7 +925,7 @@ export default function AdminPage() {
                     </select>
                   </div>
                 </div>
-                <button className="btn btn-primary btn-sm" onClick={addStaff}><Plus style={{ width: 14, height: 14 }} /> เพิ่มบัญชี</button>
+                <button className="btn btn-primary btn-sm" onClick={addStaff}><Plus className="w-3.5 h-3.5" /> เพิ่มบัญชี</button>
               </div>
 
               <div className="d-card">
@@ -948,7 +948,7 @@ export default function AdminPage() {
                         </td>
                         <td style={{ padding: '8px 6px', textAlign: 'right' }}>
                           <button className="btn btn-sm btn-ghost" style={{ color: 'var(--red)' }} onClick={() => deleteStaff(s.id)}>
-                            <Trash2 style={{ width: 13, height: 13 }} />
+                            <Trash2 className="w-[13px] h-[13px]" />
                           </button>
                         </td>
                       </tr>
@@ -968,7 +968,7 @@ export default function AdminPage() {
                   <div style={{ fontWeight: 600, marginBottom: 6 }}>นักเรียนทั้งหมด (CSV)</div>
                   <div style={{ fontSize: '0.82rem', color: 'var(--text-3)', marginBottom: 14 }}>ชื่อ, ห้อง, เลขประจำตัว, การลงทะเบียน, เช็คอิน</div>
                   <button className="btn btn-primary btn-sm" onClick={exportCSV} disabled={exportLoading}>
-                    <FileDown style={{ width: 14, height: 14 }} /> ดาวน์โหลด CSV
+                    <FileDown className="w-3.5 h-3.5" /> ดาวน์โหลด CSV
                   </button>
                 </div>
                 <div className="d-card">
@@ -986,7 +986,7 @@ export default function AdminPage() {
                     URL.revokeObjectURL(url);
                     showToast('ดาวน์โหลดแล้ว');
                   }}>
-                    <FileDown style={{ width: 14, height: 14 }} /> รายชื่อลงทะเบียน
+                    <FileDown className="w-3.5 h-3.5" /> รายชื่อลงทะเบียน
                   </button>
                 </div>
               </div>

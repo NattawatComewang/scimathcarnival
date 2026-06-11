@@ -12,13 +12,13 @@ import type { FormData } from './lib/types';
 const TOTAL_STAGES = 7;
 
 const STAGE_ICONS = [
-  <ShieldCheck style={{ width: 28, height: 28, color: 'var(--accent)' }} />,
-  <FileText style={{ width: 28, height: 28, color: 'var(--blue)' }} />,
-  <User style={{ width: 28, height: 28, color: 'var(--accent)' }} />,
-  <HeartPulse style={{ width: 28, height: 28, color: 'var(--red)' }} />,
-  <Brain style={{ width: 28, height: 28, color: 'var(--accent)' }} />,
-  <ClipboardList style={{ width: 28, height: 28, color: 'var(--accent)' }} />,
-  <CheckCircle style={{ width: 28, height: 28, color: 'var(--green)' }} />,
+  <ShieldCheck className="w-7 h-7" style={{ color: 'var(--accent)' }} />,
+  <FileText className="w-7 h-7" style={{ color: 'var(--blue)' }} />,
+  <User className="w-7 h-7" style={{ color: 'var(--accent)' }} />,
+  <HeartPulse className="w-7 h-7" style={{ color: 'var(--red)' }} />,
+  <Brain className="w-7 h-7" style={{ color: 'var(--accent)' }} />,
+  <ClipboardList className="w-7 h-7" style={{ color: 'var(--accent)' }} />,
+  <CheckCircle className="w-7 h-7" style={{ color: 'var(--green)' }} />,
 ];
 
 export default function RegisterPage() {
@@ -102,7 +102,7 @@ export default function RegisterPage() {
       <div style={{ maxWidth: 480, margin: '0 auto', minHeight: '100vh', padding: '80px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div className="success-box" style={{ width: '100%' }}>
           <div className="success-check">
-            <CheckCircle style={{ width: 32, height: 32, color: 'white' }} />
+            <CheckCircle className="w-8 h-8" style={{ color: 'white' }} />
           </div>
           <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 8 }}>ลงทะเบียนแล้ว</div>
           <div style={{ color: 'var(--text-2)', fontSize: '0.875rem', marginBottom: 20 }}>คุณได้ลงทะเบียนแล้ว สามารถดูข้อมูลได้ใน Dashboard</div>
@@ -117,12 +117,12 @@ export default function RegisterPage() {
       {/* Top bar */}
       <div className="top-bar">
         <div className="top-bar-logo">
-          <img src="/logo.png" alt="logo" style={{ width: 26, height: 26 }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          <img src="/logo.png" alt="logo" className="w-[26px] h-[26px]" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           SciMath TU
         </div>
         <button className="theme-toggle" onClick={toggle} title="สลับธีม">
-          <span className="icon-moon"><Moon style={{ width: 14, height: 14 }} /></span>
-          <span className="icon-sun"><Sun style={{ width: 14, height: 14 }} /></span>
+          <span className="icon-moon"><Moon className="w-3.5 h-3.5" /></span>
+          <span className="icon-sun"><Sun className="w-3.5 h-3.5" /></span>
         </button>
       </div>
 
@@ -279,7 +279,7 @@ export default function RegisterPage() {
         <div className="stage active" style={{ alignItems: 'center', textAlign: 'center', paddingTop: 60 }}>
           <div className="success-box">
             <div className="success-check">
-              <CheckCircle style={{ width: 32, height: 32, color: 'white' }} />
+              <CheckCircle className="w-8 h-8" style={{ color: 'white' }} />
             </div>
             <div style={{ fontWeight: 700, fontSize: '1.15rem', marginBottom: 8 }}>ลงทะเบียนสำเร็จ!</div>
             <div style={{ color: 'var(--text-2)', fontSize: '0.875rem', marginBottom: 20, lineHeight: 1.6 }}>
@@ -298,12 +298,12 @@ export default function RegisterPage() {
         <div className="stage-footer">
           {stage > 1 && (
             <button className="btn btn-secondary" onClick={back}>
-              <ChevronLeft style={{ width: 16, height: 16 }} /> ย้อนกลับ
+              <ChevronLeft className="w-4 h-4" /> ย้อนกลับ
             </button>
           )}
           {stage < TOTAL_STAGES - 1 && (
             <button className="btn btn-next-primary" onClick={next} disabled={!canAdvance()}>
-              ถัดไป <ChevronRight style={{ width: 16, height: 16 }} />
+              ถัดไป <ChevronRight className="w-4 h-4" />
             </button>
           )}
           {stage === TOTAL_STAGES - 1 && (

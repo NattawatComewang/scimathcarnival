@@ -31,13 +31,13 @@ const TIMELINE_MAIN = [
 ];
 
 const DAY_SCHEDULE = [
-  { time: '08.00 – 08.30', name: 'ลงทะเบียน / เช็คอิน', icon: <LogIn style={{ width: 11, height: 11 }} /> },
-  { time: '08.30 – 09.00', name: 'พิธีเปิด', icon: <Star style={{ width: 11, height: 11 }} />, active: true },
-  { time: '09.00 – 12.00', name: 'กิจกรรม 6 ฐาน รอบแรก', icon: <Layers style={{ width: 11, height: 11 }} /> },
-  { time: '12.00 – 13.00', name: 'พักกลางวัน', icon: <Utensils style={{ width: 11, height: 11 }} /> },
-  { time: '13.00 – 15.30', name: 'กิจกรรม 6 ฐาน รอบสอง', icon: <Layers style={{ width: 11, height: 11 }} /> },
-  { time: '15.30 – 16.30', name: 'กิจกรรมรวม / มินิคอนเสิร์ต', icon: <Music style={{ width: 11, height: 11 }} /> },
-  { time: '16.30 – 17.00', name: 'พิธีปิดและถ่ายรูปหมู่', icon: <Camera style={{ width: 11, height: 11 }} /> },
+  { time: '08.00 – 08.30', name: 'ลงทะเบียน / เช็คอิน', icon: <LogIn className="w-[11px] h-[11px]" /> },
+  { time: '08.30 – 09.00', name: 'พิธีเปิด', icon: <Star className="w-[11px] h-[11px]" />, active: true },
+  { time: '09.00 – 12.00', name: 'กิจกรรม 6 ฐาน รอบแรก', icon: <Layers className="w-[11px] h-[11px]" /> },
+  { time: '12.00 – 13.00', name: 'พักกลางวัน', icon: <Utensils className="w-[11px] h-[11px]" /> },
+  { time: '13.00 – 15.30', name: 'กิจกรรม 6 ฐาน รอบสอง', icon: <Layers className="w-[11px] h-[11px]" /> },
+  { time: '15.30 – 16.30', name: 'กิจกรรมรวม / มินิคอนเสิร์ต', icon: <Music className="w-[11px] h-[11px]" /> },
+  { time: '16.30 – 17.00', name: 'พิธีปิดและถ่ายรูปหมู่', icon: <Camera className="w-[11px] h-[11px]" /> },
 ];
 
 export default function RubnongPage() {
@@ -61,12 +61,12 @@ export default function RubnongPage() {
       {/* Top bar */}
       <div className="top-bar">
         <a className="top-bar-logo" href="/">
-          <img src="/logo.png" alt="SciMath" style={{ width: 28, height: 28, borderRadius: 8, objectFit: 'cover' }} />
+          <img src="/logo.png" alt="SciMath" className="w-7 h-7" style={{ borderRadius: 8, objectFit: 'cover' }} />
           SciMath TU
         </a>
         <button className="theme-toggle" onClick={toggle} title="สลับธีม">
-          <span className="icon-moon"><Moon style={{ width: 14, height: 14 }} /></span>
-          <span className="icon-sun"><Sun style={{ width: 14, height: 14 }} /></span>
+          <span className="icon-moon"><Moon className="w-3.5 h-3.5" /></span>
+          <span className="icon-sun"><Sun className="w-3.5 h-3.5" /></span>
         </button>
       </div>
 
@@ -78,7 +78,7 @@ export default function RubnongPage() {
             <img src="/carnival-hero.png" alt="CARNIVAL" style={{ width: '100%', borderRadius: 'var(--radius-lg)', marginBottom: 16 }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
             <div style={{ padding: '0 4px 0' }}>
               <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--accent)', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-                <Star style={{ width: 11, height: 11, fill: 'var(--gold)', stroke: 'none' }} /> กิจกรรมรับน้องสายวิทย์-คณิต รุ่น 89
+                <Star className="w-[11px] h-[11px]" style={{ fill: 'var(--gold)', stroke: 'none' }} /> กิจกรรมรับน้องสายวิทย์-คณิต รุ่น 89
               </div>
               <h1 style={{ fontSize: 'clamp(1.8rem,8vw,2.2rem)', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: 6 }}>
                 Sci-Math<br /><span style={{ color: 'var(--accent)' }}>CARNIVAL</span>
@@ -87,7 +87,7 @@ export default function RubnongPage() {
                 27 มิถุนายน 2569 · โรงเรียนเตรียมอุดมศึกษา
               </p>
               <a className="btn btn-primary" href="/login" style={{ width: '100%', justifyContent: 'center' }}>
-                <LogIn style={{ width: 15, height: 15 }} /> ลงทะเบียนเข้าร่วมกิจกรรม
+                <LogIn className="w-[15px] h-[15px]" /> ลงทะเบียนเข้าร่วมกิจกรรม
               </a>
             </div>
           </div>
@@ -96,9 +96,9 @@ export default function RubnongPage() {
           <div style={{ padding: '0 16px', marginBottom: 8 }}>
             <div className="d-card">
               {[
-                { icon: <Calendar style={{ width: 18, height: 18 }} />, label: 'วันงาน', value: '27 มิถุนายน 2569' },
-                { icon: <Clock style={{ width: 18, height: 18 }} />, label: 'เวลา', value: '08.00 – 17.00 น.' },
-                { icon: <MapPin style={{ width: 18, height: 18 }} />, label: 'สถานที่', value: 'โรงเรียนเตรียมอุดมศึกษา' },
+                { icon: <Calendar className="w-[18px] h-[18px]" />, label: 'วันงาน', value: '27 มิถุนายน 2569' },
+                { icon: <Clock className="w-[18px] h-[18px]" />, label: 'เวลา', value: '08.00 – 17.00 น.' },
+                { icon: <MapPin className="w-[18px] h-[18px]" />, label: 'สถานที่', value: 'โรงเรียนเตรียมอุดมศึกษา' },
               ].map((item, i) => (
                 <div key={i} className="info-item" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: i < 2 ? '1px solid var(--border)' : 'none' }}>
                   <div style={{ color: 'var(--accent)', flexShrink: 0 }}>{item.icon}</div>
@@ -118,9 +118,9 @@ export default function RubnongPage() {
               {TIMELINE_MAIN.map((item, i) => (
                 <div key={i} className={`tl-row${item.done ? ' done' : item.active ? ' active' : ' future'}`}>
                   <div className="tl-icon">
-                    {item.done ? <Check style={{ width: 12, height: 12, stroke: 'white', strokeWidth: 3 }} />
-                      : item.active ? <Star style={{ width: 11, height: 11, color: 'white' }} />
-                      : <Clock style={{ width: 11, height: 11 }} />}
+                    {item.done ? <Check className="w-3 h-3" style={{ stroke: 'white', strokeWidth: 3 }} />
+                      : item.active ? <Star className="w-[11px] h-[11px]" style={{ color: 'white' }} />
+                      : <Clock className="w-[11px] h-[11px]" />}
                   </div>
                   <div className="tl-body">
                     <div className="tl-date">{item.date}</div>
@@ -142,7 +142,7 @@ export default function RubnongPage() {
                     <div className="base-name">{b.name}</div>
                     <div className="base-sub">{b.sub}</div>
                   </div>
-                  <ChevronRight style={{ width: 14, height: 14, color: 'var(--text-3)', flexShrink: 0 }} />
+                  <ChevronRight className="w-3.5 h-3.5" style={{ color: 'var(--text-3)', flexShrink: 0 }} />
                 </a>
               ))}
             </div>
@@ -153,14 +153,14 @@ export default function RubnongPage() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
               <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>ประกาศล่าสุด</div>
               <button className="btn btn-ghost btn-sm" onClick={() => setScreen('ann')} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.78rem' }}>
-                ดูทั้งหมด <ArrowRight style={{ width: 11, height: 11 }} />
+                ดูทั้งหมด <ArrowRight className="w-[11px] h-[11px]" />
               </button>
             </div>
             {announcements.slice(0, 3).map((a) => (
               <div key={a.id} className="ann-item" style={{ padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
                 <div className="ann-dot" />
                 <div className="ann-text" style={{ fontSize: '0.85rem' }}>{a.title}</div>
-                <ChevronRight style={{ width: 12, height: 12, color: 'var(--text-3)' }} />
+                <ChevronRight className="w-3 h-3" style={{ color: 'var(--text-3)' }} />
               </div>
             ))}
             {announcements.length === 0 && <div style={{ fontSize: '0.82rem', color: 'var(--text-3)' }}>ยังไม่มีประกาศ</div>}
@@ -224,8 +224,8 @@ export default function RubnongPage() {
               <div style={{ fontWeight: 600, marginBottom: 4 }}>หากมีข้อสงสัยหรือต้องการความช่วยเหลือ</div>
               <div style={{ fontSize: '0.82rem', color: 'var(--text-2)', marginBottom: 14 }}>ติดต่อฝ่ายระบบเว็บไซต์ได้ตามช่องทางด้านล่าง</div>
               {[
-                { icon: <Mail style={{ width: 15, height: 15 }} />, href: 'mailto:tuscimath.official@gmail.com', label: 'tuscimath.official@gmail.com' },
-                { icon: <Phone style={{ width: 15, height: 15 }} />, href: 'tel:022252425', label: '02-225-2425 ต่อ 508' },
+                { icon: <Mail className="w-[15px] h-[15px]" />, href: 'mailto:tuscimath.official@gmail.com', label: 'tuscimath.official@gmail.com' },
+                { icon: <Phone className="w-[15px] h-[15px]" />, href: 'tel:022252425', label: '02-225-2425 ต่อ 508' },
               ].map((c, i) => (
                 <a key={i} href={c.href} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 0', fontSize: '0.875rem', color: 'var(--text-2)', textDecoration: 'none', borderBottom: i === 0 ? '1px solid var(--border)' : 'none' }}>
                   <span style={{ color: 'var(--accent)' }}>{c.icon}</span>
@@ -236,7 +236,7 @@ export default function RubnongPage() {
           </div>
           <div style={{ padding: '0 16px' }}>
             <a className="btn btn-primary" href="/login" style={{ width: '100%', justifyContent: 'center' }}>
-              <LogIn style={{ width: 17, height: 17 }} /> เข้าสู่ระบบลงทะเบียน
+              <LogIn className="w-[17px] h-[17px]" /> เข้าสู่ระบบลงทะเบียน
             </a>
           </div>
           <div className="page-footer">© 2569 SciMath TU</div>
@@ -247,10 +247,10 @@ export default function RubnongPage() {
       <div className="bottom-nav">
         <div className="bottom-nav-inner">
           {([
-            ['home', 'หน้าแรก', <Home style={{ width: 20, height: 20 }} />],
-            ['ann', 'ประกาศ', <Megaphone style={{ width: 20, height: 20 }} />],
-            ['schedule', 'กำหนดการ', <Calendar style={{ width: 20, height: 20 }} />],
-            ['contact', 'ติดต่อเรา', <Phone style={{ width: 20, height: 20 }} />],
+            ['home', 'หน้าแรก', <Home className="w-5 h-5" />],
+            ['ann', 'ประกาศ', <Megaphone className="w-5 h-5" />],
+            ['schedule', 'กำหนดการ', <Calendar className="w-5 h-5" />],
+            ['contact', 'ติดต่อเรา', <Phone className="w-5 h-5" />],
           ] as [Screen, string, React.ReactNode][]).map(([id, label, icon]) => (
             <button key={id} className={`tab-btn${screen === id ? ' active' : ''}`} onClick={() => setScreen(id)}>
               {icon}

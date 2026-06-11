@@ -89,7 +89,7 @@ export default function LoginPage() {
     return (
       <div className="line-warning show">
         <div className="line-warning-icon">
-          <AlertTriangle style={{ width: 32, height: 32, color: 'var(--amber)' }} />
+          <AlertTriangle className="w-8 h-8" style={{ color: 'var(--amber)' }} />
         </div>
         <h2>กรุณาเปิดในเบราว์เซอร์</h2>
         <p>การเข้าสู่ระบบด้วย Google ไม่รองรับในแอปนี้<br />กรุณาเปิดลิงก์ใน Safari หรือ Chrome</p>
@@ -110,8 +110,8 @@ export default function LoginPage() {
         {/* Theme toggle */}
         <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 200 }}>
           <button className="theme-toggle" onClick={toggle} title="สลับธีม">
-            <span className="icon-moon"><Moon style={{ width: 15, height: 15 }} /></span>
-            <span className="icon-sun"><Sun style={{ width: 15, height: 15 }} /></span>
+            <span className="icon-moon"><Moon className="w-[15px] h-[15px]" /></span>
+            <span className="icon-sun"><Sun className="w-[15px] h-[15px]" /></span>
           </button>
         </div>
 
@@ -147,7 +147,7 @@ export default function LoginPage() {
         {mode === 'student' && (
           <div className="auth-box" style={{ margin: '0 auto' }}>
             <div className="auth-box-icon" style={{ background: 'var(--accent-dim)' }}>
-              <ShieldAlert style={{ width: 28, height: 28, color: 'var(--accent)' }} />
+              <ShieldAlert className="w-7 h-7" style={{ color: 'var(--accent)' }} />
             </div>
             <h2>นักเรียน</h2>
             <p>ใช้บัญชี <strong>@student.triamudom.ac.th</strong> เข้าสู่ระบบ</p>
@@ -163,7 +163,7 @@ export default function LoginPage() {
             </button>
 
             <p className="modal-note">
-              <ShieldAlert style={{ width: 12, height: 12 }} />
+              <ShieldAlert className="w-3 h-3" />
               เฉพาะบัญชี @student.triamudom.ac.th เท่านั้น
             </p>
             <a className="back-home" href="/">← กลับหน้าหลัก</a>
@@ -174,7 +174,7 @@ export default function LoginPage() {
         {mode === 'staff' && (
           <div className="auth-box" style={{ margin: '0 auto' }}>
             <div className="auth-box-icon" style={{ background: 'var(--amber-dim)' }}>
-              <Lock style={{ width: 28, height: 28, color: 'var(--amber)' }} />
+              <Lock className="w-7 h-7" style={{ color: 'var(--amber)' }} />
             </div>
             <h2>บุคลากร</h2>
             <p>เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน</p>
@@ -208,7 +208,7 @@ export default function LoginPage() {
                   onClick={() => setShowPass((v) => !v)}
                   style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer' }}
                 >
-                  {showPass ? <EyeOff style={{ width: 15, height: 15 }} /> : <Eye style={{ width: 15, height: 15 }} />}
+                  {showPass ? <EyeOff className="w-[15px] h-[15px]" /> : <Eye className="w-[15px] h-[15px]" />}
                 </button>
               </div>
             </div>
@@ -252,7 +252,7 @@ export default function LoginPage() {
                 style={{ justifyContent: 'center', gap: 8 }}
                 onClick={() => { setRoleModal(null); router.push('/admin'); }}
               >
-                <ShieldAlert style={{ width: 15, height: 15 }} />
+                <ShieldAlert className="w-[15px] h-[15px]" />
                 บุคลากร / Admin
               </button>
             </div>

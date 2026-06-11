@@ -10,7 +10,7 @@ const ACTIVITIES = [
     sub: 'ฮับบันทึกความทรงจำ',
     desc: 'บันทึกช่วงเวลาพิเศษของวันรับน้องผ่านกิจกรรมสร้างสรรค์และภาพถ่ายที่จะกลายเป็นความทรงจำสุดล้ำค่า',
     detail: 'ทำเป็นทีม · ทุกคนมีส่วนร่วม',
-    icon: <Users style={{ width: 13, height: 13 }} />,
+    icon: <Users className="w-[13px] h-[13px]" />,
   },
   {
     num: 2,
@@ -18,7 +18,7 @@ const ACTIVITIES = [
     sub: 'ตรอกเกมแห่ง Carnival',
     desc: 'ท้าทายทักษะและกลยุทธ์กับเกมหลากหลายรูปแบบที่ต้องอาศัยทั้งความคิดและความร่วมมือของทีม',
     detail: 'ใช้ความคิดเชิงกลยุทธ์',
-    icon: <Zap style={{ width: 13, height: 13 }} />,
+    icon: <Zap className="w-[13px] h-[13px]" />,
   },
   {
     num: 3,
@@ -26,7 +26,7 @@ const ACTIVITIES = [
     sub: 'เต็นท์ช่างฝีมือ',
     desc: 'ร่วมกันสร้างสรรค์และแก้ปัญหาเชิงวิศวกรรมอย่างสนุกสนาน ทดสอบความคิดสร้างสรรค์และการทำงานเป็นทีม',
     detail: 'ความคิดสร้างสรรค์ + ทักษะทีม',
-    icon: <Brain style={{ width: 13, height: 13 }} />,
+    icon: <Brain className="w-[13px] h-[13px]" />,
   },
   {
     num: 4,
@@ -34,7 +34,7 @@ const ACTIVITIES = [
     sub: 'มัมมี่ที่รัก',
     desc: 'กิจกรรมพันมัมมี่สุดตลกที่ทุกคนจะได้หัวเราะและสนุกไปด้วยกัน เสริมสร้างความกล้าและมิตรภาพในทีม',
     detail: 'สนุกสนาน · เสริมความกล้า',
-    icon: <Laugh style={{ width: 13, height: 13 }} />,
+    icon: <Laugh className="w-[13px] h-[13px]" />,
   },
   {
     num: 5,
@@ -42,7 +42,7 @@ const ACTIVITIES = [
     sub: 'ฮับทดสอบฝีมือ',
     desc: 'ทดสอบทักษะและความสามารถที่หลากหลาย ฝึกสมาธิและความแม่นยำผ่านกิจกรรมที่สนุกและท้าทาย',
     detail: 'ทักษะ · สมาธิ · ความแม่นยำ',
-    icon: <Target style={{ width: 13, height: 13 }} />,
+    icon: <Target className="w-[13px] h-[13px]" />,
   },
   {
     num: 6,
@@ -50,7 +50,7 @@ const ACTIVITIES = [
     sub: 'ละครสัตว์มหรรศจรรย์',
     desc: 'ปิดท้ายด้วยกิจกรรม grand finale สุดตระการตา ที่รวบรวมทุกทีมมาโชว์ความสามารถและเฉลิมฉลองร่วมกัน',
     detail: 'Grand Finale · แสดงความสามารถ',
-    icon: <Star style={{ width: 13, height: 13 }} />,
+    icon: <Star className="w-[13px] h-[13px]" />,
   },
 ];
 
