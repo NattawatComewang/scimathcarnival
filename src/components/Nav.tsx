@@ -49,21 +49,21 @@ export default function Nav({ activePage = 'none' }: Props) {
                 onClick={() => setDropdownOpen((o) => !o)}
               >
                 รับน้อง{' '}
-                <ChevronDown style={{ width: 13, height: 13, transition: 'transform 200ms', transform: dropdownOpen ? 'rotate(180deg)' : 'none' }} />
+                <ChevronDown className="w-[13px] h-[13px]" style={{ transition: 'transform 200ms', transform: dropdownOpen ? 'rotate(180deg)' : 'none' }} />
               </button>
               <div className="nav-dropdown-menu">
                 <a className={`nav-dropdown-item${activePage === 'event' ? ' active' : ''}`} href="/event">
-                  <Tent style={{ width: 14, height: 14 }} />
+                  <Tent className="w-3.5 h-3.5" />
                   รับน้อง 89
                   <span className="nav-dropdown-desc">ภาพรวมกิจกรรม CARNIVAL</span>
                 </a>
                 <a className={`nav-dropdown-item${activePage === 'schedule' ? ' active' : ''}`} href="/schedule">
-                  <CalendarRange style={{ width: 14, height: 14 }} />
+                  <CalendarRange className="w-3.5 h-3.5" />
                   กำหนดการกิจกรรม
                   <span className="nav-dropdown-desc">ไทม์ไลน์และตารางเวลา</span>
                 </a>
                 <a className={`nav-dropdown-item${activePage === 'activities' ? ' active' : ''}`} href="/activities">
-                  <Layers style={{ width: 14, height: 14 }} />
+                  <Layers className="w-3.5 h-3.5" />
                   6 ฐานกิจกรรม
                   <span className="nav-dropdown-desc">รายละเอียดทุกฐาน</span>
                 </a>
@@ -73,17 +73,17 @@ export default function Nav({ activePage = 'none' }: Props) {
 
           <div className="flex items-center gap-2">
             <button className="theme-toggle" onClick={toggle} title="สลับธีม">
-              <span className="icon-moon"><Moon style={{ width: 15, height: 15 }} /></span>
-              <span className="icon-sun"><Sun style={{ width: 15, height: 15 }} /></span>
+              <span className="icon-moon"><Moon className="w-[15px] h-[15px]" /></span>
+              <span className="icon-sun"><Sun className="w-[15px] h-[15px]" /></span>
             </button>
 
             {user ? (
               <a className="btn btn-secondary btn-sm" href="/dashboard">
-                <LayoutDashboard style={{ width: 14, height: 14 }} /> Dashboard
+                <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
               </a>
             ) : (
               <a className="btn btn-primary btn-sm" href="/login">
-                <LogIn style={{ width: 14, height: 14 }} /> เข้าสู่ระบบ
+                <LogIn className="w-3.5 h-3.5" /> เข้าสู่ระบบ
               </a>
             )}
 
@@ -91,7 +91,7 @@ export default function Nav({ activePage = 'none' }: Props) {
               className="hamburger btn-icon"
               onClick={() => setMobileOpen((o) => !o)}
             >
-              <Menu style={{ width: 20, height: 20 }} />
+              <Menu className="w-5 h-5" />
             </button>
           </div>
         </div>

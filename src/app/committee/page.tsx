@@ -6,23 +6,8 @@ import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import { Search, Briefcase, DoorOpen, Mail, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getInitials } from '@/lib/utils';
-
-interface Member {
-  id: string;
-  firstName?: string;
-  lastName?: string;
-  name?: string;
-  nickname?: string;
-  department?: string;
-  position?: string;
-  room?: string;
-  email?: string;
-  instagram?: string;
-  bio?: string;
-  photoURL?: string;
-  photos?: string[];
-  order?: number;
-}
+import type { Member } from './lib/types';
+import { memberName, memberPhotos } from './lib/helpers';
 
 const FALLBACK_MEMBERS: Member[] = [
   { id: 'f1', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายวิชาการ',       position: 'หัวหน้าฝ่าย', room: 'ม.6/1', order: 1 },
@@ -32,18 +17,6 @@ const FALLBACK_MEMBERS: Member[] = [
   { id: 'f5', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายประชาสัมพันธ์', position: 'หัวหน้าฝ่าย', room: 'ม.6/5', order: 5 },
   { id: 'f6', firstName: 'ชื่อจริง', lastName: 'นามสกุล', nickname: 'ชื่อเล่น', department: 'ฝ่ายประชาสัมพันธ์', position: 'กรรมการ',     room: 'ม.6/6', order: 6 },
 ];
-
-function memberName(m: Member) {
-  if (m.firstName || m.lastName) return `${m.firstName ?? ''} ${m.lastName ?? ''}`.trim();
-  return m.name ?? 'ไม่ระบุชื่อ';
-}
-
-function memberPhotos(m: Member): string[] {
-  const list: string[] = [];
-  if (m.photoURL) list.push(m.photoURL);
-  m.photos?.forEach((p) => { if (p && !list.includes(p)) list.push(p); });
-  return list;
-}
 
 export default function CommitteePage() {
   const [members, setMembers]       = useState<Member[]>([]);
@@ -106,7 +79,7 @@ export default function CommitteePage() {
 
       <div className="filter-bar" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 12 }}>
         <div className="search-wrap">
-          <Search style={{ width: 15, height: 15, color: 'var(--text-3)', flexShrink: 0 }} />
+          <Search className="w-[15px] h-[15px]" style={{ color: 'var(--text-3)', flexShrink: 0 }} />
           <input
             type="text"
             placeholder="ค้นหาชื่อ ตำแหน่ง..."
@@ -171,7 +144,7 @@ export default function CommitteePage() {
           <div className="detail-box">
             <div className="gallery-wrap">
               <button className="detail-close" onClick={() => setSelected(null)}>
-                <X style={{ width: 15, height: 15 }} />
+                <X className="w-[15px] h-[15px]" />
               </button>
 
               {selPhotos.length > 0 ? (
@@ -180,10 +153,10 @@ export default function CommitteePage() {
                   {selPhotos.length > 1 && (
                     <>
                       <button className="gallery-prev" onClick={() => setPhotoIdx((i) => (i - 1 + selPhotos.length) % selPhotos.length)}>
-                        <ChevronLeft style={{ width: 18, height: 18 }} />
+                        <ChevronLeft className="w-[18px] h-[18px]" />
                       </button>
                       <button className="gallery-next" onClick={() => setPhotoIdx((i) => (i + 1) % selPhotos.length)}>
-                        <ChevronRight style={{ width: 18, height: 18 }} />
+                        <ChevronRight className="w-[18px] h-[18px]" />
                       </button>
                       <div className="gallery-dots">
                         {selPhotos.map((_, i) => (
@@ -205,17 +178,17 @@ export default function CommitteePage() {
               <div className="detail-meta">
                 {selected.position && (
                   <div className="detail-meta-row">
-                    <Briefcase style={{ width: 14, height: 14 }} /><span>{selected.position}</span>
+                    <Briefcase className="w-3.5 h-3.5" /><span>{selected.position}</span>
                   </div>
                 )}
                 {selected.room && (
                   <div className="detail-meta-row">
-                    <DoorOpen style={{ width: 14, height: 14 }} /><span>{selected.room}</span>
+                    <DoorOpen className="w-3.5 h-3.5" /><span>{selected.room}</span>
                   </div>
                 )}
                 {selected.email && (
                   <div className="detail-meta-row">
-                    <Mail style={{ width: 14, height: 14 }} />
+                    <Mail className="w-3.5 h-3.5" />
                     <a href={`mailto:${selected.email}`}>{selected.email}</a>
                   </div>
                 )}

@@ -29,7 +29,7 @@ export default function EventPage() {
         <img src="/carnival-hero.png" alt="" className="hero-bg-img" />
         <div className="hero-content">
           <div className="hero-eyebrow">
-            <Star style={{ width: 12, height: 12, fill: 'var(--gold)', stroke: 'none' }} />
+            <Star className="w-3 h-3" style={{ fill: 'var(--gold)', stroke: 'none' }} />
             กิจกรรมรับน้องสายวิทย์-คณิต รุ่น 89
           </div>
           <h1 className="hero-title">
@@ -44,11 +44,11 @@ export default function EventPage() {
           </p>
           <div className="hero-btns">
             <a className="btn-hero-primary" href="/login">
-              <CalendarCheck style={{ width: 18, height: 18 }} />
+              <CalendarCheck className="w-[18px] h-[18px]" />
               ลงทะเบียนเข้าร่วมกิจกรรม
             </a>
             <a className="btn-hero-secondary" href="/schedule">
-              <Megaphone style={{ width: 16, height: 16 }} />
+              <Megaphone className="w-4 h-4" />
               ดูกำหนดการ
             </a>
           </div>
@@ -59,10 +59,10 @@ export default function EventPage() {
       <div style={{ padding: '0 28px' }}>
         <div className="stats-bar">
           {[
-            { icon: <Calendar style={{ width: 24, height: 24 }} />, label: 'วันงานรับน้อง', value: '27 มิ.ย. 2569' },
-            { icon: <Users style={{ width: 24, height: 24 }} />, label: 'ผู้เข้าร่วมโดยประมาณ', value: '1,400 คน' },
-            { icon: <Clock style={{ width: 24, height: 24 }} />, label: 'เวลา', value: '08.00 – 17.00' },
-            { icon: <MapPin style={{ width: 24, height: 24 }} />, label: 'สถานที่', value: 'โรงเรียนเตรียมอุดมศึกษา' },
+            { icon: <Calendar className="w-6 h-6" />, label: 'วันงานรับน้อง', value: '27 มิ.ย. 2569' },
+            { icon: <Users className="w-6 h-6" />, label: 'ผู้เข้าร่วมโดยประมาณ', value: '1,400 คน' },
+            { icon: <Clock className="w-6 h-6" />, label: 'เวลา', value: '08.00 – 17.00' },
+            { icon: <MapPin className="w-6 h-6" />, label: 'สถานที่', value: 'โรงเรียนเตรียมอุดมศึกษา' },
           ].map((s, i) => (
             <div key={i} className="stat-item">
               <div className="stat-icon">{s.icon}</div>
@@ -89,7 +89,7 @@ export default function EventPage() {
                 <div className="tl-title">{item.label}</div>
                 <div className="tl-desc">{item.desc}</div>
                 <div className={`tl-tag ${item.status}`}>
-                  <Clock style={{ width: 10, height: 10 }} /> {item.tag}
+                  <Clock className="w-2.5 h-2.5" /> {item.tag}
                 </div>
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function EventPage() {
       <div className="section">
         <div className="cta-banner">
           <div className="cta-banner-icon">
-            <CalendarCheck style={{ width: 22, height: 22, color: 'white' }} />
+            <CalendarCheck className="w-[22px] h-[22px]" style={{ color: 'white' }} />
           </div>
           <div className="cta-banner-text">
             <div className="cta-banner-title">พร้อมแล้วหรือยัง?</div>

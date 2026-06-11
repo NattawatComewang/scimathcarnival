@@ -12,7 +12,7 @@ export default function Footer() {
           <p>สายการเรียนวิทยาศาสตร์-คณิตศาสตร์ โรงเรียนเตรียมอุดมศึกษา</p>
           <div className="flex gap-2" style={{ marginTop: 12 }}>
             <a className="btn btn-ghost btn-icon btn-sm" href="mailto:tuscimath.official@gmail.com" title="Email">
-              <Mail style={{ width: 16, height: 16 }} />
+              <Mail className="w-4 h-4" />
             </a>
             <a className="btn btn-ghost btn-icon btn-sm" href="https://instagram.com/tuscimath.official" target="_blank" rel="noreferrer" title="Instagram">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -33,7 +33,7 @@ export default function Footer() {
         <div className="footer-col">
           <h4>ติดต่อ</h4>
           <a href="mailto:tuscimath.official@gmail.com" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Mail style={{ width: 13, height: 13, color: 'var(--accent)' }} />
+            <Mail className="w-[13px] h-[13px]" style={{ color: 'var(--accent)' }} />
             tuscimath.official@gmail.com
           </a>
           <a href="https://instagram.com/tuscimath.official" target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -45,7 +45,7 @@ export default function Footer() {
             @tuscimath.official
           </a>
           <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <MapPin style={{ width: 13, height: 13, color: 'var(--accent)' }} />
+            <MapPin className="w-[13px] h-[13px]" style={{ color: 'var(--accent)' }} />
             โรงเรียนเตรียมอุดมศึกษา
           </span>
         </div>

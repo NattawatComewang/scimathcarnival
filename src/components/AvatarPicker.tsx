@@ -69,7 +69,7 @@ export default function AvatarPicker({ uid, children, onUploaded, onError }: Pro
       }}
         className="avatar-overlay"
       >
-        <Camera style={{ width: 18, height: 18, color: 'white' }} />
+        <Camera className="w-[18px] h-[18px]" style={{ color: 'white' }} />
       </div>
       <style>{`.avatar-picker-wrap:hover .avatar-overlay{opacity:1!important}`}</style>
       <input ref={inputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />

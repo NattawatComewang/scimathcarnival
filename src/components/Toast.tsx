@@ -34,8 +34,8 @@ export function Toaster({ children }: { children?: React.ReactNode }) {
         {toasts.map((t) => (
           <div key={t.id} className={`toast ${t.type}`}>
             {t.type === 'success'
-              ? <CheckCircle style={{ width: 16, height: 16, color: 'var(--green)', flexShrink: 0 }} />
-              : <AlertCircle style={{ width: 16, height: 16, color: 'var(--red)', flexShrink: 0 }} />}
+              ? <CheckCircle className="w-4 h-4" style={{ color: 'var(--green)', flexShrink: 0 }} />
+              : <AlertCircle className="w-4 h-4" style={{ color: 'var(--red)', flexShrink: 0 }} />}
             <span>{t.msg}</span>
           </div>
         ))}

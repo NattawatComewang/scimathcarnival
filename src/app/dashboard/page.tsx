@@ -20,72 +20,11 @@ import {
   MessageCircle,
 } from 'lucide-react';
 
-// ── Interfaces ────────────────────────────────────────────────────────────────
-interface StudentData {
-  firstname?: string; lastname?: string; nickname?: string;
-  room?: string; studentId?: string;
-  phone?: string; lineId?: string; instagram?: string;
-  allergies?: string; healthNote?: string;
-  emergencyName?: string; emergencyPhone?: string; emergencyRelation?: string;
-  photoURL?: string;
-  registered?: boolean; checkedIn?: boolean;
-  groupId?: string; trioGroupId?: string;
-}
-
-interface Announcement {
-  id: string; title: string; body?: string; createdAt: Date | null; pinned?: boolean;
-}
-
-interface MemberInfo {
-  uid: string; name: string; nickname?: string; room?: string;
-}
-
-interface TrioGroup {
-  id: string;
-  leaderId: string;
-  members: string[];
-  memberInfo: MemberInfo[];
-  code: string;
-  joinRequests: MemberInfo[];
-  createdAt: Date | null;
-}
-
-interface StudentSearchResult {
-  uid: string; firstname?: string; lastname?: string; nickname?: string; room?: string;
-}
-
-interface AssignedGroup {
-  id: string; name: string; members: string[]; memberInfo?: MemberInfo[];
-}
-
-interface EventInfo {
-  name?: string; date?: string; location?: string; description?: string; lineUrl?: string;
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function genCode() {
-  return Math.random().toString(36).slice(2, 8).toUpperCase();
-}
-
-function useCountdown(target: Date | null) {
-  const [text, setText] = useState('');
-  useEffect(() => {
-    if (!target) return;
-    function tick() {
-      const diff = target!.getTime() - Date.now();
-      if (diff <= 0) { setText(''); return; }
-      const d = Math.floor(diff / 86400000);
-      const h = Math.floor((diff % 86400000) / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      setText(d > 0 ? `${d} วัน ${h} ชม. ${m} นาที` : `${h} ชม. ${m} นาที ${s} วิ`);
-    }
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [target]);
-  return text;
-}
+import type { Announcement } from '@/lib/types';
+import type {
+  StudentData, MemberInfo, TrioGroup, StudentSearchResult, AssignedGroup, EventInfo,
+} from './lib/types';
+import { genCode, useCountdown } from './lib/helpers';
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
@@ -379,7 +318,7 @@ export default function DashboardPage() {
           <div className="topbar-right">
             {isAdmin && (
               <button className="btn btn-sm" onClick={() => router.push('/admin')} style={{ background: 'var(--amber-dim)', color: 'var(--amber)', border: '1px solid var(--amber-dim)' }}>
-                <LayoutDashboard style={{ width: 12, height: 12 }} /> Admin
+                <LayoutDashboard className="w-3 h-3" /> Admin
               </button>
             )}
             <div className="top-av-wrap" onClick={() => setSection('profile')}>
@@ -400,13 +339,13 @@ export default function DashboardPage() {
 
             <div className="status-row">
               <div className="status-mini">
-                <div className="status-mini-label"><ClipboardCheck style={{ width: 11, height: 11 }} /> ลงทะเบียน</div>
+                <div className="status-mini-label"><ClipboardCheck className="w-[11px] h-[11px]" /> ลงทะเบียน</div>
                 {student?.registered
                   ? <span className="badge badge-green">เรียบร้อย</span>
                   : <span className="badge badge-muted">ยังไม่ได้</span>}
               </div>
               <div className="status-mini">
-                <div className="status-mini-label"><Users style={{ width: 11, height: 11 }} /> เช็คอิน</div>
+                <div className="status-mini-label"><Users className="w-[11px] h-[11px]" /> เช็คอิน</div>
                 {student?.checkedIn
                   ? <span className="badge badge-green">เช็คอินแล้ว</span>
                   : <span className="badge badge-muted">ยังไม่ได้</span>}
@@ -422,18 +361,18 @@ export default function DashboardPage() {
             {/* LINE card */}
             {eventInfo?.lineUrl && (
               <a href={eventInfo.lineUrl} target="_blank" rel="noreferrer" className="d-card" style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, textDecoration: 'none', background: 'var(--green-dim)', borderColor: 'var(--green)' }}>
-                <MessageCircle style={{ width: 20, height: 20, color: 'var(--green)', flexShrink: 0 }} />
+                <MessageCircle className="w-5 h-5" style={{ color: 'var(--green)', flexShrink: 0 }} />
                 <div>
                   <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--green)' }}>LINE Open Chat</div>
                   <div style={{ fontSize: '0.78rem', color: 'var(--text-3)' }}>เข้าร่วมกลุ่ม LINE ของงาน</div>
                 </div>
-                <ChevronRight style={{ width: 14, height: 14, color: 'var(--green)', marginLeft: 'auto' }} />
+                <ChevronRight className="w-3.5 h-3.5" style={{ color: 'var(--green)', marginLeft: 'auto' }} />
               </a>
             )}
 
             {/* Announcements */}
             <div className="d-card">
-              <div className="d-card-label"><Bell style={{ width: 12, height: 12 }} /> ประกาศล่าสุด</div>
+              <div className="d-card-label"><Bell className="w-3 h-3" /> ประกาศล่าสุด</div>
               {announcements.length === 0
                 ? <div className="text-sm text-muted">ยังไม่มีประกาศ</div>
                 : announcements.map((a) => (
@@ -452,7 +391,7 @@ export default function DashboardPage() {
                       {a.body && <div style={{ fontSize: '0.75rem', color: 'var(--text-3)', marginTop: 2 }}>{a.body.slice(0, 60)}{a.body.length > 60 ? '...' : ''}</div>}
                     </div>
                     <div className="ann-date">{a.createdAt?.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) || ''}</div>
-                    {a.body && <ChevronRight style={{ width: 12, height: 12, color: 'var(--text-3)' }} />}
+                    {a.body && <ChevronRight className="w-3 h-3" style={{ color: 'var(--text-3)' }} />}
                   </div>
                 ))}
             </div>
@@ -465,11 +404,11 @@ export default function DashboardPage() {
             <div className="section-header"><h2>กลุ่มของฉัน</h2></div>
             {groupLoading ? (
               <div className="d-card" style={{ textAlign: 'center', padding: 32 }}>
-                <RefreshCw style={{ width: 20, height: 20, color: 'var(--text-3)', animation: 'spin 1s linear infinite' }} />
+                <RefreshCw className="w-5 h-5" style={{ color: 'var(--text-3)', animation: 'spin 1s linear infinite' }} />
               </div>
             ) : !groupRevealed ? (
               <div className="d-card" style={{ textAlign: 'center', padding: '36px 20px' }}>
-                <Lock style={{ width: 28, height: 28, color: 'var(--text-3)', marginBottom: 12 }} />
+                <Lock className="w-7 h-7" style={{ color: 'var(--text-3)', marginBottom: 12 }} />
                 <div style={{ fontWeight: 700, marginBottom: 6 }}>รอประกาศกลุ่ม</div>
                 {countdown ? (
                   <div className="text-sm text-muted">จะเปิดเผยใน <strong style={{ color: 'var(--accent)' }}>{countdown}</strong></div>
@@ -497,7 +436,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="d-card" style={{ textAlign: 'center', padding: '36px 20px' }}>
-                <Layers style={{ width: 28, height: 28, color: 'var(--text-3)', marginBottom: 12 }} />
+                <Layers className="w-7 h-7" style={{ color: 'var(--text-3)', marginBottom: 12 }} />
                 <div style={{ fontWeight: 700, marginBottom: 6 }}>ยังไม่มีกลุ่ม</div>
                 <div className="text-sm text-muted">คุณยังไม่ได้รับการมอบหมายกลุ่ม</div>
               </div>
@@ -512,22 +451,22 @@ export default function DashboardPage() {
 
             {trioLoading ? (
               <div className="d-card" style={{ textAlign: 'center', padding: 32 }}>
-                <RefreshCw style={{ width: 20, height: 20, color: 'var(--text-3)', animation: 'spin 1s linear infinite' }} />
+                <RefreshCw className="w-5 h-5" style={{ color: 'var(--text-3)', animation: 'spin 1s linear infinite' }} />
               </div>
             ) : !trioGroup ? (
               <>
                 {trioView === 'main' && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <div className="d-card" style={{ textAlign: 'center', padding: '28px 20px' }}>
-                      <Users style={{ width: 32, height: 32, color: 'var(--accent)', margin: '0 auto 12px' }} />
+                      <Users className="w-8 h-8" style={{ color: 'var(--accent)', margin: '0 auto 12px' }} />
                       <div style={{ fontWeight: 700, marginBottom: 6 }}>คุณยังไม่มีกลุ่ม Trio</div>
                       <div className="text-sm text-muted" style={{ marginBottom: 20 }}>สร้างกลุ่มหรือเข้าร่วมด้วยรหัส</div>
                       <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
                         <button className="btn btn-primary btn-sm" onClick={() => setTrioView('create')}>
-                          <UserPlus style={{ width: 13, height: 13 }} /> สร้างกลุ่ม
+                          <UserPlus className="w-[13px] h-[13px]" /> สร้างกลุ่ม
                         </button>
                         <button className="btn btn-secondary btn-sm" onClick={() => setTrioView('join')}>
-                          <Key style={{ width: 13, height: 13 }} /> ใช้รหัสเข้าร่วม
+                          <Key className="w-[13px] h-[13px]" /> ใช้รหัสเข้าร่วม
                         </button>
                       </div>
                     </div>
@@ -543,7 +482,7 @@ export default function DashboardPage() {
                     <div style={{ display: 'flex', gap: 8 }}>
                       <button className="btn btn-secondary" style={{ flex: 1, justifyContent: 'center' }} onClick={() => setTrioView('main')}>ยกเลิก</button>
                       <button className="btn btn-primary"   style={{ flex: 1, justifyContent: 'center' }} onClick={createTrio}>
-                        <UserPlus style={{ width: 13, height: 13 }} /> สร้างกลุ่ม
+                        <UserPlus className="w-[13px] h-[13px]" /> สร้างกลุ่ม
                       </button>
                     </div>
                   </div>
@@ -595,7 +534,7 @@ export default function DashboardPage() {
                       {m.uid === user.uid && <span className="badge badge-accent" style={{ fontSize: '0.68rem' }}>ฉัน</span>}
                       {isLeader && m.uid !== user.uid && (
                         <button className="btn btn-sm btn-ghost" style={{ color: 'var(--red)' }} onClick={() => kickMember(m)}>
-                          <Trash2 style={{ width: 12, height: 12 }} />
+                          <Trash2 className="w-3 h-3" />
                         </button>
                       )}
                     </div>
@@ -608,7 +547,7 @@ export default function DashboardPage() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <span style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '0.14em', color: 'var(--accent)' }}>{trioGroup.code}</span>
                         <button className="btn btn-sm btn-secondary" onClick={regenCode} title="สร้างรหัสใหม่">
-                          <RefreshCw style={{ width: 12, height: 12 }} />
+                          <RefreshCw className="w-3 h-3" />
                         </button>
                       </div>
                     </div>
@@ -618,7 +557,7 @@ export default function DashboardPage() {
                   <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
                     {!isLeader && (
                       <button className="btn btn-secondary btn-sm" style={{ color: 'var(--red)' }} onClick={leaveGroup}>
-                        <LogOut style={{ width: 12, height: 12 }} /> ออกจากกลุ่ม
+                        <LogOut className="w-3 h-3" /> ออกจากกลุ่ม
                       </button>
                     )}
                     {isLeader && (
@@ -643,7 +582,7 @@ export default function DashboardPage() {
                         <div style={{ display: 'flex', gap: 4 }}>
                           <button className="btn btn-sm btn-primary" onClick={() => acceptRequest(req)}>รับ</button>
                           <button className="btn btn-sm btn-secondary" style={{ color: 'var(--red)' }} onClick={() => rejectRequest(req)}>
-                            <X style={{ width: 12, height: 12 }} />
+                            <X className="w-3 h-3" />
                           </button>
                         </div>
                       </div>
@@ -654,7 +593,7 @@ export default function DashboardPage() {
                 {/* Friend search (leader, group not full) */}
                 {isLeader && trioGroup.members.length < 3 && (
                   <div className="d-card">
-                    <div className="d-card-label"><Search style={{ width: 11, height: 11 }} /> ค้นหาเพื่อนเชิญ</div>
+                    <div className="d-card-label"><Search className="w-[11px] h-[11px]" /> ค้นหาเพื่อนเชิญ</div>
                     <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
                       <input
                         className="form-input"
@@ -695,13 +634,13 @@ export default function DashboardPage() {
                 {eventInfo.description && <div style={{ fontSize: '0.875rem', color: 'var(--text-2)', lineHeight: 1.75, borderTop: '1px solid var(--border)', paddingTop: 12 }}>{eventInfo.description}</div>}
                 {eventInfo.lineUrl && (
                   <a href={eventInfo.lineUrl} target="_blank" rel="noreferrer" className="btn btn-sm" style={{ marginTop: 14, background: 'var(--green-dim)', color: 'var(--green)', display: 'inline-flex' }}>
-                    <MessageCircle style={{ width: 13, height: 13 }} /> เข้าร่วม LINE Open Chat
+                    <MessageCircle className="w-[13px] h-[13px]" /> เข้าร่วม LINE Open Chat
                   </a>
                 )}
               </div>
             ) : (
               <div className="d-card" style={{ textAlign: 'center', padding: '36px 20px' }}>
-                <Lock style={{ width: 28, height: 28, color: 'var(--accent)', marginBottom: 12 }} />
+                <Lock className="w-7 h-7" style={{ color: 'var(--accent)', marginBottom: 12 }} />
                 <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 6 }}>Coming Soon</div>
                 <div className="text-sm text-muted" style={{ marginBottom: 20 }}>รายละเอียดกิจกรรมจะเปิดเผยก่อนวันงาน</div>
                 <a className="btn btn-secondary btn-sm" href="/event" style={{ justifyContent: 'center' }}>ดูหน้ากิจกรรม</a>
@@ -716,7 +655,7 @@ export default function DashboardPage() {
             <div className="section-header"><h2>บัตรเข้างาน</h2><p>แสดง QR Code นี้เพื่อเช็คอินในวันงาน</p></div>
             <div className="qr-wrap">
               <div className="qr-box">
-                <QrCode style={{ width: 80, height: 80, color: 'var(--text-3)' }} />
+                <QrCode className="w-20 h-20" style={{ color: 'var(--text-3)' }} />
               </div>
               <div className="qr-code-id">{user.uid.slice(0, 12).toUpperCase()}</div>
               <div>{student?.checkedIn ? <span className="badge badge-green">เช็คอินแล้ว</span> : <span className="badge badge-muted">ยังไม่เช็คอิน</span>}</div>
@@ -744,7 +683,7 @@ export default function DashboardPage() {
             {!editMode ? (
               <>
                 <div className="d-card" style={{ marginBottom: 10 }}>
-                  <div className="d-card-label"><User style={{ width: 12, height: 12 }} /> ข้อมูลส่วนตัว</div>
+                  <div className="d-card-label"><User className="w-3 h-3" /> ข้อมูลส่วนตัว</div>
                   {([
                     ['ชื่อเล่น', student?.nickname],
                     ['ห้องเรียน', student?.room],
@@ -811,11 +750,11 @@ export default function DashboardPage() {
       <div className="bottom-nav">
         <div className="bottom-nav-inner">
           {([
-            ['home',     'หน้าหลัก', <Home     style={{ width: 20, height: 20 }} />],
-            ['group',    'กลุ่ม',    <Layers   style={{ width: 20, height: 20 }} />],
-            ['duo',      'Trio',     <Users    style={{ width: 20, height: 20 }} />],
-            ['activity', 'กิจกรรม', <Calendar style={{ width: 20, height: 20 }} />],
-            ['profile',  'โปรไฟล์', <User     style={{ width: 20, height: 20 }} />],
+            ['home',     'หน้าหลัก', <Home     className="w-5 h-5" />],
+            ['group',    'กลุ่ม',    <Layers   className="w-5 h-5" />],
+            ['duo',      'Trio',     <Users    className="w-5 h-5" />],
+            ['activity', 'กิจกรรม', <Calendar className="w-5 h-5" />],
+            ['profile',  'โปรไฟล์', <User     className="w-5 h-5" />],
           ] as [DashboardSection, string, React.ReactNode][]).map(([id, label, icon]) => (
             <button key={id} className={`bn-item${section === id ? ' active' : ''}`} onClick={() => setSection(id)}>
               {icon}
@@ -836,7 +775,7 @@ export default function DashboardPage() {
               onClick={() => setSelectedAnn(null)}
               style={{ position: 'absolute', top: 12, right: 12, width: 28, height: 28, borderRadius: '50%', background: 'var(--bg-2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
-              <X style={{ width: 14, height: 14 }} />
+              <X className="w-3.5 h-3.5" />
             </button>
             {selectedAnn.pinned && <span className="badge badge-gold" style={{ fontSize: '0.68rem', marginBottom: 8, display: 'inline-flex' }}>📌 ปักหมุด</span>}
             <h3 style={{ marginBottom: 8, paddingRight: 32 }}>{selectedAnn.title}</h3>
