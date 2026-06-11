@@ -137,18 +137,10 @@ h4 { font-size: 0.9rem; font-weight: 600; }
 .page-title p { color: var(--text-2); font-size: 0.875rem; }
 
 /* ══ UTILS ══════════════════════════════════ */
-.hidden { display: none !important; }
-.flex  { display: flex; }
-.flex-col  { flex-direction: column; }
-.items-center { align-items: center; }
-.items-start  { align-items: flex-start; }
-.justify-between { justify-content: space-between; }
-.justify-center  { justify-content: center; }
-.gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}.gap-6{gap:24px}.gap-8{gap:32px}.gap-10{gap:40px}
-.flex-wrap{flex-wrap:wrap}
-.w-full{width:100%}
-.text-sm{font-size:0.85rem}
-.text-xs{font-size:0.75rem}
+/* hidden, flex, flex-col, items-center/start, justify-between/center,
+   gap-*, flex-wrap, w-full, text-xs, font-medium/semibold, truncate,
+   text-center → all covered by Tailwind v4; no need to redefine. */
+.text-sm{font-size:0.85rem} /* intentionally 0.85rem, not Tailwind's 0.875rem */
 .text-muted{color:var(--text-2)}
 .text-accent{color:var(--accent)}
 .text-gold{color:var(--gold)}
@@ -156,10 +148,6 @@ h4 { font-size: 0.9rem; font-weight: 600; }
 .text-red{color:var(--red)}
 .text-amber{color:var(--amber)}
 .text-blue{color:var(--blue)}
-.font-medium{font-weight:500}
-.font-semibold{font-weight:600}
-.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.text-center{text-align:center}
 
 /* ══ BUTTONS ════════════════════════════════ */
 .btn {
