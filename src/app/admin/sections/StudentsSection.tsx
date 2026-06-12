@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { Search, X, Edit3, Trash2 } from 'lucide-react';
+import { X, Edit3, Trash2 } from 'lucide-react';
+import SearchInput from '@/components/SearchInput';
 import type { Student } from '../lib/types';
 import { matchStudent } from '../lib/students';
 
@@ -45,11 +46,7 @@ export default function StudentsSection({ students, onToggleCheckin, onSaveEdit,
     <>
       <div className="page-title"><h2>ข้อมูลนักเรียน</h2><p>{students.length} คน</p></div>
       <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '8px 12px' }}>
-          <Search className="w-3.5 h-3.5" style={{ color: 'var(--text-3)', flexShrink: 0 }} />
-          <input style={{ border: 'none', background: 'none', outline: 'none', color: 'var(--text)', fontSize: '0.9rem', width: '100%' }} placeholder="ค้นหาชื่อ ห้อง เลข..." value={studentSearch} onChange={(e) => setStudentSearch(e.target.value)} />
-          {studentSearch && <button onClick={() => setStudentSearch('')} style={{ color: 'var(--text-3)' }}><X className="w-[13px] h-[13px]" /></button>}
-        </div>
+        <SearchInput value={studentSearch} onChange={setStudentSearch} placeholder="ค้นหาชื่อ ห้อง เลข..." />
         {selectedStudent && (
           <button className="btn btn-sm btn-secondary" onClick={() => setSelectedStudent(null)}><X className="w-[13px] h-[13px]" /> ปิดพาเนล</button>
         )}

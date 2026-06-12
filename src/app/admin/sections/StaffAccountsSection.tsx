@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/components/Toast';
+import Toggle from '@/components/Toggle';
 import { Plus, Trash2 } from 'lucide-react';
 import type { StaffAccount } from '../lib/types';
 
@@ -82,7 +83,7 @@ export default function StaffAccountsSection() {
                 <td style={{ padding: '8px 6px', color: 'var(--text-3)' }}>{s.email}</td>
                 <td style={{ padding: '8px 6px' }}><span className="badge badge-accent">{s.role}</span></td>
                 <td style={{ padding: '8px 6px' }}>
-                  <button className={`toggle ${s.active ? 'on' : ''}`} style={{ transform: 'scale(0.8)' }} onClick={() => toggleStaffActive(s.id, s.active)} />
+                  <Toggle on={s.active} scale={0.8} onClick={() => toggleStaffActive(s.id, s.active)} />
                 </td>
                 <td style={{ padding: '8px 6px', textAlign: 'right' }}>
                   <button className="btn btn-sm btn-ghost" style={{ color: 'var(--red)' }} onClick={() => deleteStaff(s.id)}>

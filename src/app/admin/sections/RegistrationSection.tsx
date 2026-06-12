@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getDoc, setDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/components/Toast';
+import Toggle from '@/components/Toggle';
 import { Check } from 'lucide-react';
 import type { RegSettings } from '../lib/types';
 
@@ -45,7 +46,7 @@ export default function RegistrationSection() {
       <div className="d-card">
         <div className="d-card-label">สถานะการรับสมัคร</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-          <button className={`toggle ${regSettings.isOpen ? 'on' : ''}`} onClick={() => setRegSettings((p) => ({ ...p, isOpen: !p.isOpen }))} />
+          <Toggle on={regSettings.isOpen} onClick={() => setRegSettings((p) => ({ ...p, isOpen: !p.isOpen }))} />
           <span style={{ fontSize: '0.9rem' }}>{regSettings.isOpen ? 'เปิดรับสมัครอยู่' : 'ปิดรับสมัครแล้ว'}</span>
         </div>
 

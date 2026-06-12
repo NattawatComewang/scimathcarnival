@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, orderBy, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/components/Toast';
+import Toggle from '@/components/Toggle';
 import { Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import type { Announcement } from '@/lib/types';
 
@@ -60,7 +61,7 @@ export default function AnnouncementsSection() {
           <textarea className="form-input" rows={3} placeholder="เนื้อหาประกาศ (ไม่บังคับ)" value={newAnnBody} onChange={(e) => setNewAnnBody(e.target.value)} />
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.85rem', cursor: 'pointer' }}>
-              <button className={`toggle${newAnnPinned ? ' on' : ''}`} style={{ transform: 'scale(0.85)' }} onClick={() => setNewAnnPinned((p) => !p)} />
+              <Toggle on={newAnnPinned} scale={0.85} onClick={() => setNewAnnPinned((p) => !p)} />
               ปักหมุด
             </label>
             <button className="btn btn-primary" onClick={addAnnouncement}><Plus className="w-3.5 h-3.5" /> เพิ่มประกาศ</button>

@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Search, X } from 'lucide-react';
+import SearchInput from '@/components/SearchInput';
 import type { Counts, Student } from '../lib/types';
 import { matchStudent } from '../lib/students';
 
@@ -19,11 +19,7 @@ export default function CheckinSection({ students, counts, onToggleCheckin }: Pr
       <div className="page-title"><h2>Check-in</h2><p>เช็คอิน {counts.checkedIn}/{counts.students} คน</p></div>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, background: 'var(--bg-1)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '8px 12px' }}>
-          <Search className="w-3.5 h-3.5" style={{ color: 'var(--text-3)', flexShrink: 0 }} />
-          <input style={{ border: 'none', background: 'none', outline: 'none', color: 'var(--text)', fontSize: '0.9rem', width: '100%' }} placeholder="ค้นหาชื่อ ห้อง เลขประจำตัว..." value={ciSearch} onChange={(e) => setCiSearch(e.target.value)} autoFocus />
-          {ciSearch && <button onClick={() => setCiSearch('')} style={{ color: 'var(--text-3)' }}><X className="w-[13px] h-[13px]" /></button>}
-        </div>
+        <SearchInput value={ciSearch} onChange={setCiSearch} placeholder="ค้นหาชื่อ ห้อง เลขประจำตัว..." autoFocus />
       </div>
 
       <div className="d-card" style={{ overflowX: 'auto' }}>

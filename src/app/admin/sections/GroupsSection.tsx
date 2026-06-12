@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs, getDoc, addDoc, deleteDoc, updateDoc, setDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/components/Toast';
+import Toggle from '@/components/Toggle';
 import { Plus, Trash2, Eye, EyeOff } from 'lucide-react';
 import type { Group, Student } from '../lib/types';
 
@@ -70,7 +71,7 @@ export default function GroupsSection({ students, onStudentsChanged }: Props) {
       <div className="d-card" style={{ marginBottom: 14 }}>
         <div className="d-card-label">การแสดงกลุ่ม</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button className={`toggle ${groupsRevealed ? 'on' : ''}`} onClick={toggleGroupReveal} />
+          <Toggle on={groupsRevealed} onClick={toggleGroupReveal} />
           <span style={{ fontSize: '0.9rem' }}>
             {groupsRevealed ? <><Eye className="w-[13px] h-[13px]" style={{ display: 'inline', marginRight: 4 }} />เปิดเผยกลุ่มให้นักเรียนเห็นแล้ว</> : <><EyeOff className="w-[13px] h-[13px]" style={{ display: 'inline', marginRight: 4 }} />ยังไม่เปิดเผยกลุ่ม</>}
           </span>
