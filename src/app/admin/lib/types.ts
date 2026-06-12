@@ -13,6 +13,10 @@ export interface Student {
   registered?: boolean; checkedIn?: boolean; groupId?: string;
 }
 
+export interface Counts {
+  students: number; registered: number; checkedIn: number;
+}
+
 export interface LogEntry {
   id: string; action: string; detail: string; by: string; at: Date | null;
 }
